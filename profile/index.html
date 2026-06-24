@@ -97,11 +97,7 @@ function renderPublic(S){
   </section>
   <section class="panel"><h2>💗 좋아하는 것 · 싫어하는 것</h2><ul class="ilist">
     ${row('좋아하는 것',S.likes)}${row('싫어하는 것',S.dislikes)}
-  </ul></section>
-  <section class="panel"><h2>🔗 SNS</h2><div class="links">
-    ${S.youtube?`<a class="lbtn" href="${esc(S.youtube)}" target="_blank" rel="noopener">유튜브</a>`:''}
-    ${S.cafe?`<a class="lbtn alt" href="${esc(S.cafe)}" target="_blank" rel="noopener">카페</a>`:''}
-  </div></section>`;
+  </ul></section>`;
 }
 async function load(){
   let S=Object.assign({},DEFAULTS);
