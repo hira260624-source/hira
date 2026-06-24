@@ -25,6 +25,9 @@
   .lbtn{text-decoration:none;font-family:'Jua',sans-serif;font-size:.88rem;color:#fff;background:var(--red);
     border:3px solid #fff;border-radius:14px;padding:8px 15px;box-shadow:0 3px 0 var(--red-d);}
   .lbtn.alt{background:#fff;color:var(--red-d);box-shadow:0 3px 0 rgba(208,109,34,.25);}
+  .music-row{display:flex;align-items:center;gap:16px;}
+  .music-row .ilist{flex:1;min-width:0;}
+  .music-row .lbtn{flex:0 0 auto;white-space:nowrap;}
   @media (max-width:560px){ .hname{font-size:3.4rem;} }
 </style>
 </head>
@@ -86,8 +89,11 @@ function renderPublic(S){
   <section class="panel"><h2>📺 방송</h2><ul class="ilist">
     ${row('방송 시간',S.schedule)}${row('콘텐츠',S.content)}${row('게임',S.games)}
   </ul></section>
-  <section class="panel"><h2>🎵 음악</h2><ul class="ilist">${row('장르',S.music)}</ul>
-    ${S.songclip?`<div class="links" style="margin-top:12px"><a class="lbtn" href="${esc(S.songclip)}" target="_blank" rel="noopener">🎧 노래 클립 보기</a></div>`:''}
+  <section class="panel"><h2>🎵 음악</h2>
+    <div class="music-row">
+      <ul class="ilist">${row('장르',S.music)}</ul>
+      ${S.songclip?`<a class="lbtn" href="${esc(S.songclip)}" target="_blank" rel="noopener">🎧 노래 클립 보기</a>`:''}
+    </div>
   </section>
   <section class="panel"><h2>💗 좋아하는 것 · 싫어하는 것</h2><ul class="ilist">
     ${row('좋아하는 것',S.likes)}${row('싫어하는 것',S.dislikes)}
