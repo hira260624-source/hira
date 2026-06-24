@@ -78,3 +78,24 @@ from (values
   ('노래방셀','#a8d8d4',3)
 ) as v(name,color,sort_order)
 where not exists (select 1 from public.upbo_types);
+
+-- ───────── 일정 (schedule_events · 두미 기준) ─────────
+create table if not exists public.schedule_events (
+  id          bigserial primary key,
+  date        date not null,
+  time        time,
+  title       text not null,
+  description text,
+  is_hidden   boolean default false,
+  created_at  timestamptz default now()
+);
+create index if not exists idx_schedule_date on public.schedule_events(date);
+alter table public.schedule_events add column if not exists event_type text default 'broadcast';
+alter table public.schedule_events add column if not exists color text;
+alter table public.schedule_events add column if not exists is_anniversary boolean default false;
+alter table public.schedule_events add column if not exists anniv_color text;
+alter table public.schedule_events enable row level security;
+drop policy if exists "public read schedule" on public.schedule_events;
+drop policy if exists "auth all schedule"  on public.schedule_events;
+create policy "public read schedule" on public.schedule_events for select using (is_hidden = false);
+create policy "auth all schedule"  on public.schedule_events for all to authenticated using (true) with check (true);
