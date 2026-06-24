@@ -64,7 +64,9 @@ insert into public.site_settings (key, value) values
   ('channel','https://www.sooplive.com/station/sjsr4611'),
   ('youtube','https://www.youtube.com/@%EC%9A%B0%EC%A3%BC%EC%B1%84%EA%B0%95%ED%9E%88%EB%9D%BC'),
   ('cafe','https://cafe.naver.com/hirarara'),
-  ('songclip','https://vod.sooplive.com/player/189985747')
+  ('songclip','https://vod.sooplive.com/player/189985747'),
+  ('guide_rules','["서로 존중해요. 비방 · 욕설 · 인신공격 금지.","정치 · 종교 · 민감한 주제는 자제해주세요.","도배 · 광고 · 스포일러 금지.","다른 스트리머 언급 · 비교는 삼가주세요.","방장 안내에 따라주시면 더 즐거운 방송이 돼요!"]'),
+  ('guide_terms','[{"t":"종겜","d":"종합게임 — 여러 게임을 돌아가며 하는 방송."},{"t":"휴방","d":"쉬는 날. 방송이 없는 요일."},{"t":"별풍 / 도네","d":"후원. 별풍선 등으로 보내는 응원."},{"t":"다시보기","d":"지난 방송 VOD. 놓친 방송을 다시 시청."},{"t":"클립","d":"방송 중 짧게 잘라 공유하는 영상."}]')
 on conflict (key) do nothing;
 
 -- ───────── 업보 종류 시드 예시 — 테이블 비었을 때만 ─────────

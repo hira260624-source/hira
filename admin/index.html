@@ -6,60 +6,71 @@
 <title>히라 · 어드민</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Gothic+A1:wght@400;500;700;800&family=Jua&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/common.css" />
 <style>
-  .adminbar{position:fixed;top:0;left:0;right:0;z-index:50;height:56px;display:flex;align-items:center;
-    gap:10px;padding:0 16px;background:rgba(255,247,238,.94);border-bottom:2px solid var(--pink);}
-  .adminbar .t{font-family:'Black Han Sans',sans-serif;color:var(--red);font-size:1.1rem;margin-right:auto;}
-  .btn{font-family:'Black Han Sans',sans-serif;font-size:.84rem;color:#fff;background:var(--red);
-    border:3px solid #fff;border-radius:13px;padding:7px 14px;cursor:pointer;box-shadow:0 3px 0 var(--red-d);}
+  .adminbar{position:fixed;top:0;left:0;right:0;z-index:50;height:62px;display:flex;align-items:center;
+    gap:10px;padding:0 20px;background:rgba(255,247,238,.95);border-bottom:2px solid var(--pink);}
+  .adminbar .t{font-family:'Jua',sans-serif;color:var(--red);font-size:1.35rem;margin-right:auto;}
+  .btn{font-family:'Jua',sans-serif;font-size:1.02rem;color:#fff;background:var(--red);
+    border:3px solid #fff;border-radius:13px;padding:8px 16px;cursor:pointer;box-shadow:0 3px 0 var(--red-d);}
   .btn.ghost{background:#fff;color:var(--red-d);box-shadow:0 3px 0 rgba(208,109,34,.25);}
   .btn.hot{background:var(--hot);box-shadow:0 3px 0 #d63b7d;}
   .btn:active{transform:translateY(1px);}
 
   /* 로그인 */
-  #login{max-width:340px;margin:60px auto;}
+  #login{max-width:360px;margin:60px auto;}
   #login .panel{text-align:center;}
-  #login input{width:100%;padding:10px 12px;border:2px solid var(--pink);border-radius:11px;
-    background:var(--cream);font-family:'Noto Sans KR';font-size:.95rem;margin-bottom:10px;}
+  #login input{width:100%;padding:12px 14px;border:2px solid var(--pink);border-radius:11px;
+    background:var(--cream);font-family:'Gothic A1';font-size:1.05rem;margin-bottom:10px;}
   #login input:focus{outline:none;border-color:var(--red);}
-  #login .err{color:#d63b7d;font-size:.84rem;min-height:18px;margin-top:4px;}
+  #login .err{color:#d63b7d;font-size:.95rem;min-height:20px;margin-top:4px;}
 
   #panel{display:none;}
-  .sec-title{font-family:'Black Han Sans',sans-serif;color:var(--red-d);font-size:1.2rem;margin:6px 0 14px;}
 
-  /* 프로필 폼 */
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .fld{display:flex;flex-direction:column;gap:4px;}
+  /* 탭 */
+  .tabs{display:flex;gap:9px;margin-bottom:22px;}
+  .tab{font-family:'Jua',sans-serif;font-size:1.18rem;color:var(--red-d);background:#fff;
+    border:3px solid var(--pink);border-radius:16px;padding:10px 26px;cursor:pointer;
+    box-shadow:0 3px 0 rgba(208,109,34,.2);transition:transform .1s ease;}
+  .tab.on{background:var(--red);color:#fff;border-color:#fff;box-shadow:0 3px 0 var(--red-d);}
+  .tab:active{transform:translateY(1px);}
+  .pane[hidden]{display:none;}
+  .sec-title{font-family:'Jua',sans-serif;color:var(--red-d);font-size:1.3rem;margin:4px 0 16px;}
+
+  /* 폼 (프로필/안내) */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .fld{display:flex;flex-direction:column;gap:5px;}
   .fld.full{grid-column:1/-1;}
-  .fld label{font-family:'Black Han Sans',sans-serif;font-size:.8rem;color:var(--red-d);}
-  .fld label .s{font-size:.62rem;background:var(--pink-l);border:1.5px solid var(--pink);border-radius:8px;padding:0 5px;margin-left:5px;}
-  .fld input,.fld textarea{font-family:'Noto Sans KR';font-size:.92rem;color:var(--ink);
-    border:2px solid var(--pink);border-radius:10px;padding:8px 10px;background:var(--cream);width:100%;}
+  .fld label{font-family:'Jua',sans-serif;font-size:.98rem;color:var(--red-d);}
+  .fld label .s{font-size:.74rem;background:var(--pink-l);border:1.5px solid var(--pink);border-radius:8px;padding:1px 6px;margin-left:5px;}
+  .fld input,.fld textarea{font-family:'Gothic A1';font-size:1.02rem;color:var(--ink);
+    border:2px solid var(--pink);border-radius:10px;padding:10px 12px;background:var(--cream);width:100%;line-height:1.6;}
   .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--red);}
-  .fld textarea{resize:vertical;min-height:54px;}
-  .save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+  .fld textarea{resize:vertical;min-height:60px;}
+  .save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
 
-  /* 업보 그리드 */
+  /* 업보 그리드 — 크게 */
+  .bar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px;}
   .scroll{overflow-x:auto;border-radius:12px;}
-  table{border-collapse:collapse;width:100%;font-size:.92rem;}
-  th,td{padding:8px 10px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
-  thead th{font-family:'Black Han Sans',sans-serif;font-weight:400;color:var(--red-d);border-bottom:2px solid var(--pink);font-size:.84rem;}
-  .vn,th.vn{text-align:left;font-weight:700;color:#5b463a;}
-  tfoot td{border-top:2px solid var(--pink);border-bottom:none;font-weight:700;color:var(--red-d);background:#fffdf9;}
-  .th-type{display:flex;align-items:center;gap:5px;justify-content:center;}
-  .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto;}
-  .mini{border:none;background:transparent;cursor:pointer;font-size:.82rem;opacity:.5;padding:0 1px;}
+  table{border-collapse:collapse;width:100%;font-size:1.05rem;}
+  th,td{padding:13px 16px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
+  thead th{font-family:'Jua',sans-serif;font-weight:400;color:var(--red-d);
+    border-bottom:2px solid var(--pink);font-size:1.08rem;}
+  .vn,th.vn{text-align:left;font-weight:700;color:#5b463a;font-size:1.08rem;}
+  tfoot td{border-top:2px solid var(--pink);border-bottom:none;font-weight:700;color:var(--red-d);background:#fffdf9;font-size:1.08rem;}
+  .th-type{display:flex;align-items:center;gap:7px;justify-content:center;}
+  .th-type .nm{font-family:'Jua',sans-serif;font-size:1.08rem;}
+  .sw{width:15px;height:15px;border-radius:4px;flex:0 0 auto;}
+  .mini{border:none;background:transparent;cursor:pointer;font-size:1.05rem;opacity:.55;padding:0 2px;}
   .mini:hover{opacity:1;}
-  .cc{display:inline-flex;align-items:center;gap:6px;}
-  .cc button{width:24px;height:24px;border-radius:8px;border:2px solid var(--pink);background:var(--pink-l);
-    color:var(--red-d);font-weight:900;cursor:pointer;line-height:1;font-size:.95rem;}
+  .cc{display:inline-flex;align-items:center;gap:8px;}
+  .cc button{width:30px;height:30px;border-radius:9px;border:2px solid var(--pink);background:var(--pink-l);
+    color:var(--red-d);font-weight:900;cursor:pointer;line-height:1;font-size:1.2rem;}
   .cc button:hover{background:var(--pink);}
-  .cc .n{min-width:22px;text-align:center;font-weight:700;}
+  .cc .n{min-width:28px;text-align:center;font-weight:700;font-size:1.1rem;}
   .cc .n.zero{color:#cdbcae;font-weight:400;}
-  .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-  @media (max-width:560px){ .form-grid{grid-template-columns:1fr;} }
+  .rowsum{text-align:center;color:var(--red);font-weight:700;font-size:1.08rem;}
 </style>
 </head>
 <body>
@@ -83,25 +94,47 @@
 
 <!-- 패널 -->
 <div id="panel" class="page">
-  <!-- 프로필 편집 -->
-  <section class="panel">
-    <div class="sec-title">📇 프로필 편집</div>
-    <div class="form-grid" id="profForm"></div>
-    <div class="save-row">
-      <button class="btn" id="saveProfBtn">프로필 저장</button>
-    </div>
-  </section>
+  <div class="tabs">
+    <button class="tab on" data-tab="upbo">업보</button>
+    <button class="tab" data-tab="guide">안내</button>
+    <button class="tab" data-tab="profile">프로필</button>
+  </div>
 
-  <!-- 업보 편집 -->
-  <section class="panel">
-    <div class="sec-title">🏆 업보 편집</div>
-    <div class="bar">
-      <button class="btn" id="addTypeBtn">+ 업보 종류</button>
-      <button class="btn" id="addViewerBtn">+ 시청자</button>
-    </div>
-    <div class="scroll"><table id="upboGrid"></table></div>
-    <p class="note">✎ 이름변경 · 🗑 삭제 · 셀 +/− 즉시 저장</p>
-  </section>
+  <!-- 업보 -->
+  <div class="pane" id="tab-upbo">
+    <section class="panel">
+      <div class="sec-title">🏆 업보 편집</div>
+      <div class="bar">
+        <button class="btn" id="addTypeBtn">+ 업보 종류</button>
+        <button class="btn" id="addViewerBtn">+ 시청자</button>
+      </div>
+      <div class="scroll"><table id="upboGrid"></table></div>
+      <p class="note">✎ 이름변경 · 🗑 삭제 · 셀 +/− 즉시 저장</p>
+    </section>
+  </div>
+
+  <!-- 안내 -->
+  <div class="pane" id="tab-guide" hidden>
+    <section class="panel">
+      <div class="sec-title">📋 방송 규칙</div>
+      <textarea id="g_rules" rows="7" style="width:100%;font-family:'Gothic A1';font-size:1.02rem;line-height:1.7;border:2px solid var(--pink);border-radius:10px;padding:12px;background:var(--cream)"></textarea>
+      <p class="note">한 줄에 규칙 하나씩</p>
+      <div class="sec-title" style="margin-top:20px">📖 방송 용어</div>
+      <textarea id="g_terms" rows="8" style="width:100%;font-family:'Gothic A1';font-size:1.02rem;line-height:1.7;border:2px solid var(--pink);border-radius:10px;padding:12px;background:var(--cream)"></textarea>
+      <p class="note">한 줄에 「용어 | 설명」 하나씩 (예: 종겜 | 종합게임 방송)</p>
+      <p class="note">※ 방송 시간 배너는 「프로필」 탭의 '방송 시간' 값을 사용합니다.</p>
+      <div class="save-row"><button class="btn" id="saveGuideBtn">안내 저장</button></div>
+    </section>
+  </div>
+
+  <!-- 프로필 -->
+  <div class="pane" id="tab-profile" hidden>
+    <section class="panel">
+      <div class="sec-title">📇 프로필 편집</div>
+      <div class="form-grid" id="profForm"></div>
+      <div class="save-row"><button class="btn" id="saveProfBtn">프로필 저장</button></div>
+    </section>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -124,15 +157,36 @@ const PFIELDS=[
   {k:'cafe',label:'카페 URL',full:true},
   {k:'songclip',label:'노래 클립 URL',full:true},
 ];
+const DEF_RULES=[
+  '서로 존중해요. 비방 · 욕설 · 인신공격 금지.',
+  '정치 · 종교 · 민감한 주제는 자제해주세요.',
+  '도배 · 광고 · 스포일러 금지.',
+  '다른 스트리머 언급 · 비교는 삼가주세요.',
+  '방장 안내에 따라주시면 더 즐거운 방송이 돼요!'
+];
+const DEF_TERMS=[
+  {t:'종겜', d:'종합게임 — 여러 게임을 돌아가며 하는 방송.'},
+  {t:'휴방', d:'쉬는 날. 방송이 없는 요일.'},
+  {t:'별풍 / 도네', d:'후원. 별풍선 등으로 보내는 응원.'},
+  {t:'다시보기', d:'지난 방송 VOD. 놓친 방송을 다시 시청.'},
+  {t:'클립', d:'방송 중 짧게 잘라 공유하는 영상.'}
+];
 let sb=null, U={types:[],viewers:[]};
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// ---------------- 탭 ----------------
+document.querySelector('.tabs').addEventListener('click',e=>{
+  const b=e.target.closest('.tab'); if(!b) return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t===b));
+  document.querySelectorAll('.pane').forEach(p=>{ p.hidden = (p.id!=='tab-'+b.dataset.tab); });
+});
 
 // ---------------- 세션 ----------------
 async function refresh(){
   sb=initSupabase();
   if(!sb){ document.getElementById('loginErr').textContent='Supabase 로드 실패'; return; }
   const { data:{ session } } = await sb.auth.getSession();
-  if(session){ showPanel(true); await loadProfile(); await loadUpbo(); }
+  if(session){ showPanel(true); await loadProfile(); await loadGuide(); await loadUpbo(); }
   else { showPanel(false); }
 }
 function showPanel(on){
@@ -150,7 +204,7 @@ document.getElementById('loginBtn').addEventListener('click', async ()=>{
 });
 document.getElementById('logoutBtn').addEventListener('click', async ()=>{ await sb.auth.signOut(); showPanel(false); });
 
-// ---------------- 프로필 편집 ----------------
+// ---------------- 프로필 ----------------
 async function loadProfile(){
   let P={}; PFIELDS.forEach(f=>P[f.k]='');
   const { data, error } = await sb.from('site_settings').select('key,value');
@@ -169,7 +223,28 @@ document.getElementById('saveProfBtn').addEventListener('click', async ()=>{
   alert(error ? ('저장 실패: '+error.message) : '프로필 저장됨 ✓');
 });
 
-// ---------------- 업보 편집 ----------------
+// ---------------- 안내 ----------------
+async function loadGuide(){
+  let rules=DEF_RULES, terms=DEF_TERMS;
+  const { data } = await sb.from('site_settings').select('key,value').in('key',['guide_rules','guide_terms']);
+  const m={}; (data||[]).forEach(r=>m[r.key]=r.value);
+  if(m.guide_rules){ try{ const a=JSON.parse(m.guide_rules); if(Array.isArray(a)) rules=a; }catch(e){} }
+  if(m.guide_terms){ try{ const a=JSON.parse(m.guide_terms); if(Array.isArray(a)) terms=a; }catch(e){} }
+  document.getElementById('g_rules').value = rules.join('\n');
+  document.getElementById('g_terms').value = terms.map(x=>`${x.t} | ${x.d}`).join('\n');
+}
+document.getElementById('saveGuideBtn').addEventListener('click', async ()=>{
+  const rules=document.getElementById('g_rules').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const terms=document.getElementById('g_terms').value.split('\n').map(line=>{
+    const i=line.indexOf('|'); if(i<0) return { t:line.trim(), d:'' };
+    return { t:line.slice(0,i).trim(), d:line.slice(i+1).trim() };
+  }).filter(x=>x.t);
+  const rows=[ {key:'guide_rules', value:JSON.stringify(rules)}, {key:'guide_terms', value:JSON.stringify(terms)} ];
+  const { error } = await sb.from('site_settings').upsert(rows, { onConflict:'key' });
+  alert(error ? ('저장 실패: '+error.message) : '안내 저장됨 ✓');
+});
+
+// ---------------- 업보 ----------------
 function getCount(v,tid){ const n=v.counts?v.counts[String(tid)]:0; return n?Number(n):0; }
 function rowTotal(v){ return U.types.reduce((s,t)=>s+getCount(v,t.id),0); }
 function colTotal(t){ return U.viewers.reduce((s,v)=>s+getCount(v,t.id),0); }
@@ -187,7 +262,7 @@ function renderUpbo(){
   const T=U.types, V=U.viewers;
   let h='<thead><tr><th class="vn">시청자</th>';
   T.forEach(t=>{
-    h+=`<th><div class="th-type"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span><span>${esc(t.name)}</span>`
+    h+=`<th><div class="th-type"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span><span class="nm">${esc(t.name)}</span>`
       +`<button class="mini" data-act="rentype" data-id="${t.id}">✎</button>`
       +`<button class="mini" data-act="deltype" data-id="${t.id}">🗑</button></div></th>`;
   });
@@ -202,7 +277,7 @@ function renderUpbo(){
         +`<span class="n${n?'':' zero'}">${n}</span>`
         +`<button data-act="inc" data-v="${v.id}" data-t="${t.id}">+</button></span></td>`;
     });
-    h+=`<td style="text-align:center;color:var(--red);font-weight:700">${rowTotal(v)}</td></tr>`;
+    h+=`<td class="rowsum">${rowTotal(v)}</td></tr>`;
   });
   h+='</tbody><tfoot><tr><td class="vn">종류 합계</td>';
   T.forEach(t=>{ h+=`<td style="text-align:center">${colTotal(t)}</td>`; });
