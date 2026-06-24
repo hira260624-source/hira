@@ -6,16 +6,27 @@
 <title>히라 · 업보</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+JP:wght@500;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/common.css" />
 <style>
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px;}
-  .mcard{background:var(--cream);border:2.5px solid var(--pink);border-radius:16px;
-    padding:14px 10px;text-align:center;}
-  .mcard .mav{width:56px;height:56px;border-radius:50%;margin:0 auto 9px;
-    background:linear-gradient(160deg,#ffe7d2,#f4c79f);border:3px solid #fff;}
-  .mcard b{display:block;font-family:'Black Han Sans',sans-serif;font-weight:400;color:var(--red-d);font-size:.95rem;}
-  .mcard span{font-size:.76rem;color:#b08b6e;}
+  .search{width:100%;max-width:280px;padding:9px 14px;border:2.5px solid var(--pink);border-radius:14px;
+    font-family:'Noto Sans KR';font-size:.9rem;color:var(--ink);background:var(--cream);margin-bottom:14px;}
+  .search:focus{outline:none;border-color:var(--red);}
+  .scroll{overflow-x:auto;border-radius:12px;}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;}
+  th,td{padding:9px 11px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
+  thead th{font-family:'Black Han Sans',sans-serif;font-weight:400;color:var(--red-d);
+    border-bottom:2px solid var(--pink);cursor:pointer;user-select:none;font-size:.85rem;}
+  th.sortable::after{content:' ↕';opacity:.35;font-size:.7rem;}
+  th.asc::after{content:' ↑';opacity:.9;} th.desc::after{content:' ↓';opacity:.9;}
+  td.vn,th.vn{text-align:left;font-weight:700;color:#5b463a;}
+  td.cnt{text-align:center;}
+  .pill{display:inline-block;min-width:26px;padding:2px 8px;border-radius:11px;font-weight:700;font-size:.82rem;}
+  .pill.z{background:transparent;color:#d8c8ba;font-weight:400;}
+  tbody tr:hover td{background:var(--cream);}
+  tfoot td{border-top:2px solid var(--pink);border-bottom:none;font-weight:700;color:var(--red-d);background:#fffdf9;}
+  .sw{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle;}
+  .hint{font-size:.78rem;color:#b08b6e;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -31,24 +42,10 @@
 
 <div class="page">
   <div class="phead"><span class="kr">업보</span><span class="en">RECORD</span></div>
-
-  <!-- 멤버 검색 -->
+  <input class="search" id="q" type="text" placeholder="🔎 시청자 검색…" />
   <section class="panel">
-    <h2>🔎 멤버 검색</h2>
-    <div class="ph">닉네임 검색창 들어갈 자리</div>
-  </section>
-
-  <!-- 멤버 그리드 -->
-  <section class="panel">
-    <h2>🏆 멤버</h2>
-    <div class="grid">
-      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
-      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
-      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
-      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
-      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
-    </div>
-    <div class="ph" style="margin-top:14px">멤버 카드 반복 + 클릭 시 상세 모달 (display:none 토글)</div>
+    <div class="scroll"><table id="tbl"></table></div>
+    <p class="hint">헤더 클릭 = 정렬 · 합계 기준 정렬 기본 · 모바일은 가로 스크롤.</p>
   </section>
 </div>
 
@@ -56,5 +53,72 @@
   <div class="h">© 2026 히라 · 꾸이단 💗</div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-config.js"></script>
+<script>
+let DATA={types:[],viewers:[]};
+let sortKey='__total', sortDir='desc';
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function hexA(hex,a){ if(!hex) return 'transparent'; const m=hex.replace('#',''); const r=parseInt(m.slice(0,2),16),g=parseInt(m.slice(2,4),16),b=parseInt(m.slice(4,6),16); return `rgba(${r},${g},${b},${a})`; }
+function getCount(v,t){ const n=v.counts?v.counts[String(t.id)]:0; return n?Number(n):0; }
+function rowTotal(v){ return DATA.types.reduce((s,t)=>s+getCount(v,t),0); }
+function colTotal(t){ return DATA.viewers.reduce((s,v)=>s+getCount(v,t),0); }
+function grand(){ return DATA.viewers.reduce((s,v)=>s+rowTotal(v),0); }
+
+function render(){
+  const T=DATA.types;
+  if(!T.length || !DATA.viewers.length){
+    document.getElementById('tbl').innerHTML=`<tbody><tr><td style="text-align:center;color:#b08b6e;padding:30px">아직 등록된 업보가 없어요 🍑</td></tr></tbody>`;
+    return;
+  }
+  const q=(document.getElementById('q').value||'').trim().toLowerCase();
+  let V=DATA.viewers.filter(v=>!q || (v.name||'').toLowerCase().includes(q));
+  V=V.slice().sort((a,b)=>{
+    if(sortKey==='__name'){ return sortDir==='asc'?(a.name||'').localeCompare(b.name||''):(b.name||'').localeCompare(a.name||''); }
+    let av,bv;
+    if(sortKey==='__total'){ av=rowTotal(a); bv=rowTotal(b); }
+    else { const t={id:sortKey}; av=getCount(a,t); bv=getCount(b,t); }
+    return sortDir==='asc'?av-bv:bv-av;
+  });
+  const cls=k=>'sortable'+(sortKey===k?(' '+sortDir):'');
+  let h=`<thead><tr><th class="vn ${cls('__name')}" data-sort="__name">시청자</th>`;
+  T.forEach(t=>{ h+=`<th class="${cls(t.id)}" data-sort="${t.id}"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span>${esc(t.name)}</th>`; });
+  h+=`<th class="${cls('__total')}" data-sort="__total">합계</th></tr></thead><tbody>`;
+  if(!V.length){ h+=`<tr><td colspan="${T.length+2}" style="text-align:center;color:#b08b6e;padding:22px">검색 결과 없음</td></tr>`; }
+  V.forEach(v=>{
+    h+=`<tr><td class="vn">${esc(v.name)}</td>`;
+    T.forEach(t=>{ const n=getCount(v,t); h+=`<td class="cnt">`+(n?`<span class="pill" style="background:${hexA(t.color||'#ffb3d1',.5)}">${n}</span>`:`<span class="pill z">0</span>`)+`</td>`; });
+    h+=`<td class="cnt"><b style="color:var(--red)">${rowTotal(v)}</b></td></tr>`;
+  });
+  h+=`</tbody><tfoot><tr><td class="vn">합계</td>`;
+  T.forEach(t=>{ h+=`<td class="cnt">${colTotal(t)}</td>`; });
+  h+=`<td class="cnt">${grand()}</td></tr></tfoot>`;
+  document.getElementById('tbl').innerHTML=h;
+}
+document.getElementById('tbl').addEventListener('click',e=>{
+  const th=e.target.closest('th[data-sort]'); if(!th) return;
+  const k=th.dataset.sort;
+  if(sortKey===k){ sortDir=sortDir==='asc'?'desc':'asc'; }
+  else { sortKey=k; sortDir=(k==='__name')?'asc':'desc'; }
+  render();
+});
+document.getElementById('q').addEventListener('input',render);
+
+async function load(){
+  try{
+    const sb=initSupabase();
+    if(sb){
+      const [t,v]=await Promise.all([
+        sb.from('upbo_types').select('*').order('sort_order'),
+        sb.from('upbo_viewers').select('*').order('sort_order')
+      ]);
+      if(!t.error && !v.error){ DATA={types:t.data||[], viewers:v.data||[]}; }
+    }
+  }catch(e){ /* 빈 상태 안내 */ }
+  render();
+}
+render();
+load();
+</script>
 </body>
 </html>

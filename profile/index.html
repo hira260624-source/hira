@@ -9,12 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+JP:wght@500;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/common.css" />
 <style>
-  .toolbar{display:flex;gap:8px;justify-content:flex-end;margin-bottom:14px;}
-  .tbtn{font-family:'Black Han Sans',sans-serif;font-size:.84rem;color:#fff;background:var(--red);
-    border:3px solid #fff;border-radius:13px;padding:6px 13px;cursor:pointer;box-shadow:0 3px 0 var(--red-d);}
-  .tbtn.ghost{background:#fff;color:var(--red-d);box-shadow:0 3px 0 rgba(208,109,34,.25);}
-  .tbtn:active{transform:translateY(1px);}
-
   .hero{text-align:center;padding:8px 0 22px;}
   .hname{font-family:'Black Han Sans',sans-serif;color:var(--red);font-size:4.6rem;line-height:.9;
     text-shadow:2px 0 0 #fff,-2px 0 0 #fff,0 2px 0 #fff,0 -2px 0 #fff,5px 6px 0 rgba(208,109,34,.35);}
@@ -23,30 +17,15 @@
   .hbtn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:'Black Han Sans',sans-serif;
     color:#fff;background:var(--hot);padding:11px 22px;border-radius:40px;border:4px solid #fff;box-shadow:0 5px 0 #d63b7d;}
   .hbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #d63b7d;}
-
   .ilist{list-style:none;display:grid;gap:10px;}
   .ilist li{font-size:.98rem;display:flex;gap:12px;}
   .ilist b{font-family:'Black Han Sans',sans-serif;font-weight:400;color:var(--red);min-width:84px;font-size:.85rem;}
   .ilist .empty{color:#c2a890;font-weight:400;}
-  .set-badge{font-size:.64rem;background:var(--pink-l);border:1.5px solid var(--pink);color:var(--red-d);
-    border-radius:9px;padding:1px 6px;margin-left:6px;vertical-align:middle;}
   .links{display:flex;gap:10px;flex-wrap:wrap;}
   .lbtn{text-decoration:none;font-family:'Black Han Sans',sans-serif;font-size:.88rem;color:#fff;background:var(--red);
     border:3px solid #fff;border-radius:14px;padding:8px 15px;box-shadow:0 3px 0 var(--red-d);}
   .lbtn.alt{background:#fff;color:var(--red-d);box-shadow:0 3px 0 rgba(208,109,34,.25);}
-
-  #editview{display:none;}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .fld{display:flex;flex-direction:column;gap:4px;}
-  .fld.full{grid-column:1/-1;}
-  .fld label{font-family:'Black Han Sans',sans-serif;font-size:.8rem;color:var(--red-d);}
-  .fld label .s{font-size:.62rem;background:var(--pink-l);border:1.5px solid var(--pink);border-radius:8px;padding:0 5px;margin-left:5px;}
-  .fld input,.fld textarea{font-family:'Noto Sans KR';font-size:.92rem;color:var(--ink);
-    border:2px solid var(--pink);border-radius:10px;padding:8px 10px;background:var(--cream);width:100%;}
-  .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--red);}
-  .fld textarea{resize:vertical;min-height:54px;}
-  .save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
-  @media (max-width:560px){ .hname{font-size:3.4rem;} .form-grid{grid-template-columns:1fr;} }
+  @media (max-width:560px){ .hname{font-size:3.4rem;} }
 </style>
 </head>
 <body>
@@ -62,171 +41,75 @@
 
 <div class="page">
   <div class="phead"><span class="kr">프로필</span><span class="en">PROFILE</span></div>
-
-  <div class="toolbar">
-    <button class="tbtn" id="toggleEdit">✎ 정보 수정</button>
-    <button class="tbtn ghost" id="resetBtn">초기화</button>
-  </div>
-
   <div id="pubview"></div>
-
-  <div id="editview">
-    <section class="panel">
-      <h2>✎ 정보 수정 <span class="note" style="margin:0">— 저장하면 위 공개 화면이 즉시 갱신</span></h2>
-      <div class="form-grid" id="formGrid"></div>
-      <div class="save-row">
-        <button class="tbtn ghost" id="cancelBtn">취소</button>
-        <button class="tbtn" id="saveBtn">저장</button>
-      </div>
-    </section>
-  </div>
 </div>
 
 <footer class="foot">
   <div class="h">© 2026 히라 · 꾸이단 💗</div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-config.js"></script>
 <script>
-const KEY='hira_profile_demo_v1';
-
-// ---- 인테이크 기반 기본값 (운영: Supabase site_settings key→value 로 교체) ----
+// site_settings 없거나 로드 실패 시 폴백 기본값
 const DEFAULTS={
   name:'히라', reading:'ヒラ · HIRA',
   bio:'기미라다. 8시에 온다. 쓰껄하러 와라.',
   birthday:'2002. 08. 23', debut:'2024. 03. 17', mbti:'einTfp',
   gender:'여', personality:'밝음 · 변태', agency:'', fandom:'꾸이 · 꾸이단',
-  schedule:'저녁 8시 고정 (수 · 토 휴방)',
-  content:'소통 · 종겜 · 노래',
-  games:'스팀 종겜 · 그 외 메이저 게임',
-  music:'K-POP · J-POP · 인디 · 감성힙합',
+  schedule:'저녁 8시 고정 (수 · 토 휴방)', content:'소통 · 종겜 · 노래',
+  games:'스팀 종겜 · 그 외 메이저 게임', music:'K-POP · J-POP · 인디 · 감성힙합',
   likes:'', dislikes:'',
   channel:'https://www.sooplive.com/station/sjsr4611',
   youtube:'https://www.youtube.com/@%EC%9A%B0%EC%A3%BC%EC%B1%84%EA%B0%95%ED%9E%88%EB%9D%BC',
   cafe:'https://cafe.naver.com/hirarara',
   songclip:'https://vod.sooplive.com/player/189985747'
 };
-
-const FIELDS=[
-  {k:'name',label:'이름'},{k:'reading',label:'읽는 법'},
-  {k:'bio',label:'한 줄 소개',full:true},
-  {k:'birthday',label:'생일'},{k:'debut',label:'데뷔일'},
-  {k:'mbti',label:'MBTI'},{k:'gender',label:'성별'},
-  {k:'personality',label:'성격'},{k:'agency',label:'소속',settable:true},
-  {k:'fandom',label:'팬덤'},{k:'schedule',label:'방송 시간'},
-  {k:'content',label:'콘텐츠'},{k:'games',label:'게임'},
-  {k:'music',label:'음악 장르',full:true},
-  {k:'likes',label:'좋아하는 것',area:true,full:true,settable:true},
-  {k:'dislikes',label:'싫어하는 것',area:true,full:true,settable:true},
-  {k:'channel',label:'방송국 URL',full:true},
-  {k:'youtube',label:'유튜브 URL',full:true},
-  {k:'cafe',label:'카페 URL',full:true},
-  {k:'songclip',label:'노래 클립 URL',full:true},
-];
-
-const Store={
-  load(){ try{ const d=JSON.parse(localStorage.getItem(KEY)); return d&&typeof d==='object'?d:null; }catch(e){ return null; } },
-  save(d){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} }
-};
-let S = Object.assign({}, DEFAULTS, Store.load()||{});
-
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function row(label,val,settable){
-  const empty = !val || !String(val).trim();
-  const badge = settable?'<span class="set-badge">설정가능</span>':'';
-  const v = empty?'<span class="empty">아직 미설정</span>':esc(val);
-  return `<li><b>${label}${badge}</b><span>${v}</span></li>`;
+  const empty=!val||!String(val).trim();
+  const v=empty?'<span class="empty">아직 미설정</span>':esc(val);
+  return `<li><b>${label}</b><span>${v}</span></li>`;
 }
-
-function renderPublic(){
-  const h=`
+function renderPublic(S){
+  document.getElementById('pubview').innerHTML=`
   <div class="hero">
     <div class="hname">${esc(S.name)}</div>
     <div class="hread">${esc(S.reading)}</div>
     <div class="hbio">${esc(S.bio)}</div>
     ${S.channel?`<a class="hbtn" href="${esc(S.channel)}" target="_blank" rel="noopener">🎬 방송국 바로가기</a>`:''}
   </div>
-
-  <section class="panel">
-    <h2>📇 기본 정보</h2>
-    <ul class="ilist">
-      ${row('생일',S.birthday)}
-      ${row('데뷔일',S.debut)}
-      ${row('MBTI',S.mbti)}
-      ${row('성별',S.gender)}
-      ${row('성격',S.personality)}
-      ${row('소속',S.agency,true)}
-      ${row('팬덤',S.fandom)}
-    </ul>
-  </section>
-
-  <section class="panel">
-    <h2>📺 방송</h2>
-    <ul class="ilist">
-      ${row('방송 시간',S.schedule)}
-      ${row('콘텐츠',S.content)}
-      ${row('게임',S.games)}
-    </ul>
-  </section>
-
-  <section class="panel">
-    <h2>🎵 음악</h2>
-    <ul class="ilist">${row('장르',S.music)}</ul>
+  <section class="panel"><h2>📇 기본 정보</h2><ul class="ilist">
+    ${row('생일',S.birthday)}${row('데뷔일',S.debut)}${row('MBTI',S.mbti)}${row('성별',S.gender)}
+    ${row('성격',S.personality)}${row('소속',S.agency)}${row('팬덤',S.fandom)}
+  </ul></section>
+  <section class="panel"><h2>📺 방송</h2><ul class="ilist">
+    ${row('방송 시간',S.schedule)}${row('콘텐츠',S.content)}${row('게임',S.games)}
+  </ul></section>
+  <section class="panel"><h2>🎵 음악</h2><ul class="ilist">${row('장르',S.music)}</ul>
     ${S.songclip?`<div class="links" style="margin-top:12px"><a class="lbtn" href="${esc(S.songclip)}" target="_blank" rel="noopener">🎧 노래 클립 보기</a></div>`:''}
   </section>
-
-  <section class="panel">
-    <h2>💗 좋아하는 것 · 싫어하는 것</h2>
-    <ul class="ilist">
-      ${row('좋아하는 것',S.likes,true)}
-      ${row('싫어하는 것',S.dislikes,true)}
-    </ul>
-  </section>
-
-  <section class="panel">
-    <h2>🔗 SNS</h2>
-    <div class="links">
-      ${S.youtube?`<a class="lbtn" href="${esc(S.youtube)}" target="_blank" rel="noopener">유튜브</a>`:''}
-      ${S.cafe?`<a class="lbtn alt" href="${esc(S.cafe)}" target="_blank" rel="noopener">카페</a>`:''}
-    </div>
-  </section>`;
-  document.getElementById('pubview').innerHTML=h;
+  <section class="panel"><h2>💗 좋아하는 것 · 싫어하는 것</h2><ul class="ilist">
+    ${row('좋아하는 것',S.likes)}${row('싫어하는 것',S.dislikes)}
+  </ul></section>
+  <section class="panel"><h2>🔗 SNS</h2><div class="links">
+    ${S.youtube?`<a class="lbtn" href="${esc(S.youtube)}" target="_blank" rel="noopener">유튜브</a>`:''}
+    ${S.cafe?`<a class="lbtn alt" href="${esc(S.cafe)}" target="_blank" rel="noopener">카페</a>`:''}
+  </div></section>`;
 }
-
-function renderForm(){
-  let h='';
-  FIELDS.forEach(f=>{
-    const id='f_'+f.k;
-    const s=f.settable?'<span class="s">설정가능</span>':'';
-    const ctrl = f.area
-      ? `<textarea id="${id}">${esc(S[f.k])}</textarea>`
-      : `<input id="${id}" type="text" value="${esc(S[f.k])}" />`;
-    h+=`<div class="fld ${f.full?'full':''}"><label>${f.label}${s}</label>${ctrl}</div>`;
-  });
-  document.getElementById('formGrid').innerHTML=h;
+async function load(){
+  let S=Object.assign({},DEFAULTS);
+  try{
+    const sb=initSupabase();
+    if(sb){
+      const {data,error}=await sb.from('site_settings').select('key,value');
+      if(!error && data){ data.forEach(r=>{ if(r.value!=null) S[r.key]=r.value; }); }
+    }
+  }catch(e){ /* 폴백 유지 */ }
+  renderPublic(S);
 }
-function readForm(){
-  FIELDS.forEach(f=>{ const el=document.getElementById('f_'+f.k); if(el) S[f.k]=el.value; });
-}
-
-function showEdit(on){
-  document.getElementById('editview').style.display = on?'block':'none';
-  document.getElementById('pubview').style.display = on?'none':'block';
-  document.getElementById('toggleEdit').textContent = on?'← 공개 화면':'✎ 정보 수정';
-  if(on) renderForm();
-}
-document.getElementById('toggleEdit').addEventListener('click',()=>{
-  const editing = document.getElementById('editview').style.display==='block';
-  showEdit(!editing);
-});
-document.getElementById('cancelBtn').addEventListener('click',()=>{ showEdit(false); });
-document.getElementById('saveBtn').addEventListener('click',()=>{
-  readForm(); Store.save(S); renderPublic(); showEdit(false);
-});
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  if(confirm('인테이크 기본값으로 되돌릴까요?')){ S=Object.assign({},DEFAULTS); Store.save(S); renderPublic(); showEdit(false); }
-});
-
-renderPublic();
+renderPublic(DEFAULTS); // 즉시 기본값으로 1차 렌더(깜빡임 방지)
+load();                 // Supabase 값으로 갱신
 </script>
 </body>
 </html>

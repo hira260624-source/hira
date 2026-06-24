@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>히라 · 어드민</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/common.css" />
+<style>
+  .adminbar{position:fixed;top:0;left:0;right:0;z-index:50;height:56px;display:flex;align-items:center;
+    gap:10px;padding:0 16px;background:rgba(255,247,238,.94);border-bottom:2px solid var(--pink);}
+  .adminbar .t{font-family:'Black Han Sans',sans-serif;color:var(--red);font-size:1.1rem;margin-right:auto;}
+  .btn{font-family:'Black Han Sans',sans-serif;font-size:.84rem;color:#fff;background:var(--red);
+    border:3px solid #fff;border-radius:13px;padding:7px 14px;cursor:pointer;box-shadow:0 3px 0 var(--red-d);}
+  .btn.ghost{background:#fff;color:var(--red-d);box-shadow:0 3px 0 rgba(208,109,34,.25);}
+  .btn.hot{background:var(--hot);box-shadow:0 3px 0 #d63b7d;}
+  .btn:active{transform:translateY(1px);}
+
+  /* 로그인 */
+  #login{max-width:340px;margin:60px auto;}
+  #login .panel{text-align:center;}
+  #login input{width:100%;padding:10px 12px;border:2px solid var(--pink);border-radius:11px;
+    background:var(--cream);font-family:'Noto Sans KR';font-size:.95rem;margin-bottom:10px;}
+  #login input:focus{outline:none;border-color:var(--red);}
+  #login .err{color:#d63b7d;font-size:.84rem;min-height:18px;margin-top:4px;}
+
+  #panel{display:none;}
+  .sec-title{font-family:'Black Han Sans',sans-serif;color:var(--red-d);font-size:1.2rem;margin:6px 0 14px;}
+
+  /* 프로필 폼 */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .fld{display:flex;flex-direction:column;gap:4px;}
+  .fld.full{grid-column:1/-1;}
+  .fld label{font-family:'Black Han Sans',sans-serif;font-size:.8rem;color:var(--red-d);}
+  .fld label .s{font-size:.62rem;background:var(--pink-l);border:1.5px solid var(--pink);border-radius:8px;padding:0 5px;margin-left:5px;}
+  .fld input,.fld textarea{font-family:'Noto Sans KR';font-size:.92rem;color:var(--ink);
+    border:2px solid var(--pink);border-radius:10px;padding:8px 10px;background:var(--cream);width:100%;}
+  .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--red);}
+  .fld textarea{resize:vertical;min-height:54px;}
+  .save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+
+  /* 업보 그리드 */
+  .scroll{overflow-x:auto;border-radius:12px;}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
+  thead th{font-family:'Black Han Sans',sans-serif;font-weight:400;color:var(--red-d);border-bottom:2px solid var(--pink);font-size:.84rem;}
+  .vn,th.vn{text-align:left;font-weight:700;color:#5b463a;}
+  tfoot td{border-top:2px solid var(--pink);border-bottom:none;font-weight:700;color:var(--red-d);background:#fffdf9;}
+  .th-type{display:flex;align-items:center;gap:5px;justify-content:center;}
+  .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto;}
+  .mini{border:none;background:transparent;cursor:pointer;font-size:.82rem;opacity:.5;padding:0 1px;}
+  .mini:hover{opacity:1;}
+  .cc{display:inline-flex;align-items:center;gap:6px;}
+  .cc button{width:24px;height:24px;border-radius:8px;border:2px solid var(--pink);background:var(--pink-l);
+    color:var(--red-d);font-weight:900;cursor:pointer;line-height:1;font-size:.95rem;}
+  .cc button:hover{background:var(--pink);}
+  .cc .n{min-width:22px;text-align:center;font-weight:700;}
+  .cc .n.zero{color:#cdbcae;font-weight:400;}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  @media (max-width:560px){ .form-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="adminbar">
+  <span class="t">🛠️ 히라 어드민</span>
+  <a class="btn ghost" href="/">사이트 보기</a>
+  <button class="btn hot" id="logoutBtn" style="display:none">로그아웃</button>
+</div>
+
+<!-- 로그인 -->
+<div id="login" class="page">
+  <section class="panel">
+    <div class="sec-title">로그인</div>
+    <input id="email" type="email" placeholder="이메일" autocomplete="username" />
+    <input id="pw" type="password" placeholder="비밀번호" autocomplete="current-password" />
+    <button class="btn" id="loginBtn" style="width:100%">로그인</button>
+    <div class="err" id="loginErr"></div>
+  </section>
+</div>
+
+<!-- 패널 -->
+<div id="panel" class="page">
+  <!-- 프로필 편집 -->
+  <section class="panel">
+    <div class="sec-title">📇 프로필 편집</div>
+    <div class="form-grid" id="profForm"></div>
+    <div class="save-row">
+      <button class="btn" id="saveProfBtn">프로필 저장</button>
+    </div>
+  </section>
+
+  <!-- 업보 편집 -->
+  <section class="panel">
+    <div class="sec-title">🏆 업보 편집</div>
+    <div class="bar">
+      <button class="btn" id="addTypeBtn">+ 업보 종류</button>
+      <button class="btn" id="addViewerBtn">+ 시청자</button>
+    </div>
+    <div class="scroll"><table id="upboGrid"></table></div>
+    <p class="note">✎ 이름변경 · 🗑 삭제 · 셀 +/− 즉시 저장</p>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-config.js"></script>
+<script>
+const PALETTE=['#ffb3d1','#c5b8e8','#a8d8d4','#aed4f7','#ffd9a0','#ffc4a0','#d6c2f0','#ffd1dc'];
+const PFIELDS=[
+  {k:'name',label:'이름'},{k:'reading',label:'읽는 법'},
+  {k:'bio',label:'한 줄 소개',full:true},
+  {k:'birthday',label:'생일'},{k:'debut',label:'데뷔일'},
+  {k:'mbti',label:'MBTI'},{k:'gender',label:'성별'},
+  {k:'personality',label:'성격'},{k:'agency',label:'소속',settable:true},
+  {k:'fandom',label:'팬덤'},{k:'schedule',label:'방송 시간'},
+  {k:'content',label:'콘텐츠'},{k:'games',label:'게임'},
+  {k:'music',label:'음악 장르',full:true},
+  {k:'likes',label:'좋아하는 것',area:true,full:true,settable:true},
+  {k:'dislikes',label:'싫어하는 것',area:true,full:true,settable:true},
+  {k:'channel',label:'방송국 URL',full:true},
+  {k:'youtube',label:'유튜브 URL',full:true},
+  {k:'cafe',label:'카페 URL',full:true},
+  {k:'songclip',label:'노래 클립 URL',full:true},
+];
+let sb=null, U={types:[],viewers:[]};
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// ---------------- 세션 ----------------
+async function refresh(){
+  sb=initSupabase();
+  if(!sb){ document.getElementById('loginErr').textContent='Supabase 로드 실패'; return; }
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){ showPanel(true); await loadProfile(); await loadUpbo(); }
+  else { showPanel(false); }
+}
+function showPanel(on){
+  document.getElementById('panel').style.display = on?'block':'none';
+  document.getElementById('login').style.display = on?'none':'block';
+  document.getElementById('logoutBtn').style.display = on?'inline-block':'none';
+}
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const email=document.getElementById('email').value.trim();
+  const pw=document.getElementById('pw').value;
+  document.getElementById('loginErr').textContent='';
+  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+  if(error){ document.getElementById('loginErr').textContent='로그인 실패: '+error.message; return; }
+  await refresh();
+});
+document.getElementById('logoutBtn').addEventListener('click', async ()=>{ await sb.auth.signOut(); showPanel(false); });
+
+// ---------------- 프로필 편집 ----------------
+async function loadProfile(){
+  let P={}; PFIELDS.forEach(f=>P[f.k]='');
+  const { data, error } = await sb.from('site_settings').select('key,value');
+  if(!error && data){ data.forEach(r=>{ if(r.value!=null) P[r.key]=r.value; }); }
+  let h='';
+  PFIELDS.forEach(f=>{
+    const id='pf_'+f.k, s=f.settable?'<span class="s">설정가능</span>':'';
+    const ctrl=f.area?`<textarea id="${id}">${esc(P[f.k])}</textarea>`:`<input id="${id}" type="text" value="${esc(P[f.k])}" />`;
+    h+=`<div class="fld ${f.full?'full':''}"><label>${f.label}${s}</label>${ctrl}</div>`;
+  });
+  document.getElementById('profForm').innerHTML=h;
+}
+document.getElementById('saveProfBtn').addEventListener('click', async ()=>{
+  const rows=PFIELDS.map(f=>({ key:f.k, value:document.getElementById('pf_'+f.k).value }));
+  const { error } = await sb.from('site_settings').upsert(rows, { onConflict:'key' });
+  alert(error ? ('저장 실패: '+error.message) : '프로필 저장됨 ✓');
+});
+
+// ---------------- 업보 편집 ----------------
+function getCount(v,tid){ const n=v.counts?v.counts[String(tid)]:0; return n?Number(n):0; }
+function rowTotal(v){ return U.types.reduce((s,t)=>s+getCount(v,t.id),0); }
+function colTotal(t){ return U.viewers.reduce((s,v)=>s+getCount(v,t.id),0); }
+function grand(){ return U.viewers.reduce((s,v)=>s+rowTotal(v),0); }
+
+async function loadUpbo(){
+  const [t,v]=await Promise.all([
+    sb.from('upbo_types').select('*').order('sort_order'),
+    sb.from('upbo_viewers').select('*').order('sort_order')
+  ]);
+  U={ types:t.data||[], viewers:v.data||[] };
+  renderUpbo();
+}
+function renderUpbo(){
+  const T=U.types, V=U.viewers;
+  let h='<thead><tr><th class="vn">시청자</th>';
+  T.forEach(t=>{
+    h+=`<th><div class="th-type"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span><span>${esc(t.name)}</span>`
+      +`<button class="mini" data-act="rentype" data-id="${t.id}">✎</button>`
+      +`<button class="mini" data-act="deltype" data-id="${t.id}">🗑</button></div></th>`;
+  });
+  h+='<th>합계</th></tr></thead><tbody>';
+  V.forEach(v=>{
+    h+=`<tr><td class="vn">${esc(v.name)} `
+      +`<button class="mini" data-act="renviewer" data-id="${v.id}">✎</button>`
+      +`<button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></td>`;
+    T.forEach(t=>{ const n=getCount(v,t.id);
+      h+=`<td style="text-align:center"><span class="cc">`
+        +`<button data-act="dec" data-v="${v.id}" data-t="${t.id}">−</button>`
+        +`<span class="n${n?'':' zero'}">${n}</span>`
+        +`<button data-act="inc" data-v="${v.id}" data-t="${t.id}">+</button></span></td>`;
+    });
+    h+=`<td style="text-align:center;color:var(--red);font-weight:700">${rowTotal(v)}</td></tr>`;
+  });
+  h+='</tbody><tfoot><tr><td class="vn">종류 합계</td>';
+  T.forEach(t=>{ h+=`<td style="text-align:center">${colTotal(t)}</td>`; });
+  h+=`<td style="text-align:center">${grand()}</td></tr></tfoot>`;
+  document.getElementById('upboGrid').innerHTML=h;
+}
+document.getElementById('upboGrid').addEventListener('click', async e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return;
+  const act=b.dataset.act;
+  try{
+    if(act==='inc'||act==='dec'){
+      const v=U.viewers.find(x=>String(x.id)===String(b.dataset.v)); if(!v) return;
+      const c=Object.assign({},v.counts||{}); const tid=String(b.dataset.t);
+      let n=(c[tid]?Number(c[tid]):0)+(act==='inc'?1:-1); if(n<0)n=0;
+      if(n===0) delete c[tid]; else c[tid]=n;
+      const { error } = await sb.from('upbo_viewers').update({ counts:c }).eq('id', v.id);
+      if(error) return alert(error.message);
+      v.counts=c; renderUpbo();
+    } else if(act==='rentype'){
+      const t=U.types.find(x=>String(x.id)===String(b.dataset.id));
+      const nv=prompt('업보 종류 이름', t.name); if(!nv||!nv.trim()) return;
+      const { error } = await sb.from('upbo_types').update({ name:nv.trim() }).eq('id', t.id);
+      if(error) return alert(error.message); loadUpbo();
+    } else if(act==='deltype'){
+      if(!confirm('이 업보 종류를 삭제할까요?')) return;
+      const { error } = await sb.from('upbo_types').delete().eq('id', b.dataset.id);
+      if(error) return alert(error.message); loadUpbo();
+    } else if(act==='renviewer'){
+      const v=U.viewers.find(x=>String(x.id)===String(b.dataset.id));
+      const nv=prompt('시청자 닉네임', v.name); if(!nv||!nv.trim()) return;
+      const { error } = await sb.from('upbo_viewers').update({ name:nv.trim() }).eq('id', v.id);
+      if(error) return alert(error.message); loadUpbo();
+    } else if(act==='delviewer'){
+      if(!confirm('이 시청자를 삭제할까요?')) return;
+      const { error } = await sb.from('upbo_viewers').delete().eq('id', b.dataset.id);
+      if(error) return alert(error.message); loadUpbo();
+    }
+  }catch(err){ alert('오류: '+err.message); }
+});
+document.getElementById('addTypeBtn').addEventListener('click', async ()=>{
+  const n=prompt('새 업보 종류 이름 (예: 단컷방셀)'); if(!n||!n.trim()) return;
+  const { error } = await sb.from('upbo_types').insert({ name:n.trim(), color:PALETTE[U.types.length%PALETTE.length], sort_order:U.types.length });
+  if(error) return alert(error.message); loadUpbo();
+});
+document.getElementById('addViewerBtn').addEventListener('click', async ()=>{
+  const n=prompt('시청자 닉네임'); if(!n||!n.trim()) return;
+  const { error } = await sb.from('upbo_viewers').insert({ name:n.trim(), counts:{}, sort_order:U.viewers.length });
+  if(error) return alert(error.message); loadUpbo();
+});
+
+refresh();
+</script>
+</body>
+</html>
