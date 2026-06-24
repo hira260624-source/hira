@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>히라 · 방송안내</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+JP:wght@500;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/common.css" />
+<style>
+  .when{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--pink-l);
+    border:2.5px solid var(--pink);border-radius:16px;padding:14px 18px;margin-bottom:20px;}
+  .when .big{font-family:'Black Han Sans',sans-serif;color:var(--red-d);font-size:1.3rem;}
+  .when .off{font-size:.86rem;color:#8a6f5d;}
+  .rules{list-style:none;counter-reset:r;display:grid;gap:11px;}
+  .rules li{counter-increment:r;display:flex;gap:12px;align-items:flex-start;font-size:.97rem;line-height:1.6;color:#5b463a;}
+  .rules li::before{content:counter(r);flex:0 0 auto;width:26px;height:26px;border-radius:9px;
+    background:var(--red);color:#fff;font-family:'Black Han Sans',sans-serif;font-size:.86rem;
+    display:flex;align-items:center;justify-content:center;}
+  .glossary{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+  .term{background:var(--cream);border:2px solid var(--pink);border-radius:14px;padding:12px 14px;}
+  .term dt{font-family:'Black Han Sans',sans-serif;color:var(--red-d);font-size:1rem;margin-bottom:4px;}
+  .term dd{font-size:.86rem;color:#6b5547;line-height:1.55;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="home" href="/">히라 ♡</a>
+  <a class="lk" href="/profile/">프로필</a>
+  <a class="lk" href="/schedule/">일정</a>
+  <a class="lk" href="#" target="_blank" rel="noopener">노래책</a>
+  <a class="lk" href="/upbo/">업보</a>
+  <a class="lk on" href="/guide/">방송안내</a>
+</nav>
+
+<div class="page">
+  <div class="phead"><span class="kr">방송안내</span><span class="en">GUIDE</span></div>
+
+  <!-- 방송 시간 (인테이크) -->
+  <div class="when">
+    <span class="big">🕗 저녁 8시 고정</span>
+    <span class="off">· 수 · 토 휴방</span>
+  </div>
+
+  <!-- 방송 규칙 -->
+  <section class="panel">
+    <h2>📋 방송 규칙</h2>
+    <ol class="rules">
+      <li>서로 존중해요. 비방 · 욕설 · 인신공격 금지.</li>
+      <li>정치 · 종교 · 민감한 주제는 자제해주세요.</li>
+      <li>도배 · 광고 · 스포일러 금지.</li>
+      <li>다른 스트리머 언급 · 비교는 삼가주세요.</li>
+      <li>방장 안내에 따라주시면 더 즐거운 방송이 돼요!</li>
+    </ol>
+    <p class="note">※ 예시 규칙입니다 — 실제 규칙으로 교체.</p>
+  </section>
+
+  <!-- 방송 용어 -->
+  <section class="panel">
+    <h2>📖 방송 용어</h2>
+    <dl class="glossary">
+      <div class="term"><dt>종겜</dt><dd>종합게임 — 여러 게임을 돌아가며 하는 방송.</dd></div>
+      <div class="term"><dt>휴방</dt><dd>쉬는 날. 방송이 없는 요일.</dd></div>
+      <div class="term"><dt>별풍 / 도네</dt><dd>후원. 별풍선 등으로 보내는 응원.</dd></div>
+      <div class="term"><dt>다시보기</dt><dd>지난 방송 VOD. 놓친 방송을 다시 시청.</dd></div>
+      <div class="term"><dt>클립</dt><dd>방송 중 짧게 잘라 공유하는 영상.</dd></div>
+      <div class="term"><dt>＋ 용어 추가</dt><dd>스트리머가 쓰는 표현을 자유롭게 추가.</dd></div>
+    </dl>
+    <p class="note">※ navixx 글처럼 자주 쓰는 표현 정리 — 예시 용어, 실제 용어로 교체.</p>
+  </section>
+</div>
+
+<footer class="foot">
+  <div class="h">© 2026 히라 · 꾸이단 💗</div>
+</footer>
+
+</body>
+</html>

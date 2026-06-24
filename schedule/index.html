@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>히라 · 일정</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+JP:wght@500;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/common.css" />
+<style>
+  .cal-head{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;
+    font-family:'Black Han Sans',sans-serif;font-size:.86rem;color:var(--red-d);
+    padding:6px 0 10px;border-bottom:2px solid var(--pink-l);margin-bottom:10px;}
+  .legend{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;}
+  .lg{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;color:#6b5547;}
+  .lg i{width:14px;height:14px;border-radius:5px;display:inline-block;}
+  .up{display:flex;align-items:center;gap:14px;padding:11px 6px;border-bottom:1px dashed var(--pink);}
+  .up:last-child{border-bottom:none;}
+  .up .d{text-align:center;min-width:54px;}
+  .up .d b{display:block;font-family:'Black Han Sans',sans-serif;color:var(--red);font-size:1.5rem;line-height:1;}
+  .up .d span{font-family:'Anton',sans-serif;font-size:.66rem;color:#b08b6e;letter-spacing:.04em;}
+  .up .t{flex:1;font-weight:600;color:#5b463a;}
+  .up .tag{font-family:'Black Han Sans',sans-serif;font-size:.74rem;color:#4a3a30;
+    background:#ffb3d1;border-radius:14px;padding:3px 11px;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="home" href="/">히라 ♡</a>
+  <a class="lk" href="/profile/">프로필</a>
+  <a class="lk on" href="/schedule/">일정</a>
+  <a class="lk" href="#" target="_blank" rel="noopener">노래책</a>
+  <a class="lk" href="/upbo/">업보</a>
+  <a class="lk" href="/guide/">방송안내</a>
+</nav>
+
+<div class="page">
+  <div class="phead"><span class="kr">일정</span><span class="en">SCHEDULE</span></div>
+
+  <!-- 월 캘린더 -->
+  <section class="panel">
+    <h2>📅 이번 달</h2>
+    <div class="cal-head">
+      <span style="color:var(--hot)">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span style="color:#5a9bd4">토</span>
+    </div>
+    <div class="ph" style="min-height:240px">
+      월 캘린더 컴포넌트 들어갈 자리<br>(6주 × 7일 · 이벤트 칩 · 오늘 하이라이트)
+    </div>
+    <div class="legend">
+      <span class="lg"><i style="background:#ffb3d1"></i>방송</span>
+      <span class="lg"><i style="background:#d0d0d0"></i>휴방</span>
+      <span class="lg"><i style="background:#c5b8e8"></i>이벤트</span>
+      <span class="lg"><i style="background:#a8d8d4"></i>합방</span>
+      <span class="lg"><i style="background:#aed4f7"></i>대회</span>
+      <span class="lg"><i style="background:#ffd9a0"></i>기타</span>
+    </div>
+  </section>
+
+  <!-- 다가오는 일정 -->
+  <section class="panel">
+    <h2>🕒 다가오는 일정</h2>
+    <div class="up"><div class="d"><b>24</b><span>JUN · 화</span></div><div class="t">21:00 · 방송 제목 (placeholder)</div><span class="tag">방송</span></div>
+    <div class="up"><div class="d"><b>27</b><span>JUN · 금</span></div><div class="t">합방 일정 (placeholder)</div><span class="tag" style="background:#a8d8d4">합방</span></div>
+    <div class="up"><div class="d"><b>30</b><span>JUN · 월</span></div><div class="t">휴방 · 메모 (placeholder)</div><span class="tag" style="background:#d0d0d0">휴방</span></div>
+    <p class="note">※ 최대 7개 · QP 유형/색 매핑 그대로</p>
+  </section>
+</div>
+
+<footer class="foot">
+  <div class="h">© 2026 히라 · 꾸이단 💗</div>
+</footer>
+
+</body>
+</html>

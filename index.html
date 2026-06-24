@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>히라 · KEY VISUAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+JP:wght@900&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --red:#ef8a3c;--red-d:#d06d22;--pink:#ffd2ab;--pink-l:#ffe7d4;--hot:#ff5c9e;
+    --ink:#46342a;--paper:#fff7ee;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#d9d2cd;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;}
+
+  /* 1:2 (940 x 1880) */
+  .poster{position:relative;width:min(470px,96vw);aspect-ratio:940/1520;overflow:hidden;
+    background:var(--paper);border-radius:8px;box-shadow:0 20px 50px rgba(40,30,32,.32);isolation:isolate;}
+
+  /* ===== 포토카드 (백드롭) — 바닥까지 ===== */
+  .card{position:absolute;top:4.5%;left:6%;width:88%;height:95.5%;z-index:2;
+    border-radius:26px 26px 0 0;border:7px solid #fff;border-bottom:none;overflow:hidden;background:#fdf5ec;
+    box-shadow:0 12px 30px rgba(70,52,42,.22);}
+  .card-bg{position:absolute;inset:0;background:rgba(255,255,255,.4);}
+  .card-bg::before{content:'';position:absolute;inset:0;z-index:-1;opacity:.5;filter:blur(.6px);
+    background-image:radial-gradient(var(--pink) 22%,transparent 23%);background-size:15px 15px;
+    clip-path:polygon(100% 0,100% 100%,15% 100%);}
+  .ghost{position:absolute;z-index:2;color:transparent;font-family:'Anton',sans-serif;line-height:.82;
+    letter-spacing:.03em;pointer-events:none;white-space:nowrap;}
+  .ghost.g1{top:12%;left:-9%;transform:rotate(-8deg);font-size:10rem;color:rgba(199,168,140,.52);}
+  .ghost.g2{top:7%;right:-9%;transform:rotate(10deg);font-size:9rem;
+    font-family:'Noto Sans JP',sans-serif;font-weight:900;color:rgba(196,150,142,.52);}
+
+  /* ===== 대각 스트라이프 (카드 앞 / 캐릭터 뒤) ===== */
+  .band{position:absolute;left:-10%;width:120%;height:120px;z-index:4;}
+  .band.bot{bottom:-26px;background:repeating-linear-gradient(180deg,var(--pink) 0 9px,#ffe0c6 9px 12px);transform:rotate(-7deg);opacity:.9;}
+  .band.mid{top:52%;height:80px;background:repeating-linear-gradient(180deg,var(--pink) 0 8px,#ffe0c6 8px 11px);transform:rotate(-7deg);opacity:.55;}
+  .shape{position:absolute;z-index:4;opacity:.85;}
+  .shape.s1{top:30%;right:-5%;width:90px;height:38px;transform:rotate(16deg);background:var(--pink);opacity:.6;}
+  .shape.s2{top:66%;left:-6%;width:88px;height:34px;transform:rotate(-20deg);background:var(--red);opacity:.45;}
+
+  /* ===== 캐릭터 (최전면, 카드 밖으로 삐져나옴) ===== */
+  .art{position:absolute;top:1.5%;left:1%;width:98%;height:98.5%;z-index:3;}
+  .art img{width:100%;height:100%;object-fit:cover;object-position:center top;
+    filter:drop-shadow(0 0 3px #fff) drop-shadow(0 5px 10px rgba(70,52,42,.2));}
+
+  /* 마크 */
+  .mark{position:absolute;z-index:5;font-family:'Anton',sans-serif;color:var(--red);user-select:none;}
+  .x1{top:30%;right:14%;font-size:24px;color:var(--hot);transform:rotate(8deg);}
+  .x2{top:47%;right:8%;font-size:18px;color:var(--hot);}
+  .p1{top:6%;right:26%;font-size:26px;}
+  .p2{top:9%;right:22%;font-size:16px;}
+
+  /* Hira 배너 (크게) */
+  .megane{position:absolute;top:3%;left:4%;z-index:6;background:var(--red);color:#fff;
+    font-family:'Anton',sans-serif;font-size:2.15rem;letter-spacing:.02em;font-style:italic;
+    padding:7px 28px 10px;border-radius:28px;transform:rotate(-4deg);
+    box-shadow:0 3px 0 var(--red-d),0 6px 12px rgba(208,109,34,.3);border:4px solid #fff;}
+
+  /* 세로 ヒラ (아래로) */
+  .kawaii{position:absolute;top:20%;left:2.5%;z-index:6;display:flex;flex-direction:column;line-height:.82;
+    font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:4rem;color:#fff;
+    text-shadow:3px 0 0 var(--red),-3px 0 0 var(--red),0 3px 0 var(--red),0 -3px 0 var(--red),
+      3px 3px 0 var(--red),-3px 3px 0 var(--red),3px -3px 0 var(--red),-3px -3px 0 var(--red),
+      6px 7px 0 rgba(208,109,34,.32);transform:rotate(-2deg);}
+  .kawaii span{display:block;}
+
+  /* ? */
+  .qmark{position:absolute;top:2.5%;right:8%;z-index:6;font-family:'Anton',sans-serif;font-size:4rem;
+    color:var(--red);line-height:1;text-shadow:3px 0 0 #fff,-3px 0 0 #fff,0 3px 0 #fff,0 -3px 0 #fff,3px 3px 0 #fff,-3px -3px 0 #fff,5px 6px 0 rgba(208,109,34,.25);transform:rotate(6deg);}
+
+  /* 우측 네비 타일 */
+  .tiles{position:absolute;top:28.5%;right:3.5%;z-index:6;display:flex;flex-direction:column;gap:12px;align-items:flex-end;}
+  .tiles .tile:nth-child(1){transform:translateX(5px) rotate(-9deg);}
+  .tiles .tile:nth-child(2){transform:translateX(-13px) rotate(-9deg);}
+  .tiles .tile:nth-child(3){transform:translateX(-3px) rotate(-9deg);}
+  .tiles .tile:nth-child(4){transform:translateX(-11px) rotate(-9deg);}
+  .tile{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;}
+  .tile .ic{width:60px;height:60px;border-radius:16px;background:var(--red);border:3px solid #fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 0 var(--red-d),0 7px 13px rgba(208,109,34,.28);transition:transform .15s ease;}
+  .tile .ic svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+  .tile .lab{font-family:'Black Han Sans',sans-serif;font-size:.84rem;color:var(--red-d);
+    background:#fff;border-radius:20px;padding:0 9px;box-shadow:0 2px 0 rgba(208,109,34,.2);}
+  .tile:hover .ic{transform:translateY(-3px) rotate(-3deg);}
+  .tile:focus-visible .ic{outline:3px solid var(--ink);outline-offset:2px;}
+
+  /* 프로필 인셋 (좌측 하단부) */
+  .profile{position:absolute;left:5%;top:56%;width:38%;z-index:6;text-decoration:none;
+    background:#fff;border:3px solid var(--red);border-radius:14px;overflow:hidden;
+    box-shadow:0 6px 0 var(--red-d),0 10px 20px rgba(208,109,34,.22);transition:transform .15s ease;}
+  .profile:hover{transform:translateY(-3px);}
+  .profile:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+  .profile .pic{aspect-ratio:5/4;background:linear-gradient(160deg,#ffe7d2,#f4c79f);
+    display:flex;align-items:center;justify-content:center;color:#ffffffd0;font-family:'Black Han Sans',sans-serif;font-size:.8rem;}
+  .profile .pic img{width:100%;height:100%;object-fit:cover;object-position:top center;}
+  .profile .desc{background:var(--ink);color:#fff;padding:9px 11px 10px;}
+  .profile .desc p{font-size:.74rem;line-height:1.7;opacity:.92;}
+  .profile .desc .go{display:inline-block;margin-top:5px;font-family:'Black Han Sans',sans-serif;
+    font-size:.82rem;color:#fff;background:var(--red);border-radius:14px;padding:1px 12px;}
+
+  /* 하단 대형 네임 */
+  .bigname{position:absolute;right:6%;bottom:9%;z-index:5;transform:rotate(-7deg) skewX(-4deg);text-align:right;}
+  .bigname .kr{font-family:'Black Han Sans',sans-serif;font-size:6.3rem;line-height:.84;color:var(--red);
+    text-shadow:3px 0 0 #fff,-3px 0 0 #fff,0 3px 0 #fff,0 -3px 0 #fff,3px 3px 0 #fff,-3px 3px 0 #fff,3px -3px 0 #fff,-3px -3px 0 #fff,7px 8px 0 rgba(208,109,34,.4);}
+
+  .credit{position:absolute;left:5%;bottom:2.4%;z-index:6;font-family:'Noto Sans KR',sans-serif;
+    font-weight:700;font-size:.82rem;color:var(--red-d);opacity:.92;}
+
+  @media (prefers-reduced-motion:reduce){.tile .ic,.profile{transition:none;}}
+</style>
+</head>
+<body>
+<main class="poster">
+  <!-- 포토카드 백드롭 (프로스트 + 대각 도트 + 고스트) -->
+  <div class="card">
+    <div class="card-bg"></div>
+  </div>
+  <div class="ghost g1">HIRA</div>
+  <div class="ghost g2">ヒラ</div>
+
+  <!-- 대각 스트라이프 (카드 앞 / 캐릭터 뒤) -->
+  <div class="band bot"></div>
+  <div class="shape s1"></div><div class="shape s2"></div>
+  <span class="mark p1">+</span><span class="mark p2">+</span>
+  <span class="mark x1">★</span><span class="mark x2">★</span>
+
+  <!-- 캐릭터 키비주얼 (최전면, 카드 밖으로) -->
+  <div class="art">
+    <img src="keyvisual.png" alt="히라 키비주얼">
+  </div>
+
+  <!-- 상단 타이포 -->
+  <div class="megane">Hira</div>
+  <div class="qmark">?</div>
+
+  <!-- 우측 네비 타일 -->
+  <nav class="tiles">
+    <a class="tile" href="schedule/">
+      <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+      <span class="lab">일정</span>
+    </a>
+    <a class="tile" href="#" target="_blank" rel="noopener"><!-- TODO: 노래책 외부 링크 URL -->
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></span>
+      <span class="lab">노래책</span>
+    </a>
+    <a class="tile" href="upbo/">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M9 14h6M10 18h4M8 21h8"/></svg></span>
+      <span class="lab">업보</span>
+    </a>
+    <a class="tile" href="guide/">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2z"/><path d="M20 5a2 2 0 0 0-2-2h-6v16h6a2 2 0 0 1 2 2z"/></svg></span>
+      <span class="lab">방송안내</span>
+    </a>
+  </nav>
+
+  <!-- 프로필 인셋 -->
+  <a class="profile" href="profile/">
+    <!-- intake profile_image_url → .pic 안 <img src="..."> -->
+    <div class="pic"><img src="keyvisual2.png" alt="히라"></div>
+    <div class="desc">
+      <p>❥ 이름 : 히라<br>❥ 생일 : 2002년 8월 23일<br>❥ MBTI : einTfp</p>
+      <span class="go">프로필 ▸</span>
+    </div>
+  </a>
+
+  <!-- 하단 대형 네임 -->
+  <div class="bigname"><div class="kr">히라</div></div>
+  <div class="credit">© 2026 히라 · 꾸이단 💗</div>
+</main>
+</body>
+</html>

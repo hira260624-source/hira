@@ -1,0 +1,61 @@
+/* ===== 히라 사이트 공통 (서브페이지용) — 포스터 토큰 그대로 ===== */
+:root{
+  --red:#ef8a3c; --red-d:#d06d22; --pink:#ffd2ab; --pink-l:#ffe7d4; --hot:#ff5c9e;
+  --ink:#46342a; --paper:#fff7ee; --cream:#fffaf3;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);
+  background:var(--paper);
+  background-image:radial-gradient(rgba(239,138,60,.08) 17%,transparent 18%);
+  background-size:23px 23px;
+  min-height:100vh;padding-top:56px;}
+
+/* ---- 상단 네비 (전 페이지 공유) ---- */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:50;height:56px;
+  display:flex;align-items:center;gap:4px;padding:0 16px;line-height:1;
+  background:rgba(255,247,238,.92);backdrop-filter:blur(6px);border-bottom:2px solid var(--pink);}
+.topnav .home{font-family:'Black Han Sans',sans-serif;color:var(--red);font-size:1.2rem;
+  text-decoration:none;margin-right:auto;}
+.topnav a.lk{font-family:'Black Han Sans',sans-serif;font-size:.9rem;color:var(--red-d);
+  text-decoration:none;padding:6px 13px;border-radius:16px;transition:background .12s ease;}
+.topnav a.lk:hover{background:var(--pink-l);}
+.topnav a.lk.on{background:var(--red);color:#fff;}
+.topnav a:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+
+/* ---- 컨테이너 ---- */
+.page{width:min(880px,94vw);margin:0 auto;padding:30px 0 24px;}
+
+/* ---- 페이지 헤더 ---- */
+.phead{display:flex;align-items:flex-end;gap:12px;margin-bottom:22px;}
+.phead .kr{font-family:'Black Han Sans',sans-serif;color:var(--red);font-size:2.6rem;line-height:.9;
+  text-shadow:2px 0 0 #fff,-2px 0 0 #fff,0 2px 0 #fff,0 -2px 0 #fff,4px 5px 0 rgba(208,109,34,.3);}
+.phead .en{font-family:'Anton',sans-serif;color:var(--red-d);letter-spacing:.12em;
+  font-size:1rem;opacity:.65;padding-bottom:6px;}
+
+/* ---- 패널/카드 ---- */
+.panel{background:#fff;border:3px solid var(--red);border-radius:20px;padding:20px;
+  box-shadow:0 6px 0 var(--red-d),0 11px 22px rgba(208,109,34,.16);margin-bottom:20px;}
+.panel h2{font-family:'Black Han Sans',sans-serif;color:var(--red-d);font-size:1.12rem;
+  margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+
+/* ---- 플레이스홀더 존 (구성 표시용 — 나중에 실제 컴포넌트로 교체) ---- */
+.ph{border:2.5px dashed var(--pink);border-radius:14px;background:var(--cream);
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  color:#c79c78;font-weight:700;padding:24px 16px;min-height:88px;}
+.note{font-size:.8rem;color:#bfa088;margin-top:8px;}
+
+/* ---- 칩 ---- */
+.chip{display:inline-block;font-size:.82rem;font-weight:700;color:var(--red-d);
+  background:var(--pink-l);border:2px solid var(--pink);border-radius:20px;padding:4px 12px;margin:3px;}
+
+/* ---- 푸터 ---- */
+.foot{text-align:center;padding:30px 0;}
+.foot .h{font-family:'Black Han Sans',sans-serif;color:var(--red);font-size:1rem;}
+.foot .s{display:block;margin-top:6px;font-size:.72rem;color:#b6967c;}
+
+@media (max-width:560px){
+  .phead .kr{font-size:2.1rem;}
+  .topnav{gap:0;padding:0 10px;}
+  .topnav a.lk{padding:5px 9px;font-size:.82rem;}
+}
+@media (prefers-reduced-motion:reduce){.topnav a.lk{transition:none;}}

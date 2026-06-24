@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>히라 · 업보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=Noto+Sans+JP:wght@500;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/common.css" />
+<style>
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px;}
+  .mcard{background:var(--cream);border:2.5px solid var(--pink);border-radius:16px;
+    padding:14px 10px;text-align:center;}
+  .mcard .mav{width:56px;height:56px;border-radius:50%;margin:0 auto 9px;
+    background:linear-gradient(160deg,#ffe7d2,#f4c79f);border:3px solid #fff;}
+  .mcard b{display:block;font-family:'Black Han Sans',sans-serif;font-weight:400;color:var(--red-d);font-size:.95rem;}
+  .mcard span{font-size:.76rem;color:#b08b6e;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="home" href="/">히라 ♡</a>
+  <a class="lk" href="/profile/">프로필</a>
+  <a class="lk" href="/schedule/">일정</a>
+  <a class="lk" href="#" target="_blank" rel="noopener">노래책</a>
+  <a class="lk on" href="/upbo/">업보</a>
+  <a class="lk" href="/guide/">방송안내</a>
+</nav>
+
+<div class="page">
+  <div class="phead"><span class="kr">업보</span><span class="en">RECORD</span></div>
+
+  <!-- 멤버 검색 -->
+  <section class="panel">
+    <h2>🔎 멤버 검색</h2>
+    <div class="ph">닉네임 검색창 들어갈 자리</div>
+  </section>
+
+  <!-- 멤버 그리드 -->
+  <section class="panel">
+    <h2>🏆 멤버</h2>
+    <div class="grid">
+      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
+      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
+      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
+      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
+      <div class="mcard"><div class="mav"></div><b>닉네임</b><span>업보 0개</span></div>
+    </div>
+    <div class="ph" style="margin-top:14px">멤버 카드 반복 + 클릭 시 상세 모달 (display:none 토글)</div>
+  </section>
+</div>
+
+<footer class="foot">
+  <div class="h">© 2026 히라 · 꾸이단 💗</div>
+</footer>
+
+</body>
+</html>
