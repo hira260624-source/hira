@@ -13,6 +13,7 @@
     --ink:#46342a;--paper:#fff7ee;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
+  html{scrollbar-gutter:stable;}   /* 스크롤바 등장 시 포스터 좌측 밀림 방지 */
   body{font-family:'Jua',sans-serif;color:var(--ink);
     background:var(--paper);
     background-image:radial-gradient(rgba(239,138,60,.08) 17%,transparent 18%);background-size:23px 23px;
@@ -130,8 +131,8 @@
   /* 인트로 로더 + 등장 */
   #page-loader{position:fixed;inset:0;z-index:9999;background:var(--paper);
     background-image:radial-gradient(rgba(255,92,158,.10) 17%,transparent 18%);background-size:23px 23px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
-    animation:loaderOut .45s ease .62s forwards;}
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:400px;gap:20px;
+    animation:loaderOut .45s ease .6s forwards;}
   .pl-img{width:148px;height:148px;border-radius:50%;border:5px solid #fff;object-fit:cover;object-position:center 32%;
     box-shadow:0 8px 22px rgba(208,109,34,.22);animation:plPop 1s ease-in-out infinite;}
   .pl-dots{display:flex;gap:10px;}
