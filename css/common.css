@@ -17,8 +17,9 @@ body{font-family:'A2z',sans-serif;color:var(--ink);font-size:16.5px;line-height:
 
 /* ---- 상단 네비 ---- */
 .topnav{position:fixed;top:0;left:0;right:0;z-index:50;height:62px;
-  display:flex;align-items:center;gap:6px;padding:0 20px;line-height:1;
+  display:flex;align-items:center;justify-content:center;padding:0;line-height:1;
   background:rgba(255,247,238,.94);backdrop-filter:blur(6px);border-bottom:2px solid var(--pink);}
+.nav-inner{width:min(940px,94vw);display:flex;align-items:center;gap:6px;}
 .topnav .home{font-family:'A2z',sans-serif;font-weight:800;color:var(--red);font-size:1.4rem;
   text-decoration:none;margin-right:auto;}
 .topnav a.lk{font-family:'A2z',sans-serif;font-weight:800;font-size:1.05rem;color:var(--red-d);
@@ -28,7 +29,7 @@ body{font-family:'A2z',sans-serif;color:var(--ink);font-size:16.5px;line-height:
 .topnav a:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
 
 /* ---- 컨테이너 ---- */
-.page{width:min(880px,94vw);margin:0 auto;padding:34px 0 32px;}
+.page{width:min(940px,94vw);margin:0 auto;padding:34px 0 32px;}
 
 /* ---- 페이지 헤더 ---- */
 .phead{display:flex;align-items:flex-end;gap:12px;margin-bottom:24px;}
