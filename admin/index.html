@@ -52,6 +52,16 @@
 
   /* 업보 그리드 — 크게 */
   .bar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px;}
+  .bar input{font-family:'A2z';font-size:1rem;color:var(--ink);background:var(--cream);border:2px solid var(--pink);border-radius:11px;padding:8px 12px;flex:1;min-width:140px;}
+  .bar input:focus{outline:none;border-color:var(--red);}
+  .adm-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:2px solid var(--pink-l);border-radius:12px;margin-bottom:8px;background:#fff;}
+  .adm-row .spacer{flex:1;}
+  .adm-row .t{font-weight:700;color:#5b463a;}
+  .adm-row .done{color:#b6a496;text-decoration:line-through;text-decoration-color:rgba(182,164,150,.7);}
+  .adm-row .prog{font-weight:800;color:#fff;background:var(--hot);font-size:.78rem;padding:1px 9px;border-radius:20px;margin-left:6px;}
+  .adm-row .num{font-family:'Anton';color:#c2a890;min-width:20px;text-align:center;}
+  .adm-row code{background:var(--cream);padding:2px 8px;border-radius:7px;font-size:.85rem;color:var(--red-d);}
+  .adm-row input[type=checkbox]{width:19px;height:19px;accent-color:var(--hot);cursor:pointer;flex:0 0 auto;}
   .scroll{overflow-x:auto;border-radius:12px;}
   table{border-collapse:collapse;width:100%;font-size:1.05rem;}
   th,td{padding:13px 16px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
@@ -135,6 +145,8 @@
     <button class="tab" data-tab="schedule">일정</button>
     <button class="tab" data-tab="guide">안내</button>
     <button class="tab" data-tab="profile">프로필</button>
+    <button class="tab" data-tab="goals">목표</button>
+    <button class="tab" data-tab="clips">클립</button>
   </div>
 
   <!-- 업보 -->
@@ -215,6 +227,36 @@
       <div class="sec-title">📇 프로필 편집</div>
       <div class="form-grid" id="profForm"></div>
       <div class="save-row"><button class="btn" id="saveProfBtn">프로필 저장</button></div>
+    </section>
+  </div>
+
+  <!-- 목표 -->
+  <div class="pane" id="tab-goals" hidden>
+    <section class="panel">
+      <div class="sec-title">🎯 올해의 목표 관리</div>
+      <div class="bar">
+        <input id="goalText" placeholder="목표 내용">
+        <input id="goalProg" placeholder="진행도 (예: 14/20, 선택)" style="max-width:180px">
+        <button class="btn" id="addGoalBtn">+ 목표</button>
+      </div>
+      <div id="goalsAdminList"></div>
+      <p class="note">☑ 완료 체크 즉시 저장 · ✎ 수정 · 🗑 삭제 · ▲▼ 순서</p>
+    </section>
+  </div>
+
+  <!-- 클립 -->
+  <div class="pane" id="tab-clips" hidden>
+    <section class="panel">
+      <div class="sec-title">🎬 노래 클립 관리</div>
+      <div class="bar">
+        <input id="clipTitle" placeholder="클립 제목 (예: 시작의 아이 - 마크툽)">
+        <input id="clipVid" placeholder="SOOP VOD ID (예: 189985747)" style="max-width:220px">
+        <button class="btn" id="clipPrevBtn">미리보기</button>
+        <button class="btn" id="addClipBtn">+ 클립</button>
+      </div>
+      <div id="clipPreview" style="display:none;margin-bottom:14px"></div>
+      <div id="clipsAdminList"></div>
+      <p class="note">VOD URL의 숫자만 입력 (sooplive.com/.../v/<b>189985747</b>) · 미리보기 시 썸네일 자동 감지 · ✎ 수정 · 🗑 삭제 · ▲▼ 순서</p>
     </section>
   </div>
 </div>
@@ -303,7 +345,7 @@ async function refresh(){
   sb=initSupabase();
   if(!sb){ document.getElementById('loginErr').textContent='Supabase 로드 실패'; return; }
   const { data:{ session } } = await sb.auth.getSession();
-  if(session){ showPanel(true); await loadProfile(); await loadGuide(); await loadUpbo(); await loadScheduleAdmin(); }
+  if(session){ showPanel(true); await loadProfile(); await loadGuide(); await loadUpbo(); await loadScheduleAdmin(); await loadGoalsAdmin(); await loadClipsAdmin(); }
   else { showPanel(false); }
 }
 function showPanel(on){
@@ -618,6 +660,84 @@ async function delSch(id){
   if(error){ alert(error.message); return; } loadScheduleAdmin();
 }
 document.getElementById('schEditModal').addEventListener('click', e=>{ if(e.target.id==='schEditModal') closeSchEdit(); });
+
+/* ---------------- 목표 ---------------- */
+let GOALS=[];
+async function loadGoalsAdmin(){ const {data}=await sb.from('profile_goals').select('*').order('sort_order'); GOALS=data||[]; renderGoalsAdmin(); }
+function renderGoalsAdmin(){
+  const box=document.getElementById('goalsAdminList'); if(!box) return;
+  if(!GOALS.length){ box.innerHTML='<p class="note">목표가 없어요. 위에서 추가해 주세요.</p>'; return; }
+  box.innerHTML=GOALS.map((g,i)=>`<div class="adm-row" data-id="${g.id}">`
+    +`<input type="checkbox" ${g.is_done?'checked':''} data-act="done" data-id="${g.id}">`
+    +`<span class="t ${g.is_done?'done':''}">${esc(g.text)}</span>${g.progress?`<span class="prog">${esc(g.progress)}</span>`:''}`
+    +`<span class="spacer"></span>`
+    +`<button class="mini" data-act="up" data-i="${i}">▲</button>`
+    +`<button class="mini" data-act="down" data-i="${i}">▼</button>`
+    +`<button class="mini" data-act="edit" data-id="${g.id}">✎</button>`
+    +`<button class="mini" data-act="del" data-id="${g.id}">🗑</button></div>`).join('');
+}
+async function saveGoalOrder(){ await Promise.all(GOALS.map((g,i)=>sb.from('profile_goals').update({ sort_order:i }).eq('id', g.id))); }
+document.getElementById('addGoalBtn').addEventListener('click', async ()=>{
+  const t=document.getElementById('goalText').value.trim(); if(!t) return alert('목표 내용을 입력하세요.');
+  const p=document.getElementById('goalProg').value.trim()||null;
+  const {error}=await sb.from('profile_goals').insert({ text:t, progress:p, sort_order:GOALS.length });
+  if(error) return alert(error.message);
+  document.getElementById('goalText').value=''; document.getElementById('goalProg').value=''; loadGoalsAdmin();
+});
+document.getElementById('goalsAdminList').addEventListener('click', async e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return; const act=b.dataset.act;
+  try{
+    if(act==='del'){ if(!confirm('이 목표를 삭제할까요?')) return; const {error}=await sb.from('profile_goals').delete().eq('id', b.dataset.id); if(error) return alert(error.message); loadGoalsAdmin(); }
+    else if(act==='edit'){ const g=GOALS.find(x=>String(x.id)===String(b.dataset.id)); const nt=prompt('목표 내용', g.text); if(nt===null) return; const np=prompt('진행도 (예: 14/20, 비우면 없음)', g.progress||''); const {error}=await sb.from('profile_goals').update({ text:(nt.trim()||g.text), progress:(np&&np.trim())?np.trim():null }).eq('id', g.id); if(error) return alert(error.message); loadGoalsAdmin(); }
+    else if(act==='up'||act==='down'){ const i=parseInt(b.dataset.i); const j=act==='up'?i-1:i+1; if(j<0||j>=GOALS.length) return; const a=[...GOALS]; [a[i],a[j]]=[a[j],a[i]]; GOALS=a; renderGoalsAdmin(); await saveGoalOrder(); }
+  }catch(err){ alert('오류: '+err.message); }
+});
+document.getElementById('goalsAdminList').addEventListener('change', async e=>{
+  const c=e.target.closest('input[type=checkbox][data-act="done"]'); if(!c) return;
+  const {error}=await sb.from('profile_goals').update({ is_done:c.checked }).eq('id', c.dataset.id);
+  if(error){ alert(error.message); c.checked=!c.checked; return; }
+  const g=GOALS.find(x=>String(x.id)===String(c.dataset.id)); if(g) g.is_done=c.checked; renderGoalsAdmin();
+});
+
+/* ---------------- 노래 클립 ---------------- */
+let CLIPS=[], _clipThumb='';
+async function loadClipsAdmin(){ const {data}=await sb.from('vod_clips').select('*').order('sort_order').order('created_at'); CLIPS=data||[]; renderClipsAdmin(); }
+function renderClipsAdmin(){
+  const box=document.getElementById('clipsAdminList'); if(!box) return;
+  if(!CLIPS.length){ box.innerHTML='<p class="note">등록된 클립이 없어요. 위에서 추가해 주세요.</p>'; return; }
+  box.innerHTML=CLIPS.map((v,i)=>`<div class="adm-row" data-id="${v.id}">`
+    +`<span class="num">${i+1}</span>`
+    +`<span class="t">${esc(v.title)}</span> <code>${esc(v.vod_id)}</code>`
+    +`<span class="spacer"></span>`
+    +`<button class="mini" data-act="up" data-i="${i}">▲</button>`
+    +`<button class="mini" data-act="down" data-i="${i}">▼</button>`
+    +`<button class="mini" data-act="edit" data-id="${v.id}">✎</button>`
+    +`<button class="mini" data-act="del" data-id="${v.id}">🗑</button></div>`).join('');
+}
+async function saveClipOrder(){ await Promise.all(CLIPS.map((v,i)=>sb.from('vod_clips').update({ sort_order:i }).eq('id', v.id))); }
+document.getElementById('clipPrevBtn').addEventListener('click', async ()=>{
+  const id=document.getElementById('clipVid').value.trim(); if(!id) return alert('VOD ID를 입력하세요.');
+  const pv=document.getElementById('clipPreview'); pv.style.display='block'; _clipThumb='';
+  pv.innerHTML='<div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;max-width:440px"><iframe src="https://vod.sooplive.com/player/'+id+'/embed?showChat=false&autoPlay=false&mutePlay=false" style="width:100%;height:100%;border:none" allowfullscreen></iframe></div><p class="note" id="clipThumbMsg" style="margin-top:8px">썸네일 감지 중…</p>';
+  try{ const res=await fetch('/api/soop-thumb?vod_id='+id); const j=await res.json(); const m=document.getElementById('clipThumbMsg'); if(j.thumb){ _clipThumb=j.thumb; m.textContent='✅ 썸네일 자동 감지됨'; } else { m.textContent='썸네일 자동 감지 안 됨 (등록은 가능, 수정에서 직접 입력)'; } }
+  catch(e){ const m=document.getElementById('clipThumbMsg'); if(m) m.textContent='썸네일 자동 감지는 배포 후 가능 (지금 등록해도 됨)'; }
+});
+document.getElementById('addClipBtn').addEventListener('click', async ()=>{
+  const title=document.getElementById('clipTitle').value.trim(), vid=document.getElementById('clipVid').value.trim();
+  if(!title||!vid) return alert('제목과 VOD ID를 입력하세요.');
+  const {error}=await sb.from('vod_clips').insert({ title, vod_id:vid, thumb_url:_clipThumb||null, sort_order:CLIPS.length });
+  if(error) return alert(error.message);
+  document.getElementById('clipTitle').value=''; document.getElementById('clipVid').value=''; document.getElementById('clipPreview').style.display='none'; document.getElementById('clipPreview').innerHTML=''; _clipThumb=''; loadClipsAdmin();
+});
+document.getElementById('clipsAdminList').addEventListener('click', async e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return; const act=b.dataset.act;
+  try{
+    if(act==='del'){ if(!confirm('이 클립을 삭제할까요?')) return; const {error}=await sb.from('vod_clips').delete().eq('id', b.dataset.id); if(error) return alert(error.message); loadClipsAdmin(); }
+    else if(act==='edit'){ const v=CLIPS.find(x=>String(x.id)===String(b.dataset.id)); const nt=prompt('클립 제목', v.title); if(nt===null) return; const nv=prompt('SOOP VOD ID', v.vod_id); if(nv===null) return; const th=prompt('썸네일 URL (비우면 자동/기본)', v.thumb_url||''); const {error}=await sb.from('vod_clips').update({ title:(nt.trim()||v.title), vod_id:(nv.trim()||v.vod_id), thumb_url:(th&&th.trim())?th.trim():null }).eq('id', v.id); if(error) return alert(error.message); loadClipsAdmin(); }
+    else if(act==='up'||act==='down'){ const i=parseInt(b.dataset.i); const j=act==='up'?i-1:i+1; if(j<0||j>=CLIPS.length) return; const a=[...CLIPS]; [a[i],a[j]]=[a[j],a[i]]; CLIPS=a; renderClipsAdmin(); await saveClipOrder(); }
+  }catch(err){ alert('오류: '+err.message); }
+});
+
 </script>
 </body>
 </html>

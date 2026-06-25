@@ -21,23 +21,44 @@
   .ilist li{font-size:1.14rem;display:flex;gap:14px;}
   .ilist b{font-family:'A2z',sans-serif;font-weight:600;color:var(--red);min-width:98px;font-size:1.04rem;}
   .ilist .empty{color:#c2a890;font-weight:400;}
-  .links{display:flex;gap:10px;flex-wrap:wrap;}
-  .lbtn{text-decoration:none;font-family:'A2z',sans-serif;font-weight:800;font-size:.97rem;color:#fff;background:var(--red);
-    border:3px solid #fff;border-radius:14px;padding:8px 15px;box-shadow:0 3px 0 var(--red-d);}
-  .lbtn.alt{background:#fff;color:var(--red-d);box-shadow:0 3px 0 rgba(208,109,34,.25);}
+  .lbtn{font-family:'A2z',sans-serif;font-weight:800;font-size:.97rem;color:#fff;background:var(--red);cursor:pointer;
+    border:3px solid #fff;border-radius:14px;padding:9px 16px;box-shadow:0 3px 0 var(--red-d);}
+  .lbtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--red-d);}
   .music-row{display:flex;flex-direction:column;align-items:flex-start;gap:13px;}
   .music-row .ilist{width:100%;min-width:0;}
-  /* 2컬럼 배치 */
-  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
+  /* 상단 2컬럼 (기본정보 | 방송+음악) */
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;margin-bottom:22px;}
   .info-grid .col{display:flex;flex-direction:column;gap:22px;min-width:0;}
   .info-grid .panel{margin-bottom:0;}
-  /* 올해의 목표 */
-  .goal-list{list-style:none;display:grid;gap:10px;}
-  .goal-list li{font-size:1.07rem;color:#5b463a;line-height:1.5;display:flex;gap:9px;align-items:baseline;}
-  .goal-list li::before{content:'♥';color:var(--hot);font-size:.82rem;flex:0 0 auto;}
+  /* 올해의 목표 — 풀폭 2열 + 완료 체크 */
+  .goal-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;}
+  .goal-list li{font-size:1.08rem;color:#5b463a;line-height:1.5;display:flex;gap:10px;align-items:baseline;}
+  .goal-list li::before{content:'○';color:var(--red);font-weight:800;font-size:.95rem;flex:0 0 auto;}
+  .goal-list li.done{color:#b6a496;}
+  .goal-list li.done::before{content:'✓';color:var(--hot);}
+  .goal-list li.done .gtxt{text-decoration:line-through;text-decoration-color:rgba(182,164,150,.75);}
   .goal-list .prog{margin-left:7px;font-weight:800;color:#fff;background:var(--hot);font-size:.85rem;padding:1px 10px;border-radius:20px;white-space:nowrap;}
-  @media (max-width:680px){ .info-grid{grid-template-columns:1fr;} .hname{font-size:3.4rem;} }
-  @media (max-width:560px){ .hname{font-size:3.4rem;} }
+  /* 노래 클립 모달 (840px) */
+  .clip-bg{position:fixed;inset:0;background:rgba(70,52,42,.42);z-index:200;display:none;}
+  .clip-bg.show{display:block;}
+  .clip-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(840px,94vw);max-height:90vh;overflow:auto;
+    background:var(--cream);border:3px solid var(--red);border-radius:22px;box-shadow:0 14px 40px rgba(208,109,34,.3);padding:24px;}
+  .clip-modal h3{font-family:'A2z',sans-serif;font-weight:800;font-size:1.5rem;color:var(--red-d);margin-bottom:16px;}
+  .clip-close{float:right;font-family:'A2z',sans-serif;font-weight:800;font-size:1.3rem;cursor:pointer;background:var(--red);color:#fff;
+    border:3px solid #fff;border-radius:11px;width:38px;height:38px;line-height:1;box-shadow:0 2px 0 var(--red-d);}
+  .vod-player{border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-bottom:14px;}
+  .vod-player iframe{width:100%;height:100%;border:none;display:block;}
+  .vod-empty{display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;background:#fff;border:2px dashed var(--pink);
+    border-radius:14px;color:#b08b6e;font-weight:700;font-size:1.05rem;}
+  .vod-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .vod-thumb{position:relative;border-radius:11px;overflow:hidden;cursor:pointer;border:3px solid transparent;background:#000;aspect-ratio:16/9;transition:transform .15s;}
+  .vod-thumb:hover{transform:translateY(-2px);}
+  .vod-thumb.active{border-color:var(--red);box-shadow:0 4px 14px rgba(239,138,60,.45);}
+  .vod-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+  .vod-thumb-bg{width:100%;height:100%;background:linear-gradient(135deg,var(--pink),var(--pink-l));display:flex;align-items:center;justify-content:center;font-size:26px;}
+  .vod-thumb-title{position:absolute;bottom:0;left:0;right:0;padding:7px 9px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff;font-size:.72rem;font-weight:700;line-height:1.3;}
+  @media (max-width:680px){ .info-grid{grid-template-columns:1fr;} .goal-list{grid-template-columns:1fr;} .hname{font-size:3.4rem;} }
+  @media (max-width:560px){ .vod-list{grid-template-columns:repeat(2,1fr);} .hname{font-size:3.4rem;} }
 </style>
 </head>
 <body>
@@ -57,6 +78,16 @@
   <div id="pubview"></div>
 </div>
 
+<!-- 노래 클립 모달 -->
+<div class="clip-bg" id="clipModal">
+  <div class="clip-modal">
+    <button class="clip-close" onclick="closeClips()">×</button>
+    <h3>🎧 노래 클립</h3>
+    <div class="vod-player" id="vodPlayer"></div>
+    <div class="vod-list" id="vodList"></div>
+  </div>
+</div>
+
 <footer class="foot">
   <div class="h">© 2026 히라 · 꾸이단 💗</div>
 </footer>
@@ -64,7 +95,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/supabase-config.js"></script>
 <script>
-// site_settings 없거나 로드 실패 시 폴백 기본값
 const DEFAULTS={
   name:'히라', reading:'ヒラ · HIRA',
   bio:'기미라다. 8시에 온다. 쓰껄하러 와라.',
@@ -75,17 +105,28 @@ const DEFAULTS={
   likes:'', dislikes:'',
   channel:'https://www.sooplive.com/station/sjsr4611',
   youtube:'https://www.youtube.com/@%EC%9A%B0%EC%A3%BC%EC%B1%84%EA%B0%95%ED%9E%88%EB%9D%BC',
-  cafe:'https://cafe.naver.com/hirarara',
-  songclip:'https://vod.sooplive.com/player/189985747'
+  cafe:'https://cafe.naver.com/hirarara'
 };
+const DEFAULT_GOALS=[
+  {text:'애청자 4000 찍기'},{text:'OGQ 등록'},{text:'오리지널 헤어 · 의상 내기'},{text:'대학 졸업'},
+  {text:'적금 70 넣기'},{text:'개인 커버곡 2개'},{text:'힙합 페스티벌 1개 보러가기'},{text:'영어권 나라 여행하기'},
+  {text:'굿즈 만들기 (키캡 · 티셔츠 · 키링)'},{text:'건강검진 하기'},{text:'꾸이랑 오래오래 성장하기'},{text:'2주년 컨텐츠 챙기기'},
+  {text:'두쫀쿠 20개 먹기',progress:'14/20'},{text:'자립 준비'}
+];
+let goalsData=null;
+let vodData=[], vodLoaded=false;
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function row(label,val,settable){
+function row(label,val){
   const empty=!val||!String(val).trim();
   const v=empty?'<span class="empty">아직 미설정</span>':esc(val);
   return `<li><b>${label}</b><span>${v}</span></li>`;
 }
+function renderGoals(){
+  const box=document.getElementById('goalsBox'); if(!box) return;
+  const G=(goalsData&&goalsData.length)?goalsData:DEFAULT_GOALS;
+  box.innerHTML=G.map(g=>`<li class="${g.is_done?'done':''}"><span class="gtxt">${esc(g.text)}</span>${g.progress?`<span class="prog">${esc(g.progress)}</span>`:''}</li>`).join('');
+}
 function renderPublic(S){
-  // 2컬럼: 좌(기본정보+올해의 목표) / 우(방송+음악+좋아하는것)
   document.getElementById('pubview').innerHTML=`
   <div class="hero">
     <div class="hname">${esc(S.name)}</div>
@@ -99,22 +140,6 @@ function renderPublic(S){
         ${row('생일',S.birthday)}${row('데뷔일',S.debut)}${row('MBTI',S.mbti)}${row('성별',S.gender)}
         ${row('성격',S.personality)}${row('소속',S.agency)}${row('팬덤',S.fandom)}
       </ul></section>
-      <section class="panel"><h2>🎯 2026 히라 목표</h2><ul class="goal-list">
-        <li>애청자 4000 찍기</li>
-        <li>OGQ 등록</li>
-        <li>오리지널 헤어 · 의상 내기</li>
-        <li>대학 졸업</li>
-        <li>적금 70 넣기</li>
-        <li>개인 커버곡 2개</li>
-        <li>힙합 페스티벌 1개 보러가기</li>
-        <li>영어권 나라 여행하기</li>
-        <li>굿즈 만들기 (키캡 · 티셔츠 · 키링)</li>
-        <li>건강검진 하기</li>
-        <li>꾸이랑 오래오래 성장하기</li>
-        <li>2주년 컨텐츠 챙기기</li>
-        <li>두쫀쿠 20개 먹기 <span class="prog">14 / 20</span></li>
-        <li>자립 준비</li>
-      </ul></section>
     </div>
     <div class="col">
       <section class="panel"><h2>📺 방송</h2><ul class="ilist">
@@ -123,27 +148,62 @@ function renderPublic(S){
       <section class="panel"><h2>🎵 음악</h2>
         <div class="music-row">
           <ul class="ilist">${row('장르',S.music)}</ul>
-          ${S.songclip?`<a class="lbtn" href="${esc(S.songclip)}" target="_blank" rel="noopener">🎧 노래 클립 보기</a>`:''}
+          <button class="lbtn" type="button" onclick="openClips()">🎧 노래 클립 보기</button>
         </div>
       </section>
-      <section class="panel"><h2>💗 좋아하는 것 · 싫어하는 것</h2><ul class="ilist">
-        ${row('좋아하는 것',S.likes)}${row('싫어하는 것',S.dislikes)}
-      </ul></section>
     </div>
-  </div>`;
+  </div>
+  <section class="panel"><h2>💗 좋아하는 것 · 싫어하는 것</h2><ul class="ilist">
+    ${row('좋아하는 것',S.likes)}${row('싫어하는 것',S.dislikes)}
+  </ul></section>
+  <section class="panel"><h2>🎯 2026 히라 목표</h2><ul class="goal-list" id="goalsBox"></ul></section>`;
+  renderGoals();
 }
+/* ── 노래 클립 ── */
+function thumbHtml(v){
+  if(v.thumb_url) return `<img src="${esc(v.thumb_url)}" alt="${esc(v.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'vod-thumb-bg',textContent:'▶'}))">`;
+  return `<div class="vod-thumb-bg">▶</div>`;
+}
+function clipFrame(id){ return `<iframe src="https://vod.sooplive.com/player/${esc(id)}/embed?showChat=false&autoPlay=false&mutePlay=false" allowfullscreen allow="clipboard-write; web-share;"></iframe>`; }
+function renderVod(){
+  const player=document.getElementById('vodPlayer'), list=document.getElementById('vodList');
+  if(!vodData.length){ player.innerHTML='<div class="vod-empty">등록된 노래 클립이 없어요 🍑</div>'; list.innerHTML=''; return; }
+  player.innerHTML=clipFrame(vodData[0].vod_id);
+  list.innerHTML=vodData.map((v,i)=>`<div class="vod-thumb${i===0?' active':''}" data-idx="${i}" onclick="switchVod(${i})">${thumbHtml(v)}<div class="vod-thumb-title">${esc(v.title)}</div></div>`).join('');
+}
+function switchVod(i){
+  const v=vodData[i]; if(!v) return;
+  document.getElementById('vodPlayer').innerHTML=clipFrame(v.vod_id);
+  document.querySelectorAll('.vod-thumb').forEach(t=>t.classList.remove('active'));
+  const el=document.querySelector(`.vod-thumb[data-idx="${i}"]`); if(el) el.classList.add('active');
+}
+async function openClips(){
+  document.getElementById('clipModal').classList.add('show');
+  if(!vodLoaded){
+    try{ const sb=initSupabase(); if(sb){ const {data,error}=await sb.from('vod_clips').select('*').order('sort_order').order('created_at'); if(!error) vodData=data||[]; } }catch(e){}
+    vodLoaded=true;
+  }
+  renderVod();
+}
+function closeClips(){ document.getElementById('clipModal').classList.remove('show'); document.getElementById('vodPlayer').innerHTML=''; }
+document.getElementById('clipModal').addEventListener('click', e=>{ if(e.target.id==='clipModal') closeClips(); });
+
 async function load(){
   let S=Object.assign({},DEFAULTS);
   try{
     const sb=initSupabase();
     if(sb){
-      const {data,error}=await sb.from('site_settings').select('key,value');
-      if(!error && data){ data.forEach(r=>{ if(r.value!=null) S[r.key]=r.value; }); }
+      const [st,g]=await Promise.all([
+        sb.from('site_settings').select('key,value'),
+        sb.from('profile_goals').select('*').order('sort_order')
+      ]);
+      if(!st.error && st.data){ st.data.forEach(r=>{ if(r.value!=null) S[r.key]=r.value; }); }
+      if(!g.error && g.data){ goalsData=g.data; }
     }
   }catch(e){ /* 폴백 유지 */ }
   renderPublic(S);
 }
-renderPublic(DEFAULTS); // 즉시 기본값으로 1차 렌더(깜빡임 방지)
+renderPublic(DEFAULTS); // 즉시 기본값 1차 렌더(깜빡임 방지)
 load();                 // Supabase 값으로 갱신
 </script>
 </body>

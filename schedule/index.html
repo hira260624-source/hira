@@ -73,10 +73,11 @@
   .empty-state .emoji{font-size:2rem;margin-bottom:6px;display:block;}
 
   /* 날짜 모달 */
-  .day-modal-bg{position:fixed;inset:0;background:rgba(70,52,42,.32);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;}
-  .day-modal-bg.show{display:flex;}
+  .day-modal-bg{position:fixed;inset:0;background:rgba(70,52,42,.32);z-index:100;display:none;}
+  .day-modal-bg.show{display:block;}
   .day-modal{background:#fff;border:3px solid var(--red);border-radius:20px;box-shadow:0 10px 28px rgba(208,109,34,.25);
-    width:100%;max-width:420px;max-height:80vh;overflow:auto;padding:22px;}
+    position:fixed;top:400px;left:50%;transform:translateX(-50%);
+    width:min(420px,92vw);max-height:calc(100vh - 440px);overflow:auto;padding:22px;}
   .day-modal h3{font-family:'A2z',sans-serif;font-weight:800;font-size:1.4rem;color:var(--red-d);margin-bottom:14px;}
   .day-modal-close{float:right;font-family:'A2z',sans-serif;font-weight:800;font-size:1.2rem;cursor:pointer;background:var(--red);
     color:#fff;border:3px solid #fff;border-radius:10px;width:36px;height:36px;line-height:1;box-shadow:0 2px 0 var(--red-d);}

@@ -136,3 +136,53 @@ drop policy if exists "public read schedule" on public.schedule_events;
 drop policy if exists "auth all schedule"  on public.schedule_events;
 create policy "public read schedule" on public.schedule_events for select using (is_hidden = false);
 create policy "auth all schedule"  on public.schedule_events for all to authenticated using (true) with check (true);
+
+-- ───────── 프로필: 올해의 목표 (체크/완료 관리) ─────────
+create table if not exists public.profile_goals (
+  id         uuid default gen_random_uuid() primary key,
+  text       text not null,
+  is_done    boolean default false,
+  progress   text,                    -- 예: "14/20" (선택)
+  sort_order int default 0,
+  created_at timestamptz default now()
+);
+alter table public.profile_goals enable row level security;
+drop policy if exists "public read goals" on public.profile_goals;
+drop policy if exists "auth write goals"  on public.profile_goals;
+create policy "public read goals" on public.profile_goals for select using (true);
+create policy "auth write goals"  on public.profile_goals for all to authenticated using (true) with check (true);
+
+-- 기본 목표 14개 시드(비었을 때만)
+insert into public.profile_goals (text, progress, sort_order)
+select v.t, v.p, v.o from (values
+  ('애청자 4000 찍기', null::text, 0),
+  ('OGQ 등록', null, 1),
+  ('오리지널 헤어 · 의상 내기', null, 2),
+  ('대학 졸업', null, 3),
+  ('적금 70 넣기', null, 4),
+  ('개인 커버곡 2개', null, 5),
+  ('힙합 페스티벌 1개 보러가기', null, 6),
+  ('영어권 나라 여행하기', null, 7),
+  ('굿즈 만들기 (키캡 · 티셔츠 · 키링)', null, 8),
+  ('건강검진 하기', null, 9),
+  ('꾸이랑 오래오래 성장하기', null, 10),
+  ('2주년 컨텐츠 챙기기', null, 11),
+  ('두쫀쿠 20개 먹기', '14/20', 12),
+  ('자립 준비', null, 13)
+) as v(t,p,o)
+where not exists (select 1 from public.profile_goals);
+
+-- ───────── 프로필: 노래 클립 (VOD · 아란 기준) ─────────
+create table if not exists public.vod_clips (
+  id         uuid default gen_random_uuid() primary key,
+  title      text not null,
+  vod_id     text not null,           -- SOOP VOD ID (embed URL용)
+  thumb_url  text,
+  sort_order int default 0,
+  created_at timestamptz default now()
+);
+alter table public.vod_clips enable row level security;
+drop policy if exists "public read vod_clips" on public.vod_clips;
+drop policy if exists "auth all vod_clips"    on public.vod_clips;
+create policy "public read vod_clips" on public.vod_clips for select using (true);
+create policy "auth all vod_clips"    on public.vod_clips for all to authenticated using (true) with check (true);
