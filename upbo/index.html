@@ -17,7 +17,7 @@
     cursor:pointer;border:2px solid var(--pink);color:var(--red-d);background:#fff;box-shadow:0 3px 0 rgba(208,109,34,.15);transition:transform .1s;}
   .season-tabs button.on{color:#fff;background:var(--red);border-color:var(--red);box-shadow:0 3px 0 var(--red-d);}
   .season-tabs button:active{transform:translateY(2px);}
-  .scroll{overflow-x:auto;border-radius:12px;}
+  .scroll{overflow:visible;border-radius:12px;}
   table{border-collapse:collapse;width:100%;font-size:.92rem;}
   th,td{padding:9px 11px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
   thead th{font-family:'A2z',sans-serif;font-weight:800;font-weight:400;color:var(--red-d);
@@ -31,6 +31,15 @@
   tbody tr:hover td{background:var(--cream);}
   tfoot td{border-top:2px solid var(--pink);border-bottom:none;font-weight:700;color:var(--red-d);background:#fffdf9;}
   .sw{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle;}
+  .ipbar{position:sticky;top:62px;z-index:30;display:flex;align-items:center;justify-content:center;gap:12px;
+    background:#fff;border:2px solid var(--pink);border-radius:12px;padding:7px 12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(208,109,34,.1);}
+  .ipbar button{font-family:'A2z';font-weight:800;font-size:.95rem;color:#fff;background:var(--red);border:2px solid #fff;
+    border-radius:9px;padding:5px 15px;cursor:pointer;box-shadow:0 2px 0 var(--red-d);}
+  .ipbar button:disabled{opacity:.38;cursor:default;box-shadow:none;}
+  .ipbar .ipinfo{font-family:'A2z';font-weight:800;color:var(--red-d);font-size:.95rem;min-width:120px;text-align:center;}
+  thead th{position:sticky;top:104px;background:#fff;z-index:20;box-shadow:inset 0 -2px 0 var(--pink);}
+  thead th.vn{z-index:21;}
+  th.ith{white-space:normal;line-height:1.18;min-width:54px;}
   .hint{font-size:.78rem;color:#b08b6e;margin-top:10px;}
 </style>
 </head>
@@ -51,8 +60,9 @@
   <div class="season-tabs" id="seasonTabs"></div>
   <input class="search" id="q" type="text" placeholder="🔎 시청자 검색…" />
   <section class="panel">
+    <div class="ipbar" id="itemBar"></div>
     <div class="scroll"><table id="tbl"></table></div>
-    <p class="hint">헤더 클릭 = 정렬 · 합계 기준 정렬 기본 · 모바일은 가로 스크롤.</p>
+    <p class="hint">헤더 클릭 = 정렬 · 합계 기준 정렬 기본 · 항목이 많으면 위 «이전/다음»으로 넘겨보세요.</p>
   </section>
 </div>
 
@@ -65,6 +75,7 @@
 <script>
 let DATA={types:[],viewers:[],seasons:[]};
 let curSeason=null;
+let itemPage=0; const PAGE_SIZE=6;
 let sortKey='__total', sortDir='desc';
 function curViewers(){ if(!DATA.seasons.length || !curSeason) return DATA.viewers; return DATA.viewers.filter(v=>String(v.season_id)===String(curSeason)); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -74,9 +85,22 @@ function rowTotal(v){ return DATA.types.reduce((s,t)=>s+getCount(v,t),0); }
 function colTotal(t){ return curViewers().reduce((s,v)=>s+getCount(v,t),0); }
 function grand(){ return curViewers().reduce((s,v)=>s+rowTotal(v),0); }
 
+function pageTypes(){ const st=itemPage*PAGE_SIZE; return DATA.types.slice(st, st+PAGE_SIZE); }
+function nPages(){ return Math.max(1, Math.ceil(DATA.types.length/PAGE_SIZE)); }
+function renderItemBar(){
+  const bar=document.getElementById('itemBar'); if(!bar) return;
+  if(DATA.types.length<=PAGE_SIZE){ bar.style.display='none'; return; }
+  bar.style.display='flex';
+  const s=itemPage*PAGE_SIZE+1, e=Math.min((itemPage+1)*PAGE_SIZE, DATA.types.length);
+  bar.innerHTML=`<button ${itemPage===0?'disabled':''} data-ip="prev">‹ 이전</button>`
+    +`<span class="ipinfo">항목 ${s}\u2013${e} / ${DATA.types.length}</span>`
+    +`<button ${itemPage>=nPages()-1?'disabled':''} data-ip="next">다음 ›</button>`;
+}
 function render(){
-  const T=DATA.types;
-  if(!T.length || !curViewers().length){
+  if(itemPage>=nPages()) itemPage=nPages()-1; if(itemPage<0) itemPage=0;
+  renderItemBar();
+  const T=pageTypes();
+  if(!DATA.types.length || !curViewers().length){
     document.getElementById('tbl').innerHTML=`<tbody><tr><td style="text-align:center;color:#b08b6e;padding:30px">아직 등록된 업보가 없어요 🍑</td></tr></tbody>`;
     return;
   }
@@ -91,7 +115,7 @@ function render(){
   });
   const cls=k=>'sortable'+(sortKey===k?(' '+sortDir):'');
   let h=`<thead><tr><th class="vn ${cls('__name')}" data-sort="__name">시청자</th>`;
-  T.forEach(t=>{ h+=`<th class="${cls(t.id)}" data-sort="${t.id}"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span>${esc(t.name)}</th>`; });
+  T.forEach(t=>{ h+=`<th class="ith ${cls(t.id)}" data-sort="${t.id}"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span>${esc(t.name)}</th>`; });
   h+=`<th class="${cls('__total')}" data-sort="__total">합계</th></tr></thead><tbody>`;
   if(!V.length){ h+=`<tr><td colspan="${T.length+2}" style="text-align:center;color:#b08b6e;padding:22px">검색 결과 없음</td></tr>`; }
   V.forEach(v=>{
@@ -123,6 +147,12 @@ document.getElementById('seasonTabs').addEventListener('click',e=>{
   const b=e.target.closest('button[data-sid]'); if(!b) return;
   curSeason=b.dataset.sid;
   document.querySelectorAll('#seasonTabs button').forEach(x=>x.classList.toggle('on', x.dataset.sid===curSeason));
+  render();
+});
+document.getElementById('itemBar').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-ip]'); if(!b) return;
+  if(b.dataset.ip==='prev' && itemPage>0) itemPage--;
+  else if(b.dataset.ip==='next' && itemPage<nPages()-1) itemPage++;
   render();
 });
 

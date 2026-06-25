@@ -63,22 +63,33 @@
   .adm-row code{background:var(--cream);padding:2px 8px;border-radius:7px;font-size:.85rem;color:var(--red-d);}
   .adm-row input[type=checkbox]{width:19px;height:19px;accent-color:var(--hot);cursor:pointer;flex:0 0 auto;}
   .scroll{overflow-x:auto;border-radius:12px;}
+  .ipbar{position:sticky;top:62px;z-index:30;display:flex;align-items:center;justify-content:center;gap:12px;
+    background:#fff;border:2px solid var(--pink);border-radius:12px;padding:7px 12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(208,109,34,.1);}
+  .ipbar button{font-family:'A2z';font-weight:800;font-size:.95rem;color:#fff;background:var(--red);border:2px solid #fff;
+    border-radius:9px;padding:5px 15px;cursor:pointer;box-shadow:0 2px 0 var(--red-d);}
+  .ipbar button:disabled{opacity:.38;cursor:default;box-shadow:none;}
+  .ipbar .ipinfo{font-family:'A2z';font-weight:800;color:var(--red-d);font-size:.95rem;min-width:120px;text-align:center;}
+  #upboGrid thead th{position:sticky;top:104px;background:#fff;z-index:20;box-shadow:inset 0 -2px 0 var(--pink);}
+  #upboGrid th,#upboGrid td{padding:8px 7px;}
   table{border-collapse:collapse;width:100%;font-size:1.05rem;}
   th,td{padding:13px 16px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
   thead th{font-family:'A2z',sans-serif;font-weight:800;font-weight:400;color:var(--red-d);
     border-bottom:2px solid var(--pink);font-size:1.08rem;}
   .vn,th.vn{text-align:left;font-weight:700;color:#5b463a;font-size:1.08rem;}
   tfoot td{border-top:2px solid var(--pink);border-bottom:none;font-weight:700;color:var(--red-d);background:#fffdf9;font-size:1.08rem;}
-  .th-type{display:flex;align-items:center;gap:7px;justify-content:center;}
-  .th-type .nm{font-family:'A2z',sans-serif;font-weight:800;font-size:1.08rem;}
+  .th-type{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .th-type .ctl{display:flex;gap:3px;}
+  .cmini{border:none;background:transparent;cursor:pointer;font-size:.95rem;opacity:.5;padding:0 2px;line-height:1;}
+  .cmini:hover{opacity:1;}
+  .th-type .nm{font-family:'A2z',sans-serif;font-weight:800;font-size:.95rem;text-align:center;line-height:1.15;white-space:normal;}
   .sw{width:15px;height:15px;border-radius:4px;flex:0 0 auto;}
   .mini{border:none;background:transparent;cursor:pointer;font-size:1.05rem;opacity:.55;padding:0 2px;}
   .mini:hover{opacity:1;}
-  .cc{display:inline-flex;align-items:center;gap:8px;}
+  .cc{display:inline-flex;align-items:center;gap:4px;}
   .cc button{width:30px;height:30px;border-radius:9px;border:2px solid var(--pink);background:var(--pink-l);
     color:var(--red-d);font-weight:900;cursor:pointer;line-height:1;font-size:1.2rem;}
   .cc button:hover{background:var(--pink);}
-  .cc .n{min-width:28px;text-align:center;font-weight:700;font-size:1.1rem;}
+  .cc .n{min-width:18px;text-align:center;font-weight:700;font-size:1.05rem;}
   .cc .n.zero{color:#cdbcae;font-weight:400;}
   .rowsum{text-align:center;color:var(--red);font-weight:700;font-size:1.08rem;}
 
@@ -158,8 +169,9 @@
         <button class="btn" id="addTypeBtn">+ 업보 종류</button>
         <button class="btn" id="addViewerBtn">+ 시청자</button>
       </div>
-      <div class="scroll"><table id="upboGrid"></table></div>
-      <p class="note">✎ 이름변경 · 🗑 삭제 · 셀 +/− 즉시 저장</p>
+      <div class="ipbar" id="upboItemBar"></div>
+      <div class="scroll" style="overflow:visible"><table id="upboGrid"></table></div>
+      <p class="note">◀▶ 컬럼 순서 · ✎ 이름변경 · 🗑 삭제 · 셀 +/− 즉시 저장 · 항목 많으면 위 «이전/다음»</p>
     </section>
   </div>
 
@@ -331,6 +343,7 @@ const DEF_TERMS=[
 ];
 let sb=null, U={types:[],viewers:[],seasons:[]};
 let curUpboSeason=null;
+let upboItemPage=0; const UPBO_PAGE=6;
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 // ---------------- 탭 ----------------
@@ -426,13 +439,26 @@ async function loadUpbo(){
   renderSeasonBar();
   renderUpbo();
 }
+function upboPageTypes(){ const st=upboItemPage*UPBO_PAGE; return U.types.slice(st, st+UPBO_PAGE); }
+function upboNPages(){ return Math.max(1, Math.ceil(U.types.length/UPBO_PAGE)); }
+function renderUpboItemBar(){
+  const bar=document.getElementById('upboItemBar'); if(!bar) return;
+  if(U.types.length<=UPBO_PAGE){ bar.style.display='none'; return; }
+  bar.style.display='flex';
+  const s=upboItemPage*UPBO_PAGE+1, e=Math.min((upboItemPage+1)*UPBO_PAGE, U.types.length);
+  bar.innerHTML=`<button ${upboItemPage===0?'disabled':''} data-uip="prev">‹ 이전</button>`
+    +`<span class="ipinfo">항목 ${s}\u2013${e} / ${U.types.length}</span>`
+    +`<button ${upboItemPage>=upboNPages()-1?'disabled':''} data-uip="next">다음 ›</button>`;
+}
 function renderUpbo(){
-  const T=U.types, V=curUV();
+  if(upboItemPage>=upboNPages()) upboItemPage=upboNPages()-1; if(upboItemPage<0) upboItemPage=0;
+  renderUpboItemBar();
+  const T=upboPageTypes(), V=curUV();
   let h='<thead><tr><th class="vn">시청자</th>';
-  T.forEach(t=>{
+  T.forEach((t,i)=>{ const gi=upboItemPage*UPBO_PAGE+i;
     h+=`<th><div class="th-type"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span><span class="nm">${esc(t.name)}</span>`
-      +`<button class="mini" data-act="rentype" data-id="${t.id}">✎</button>`
-      +`<button class="mini" data-act="deltype" data-id="${t.id}">🗑</button></div></th>`;
+      +`<div class="ctl"><button class="cmini" data-act="left" data-i="${gi}" title="왼쪽으로">◀</button><button class="cmini" data-act="right" data-i="${gi}" title="오른쪽으로">▶</button></div>`
+      +`<div class="ctl"><button class="cmini" data-act="rentype" data-id="${t.id}">✎</button><button class="cmini" data-act="deltype" data-id="${t.id}">🗑</button></div></div></th>`;
   });
   h+='<th>합계</th></tr></thead><tbody>';
   V.forEach(v=>{
@@ -473,6 +499,11 @@ document.getElementById('upboGrid').addEventListener('click', async e=>{
       if(!confirm('이 업보 종류를 삭제할까요?')) return;
       const { error } = await sb.from('upbo_types').delete().eq('id', b.dataset.id);
       if(error) return alert(error.message); loadUpbo();
+    } else if(act==='left'||act==='right'){
+      const i=parseInt(b.dataset.i); const j=act==='left'?i-1:i+1;
+      if(j<0||j>=U.types.length) return;
+      const arr=[...U.types]; [arr[i],arr[j]]=[arr[j],arr[i]]; U.types=arr; renderUpbo();
+      await Promise.all(U.types.map((t,k)=>sb.from('upbo_types').update({ sort_order:k }).eq('id', t.id)));
     } else if(act==='renviewer'){
       const v=U.viewers.find(x=>String(x.id)===String(b.dataset.id));
       const nv=prompt('시청자 닉네임', v.name); if(!nv||!nv.trim()) return;
@@ -537,6 +568,12 @@ document.getElementById('addTypeBtn').addEventListener('click', async ()=>{
   const n=prompt('새 업보 종류 이름 (예: 단컷방셀)'); if(!n||!n.trim()) return;
   const { error } = await sb.from('upbo_types').insert({ name:n.trim(), color:PALETTE[U.types.length%PALETTE.length], sort_order:U.types.length });
   if(error) return alert(error.message); loadUpbo();
+});
+document.getElementById('upboItemBar').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-uip]'); if(!b) return;
+  if(b.dataset.uip==='prev' && upboItemPage>0) upboItemPage--;
+  else if(b.dataset.uip==='next' && upboItemPage<upboNPages()-1) upboItemPage++;
+  renderUpbo();
 });
 document.getElementById('addViewerBtn').addEventListener('click', async ()=>{
   if(U.seasons.length && !curUpboSeason){ return alert('먼저 시즌을 선택하세요.'); }
