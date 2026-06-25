@@ -25,9 +25,18 @@
   .lbtn{text-decoration:none;font-family:'A2z',sans-serif;font-weight:800;font-size:.97rem;color:#fff;background:var(--red);
     border:3px solid #fff;border-radius:14px;padding:8px 15px;box-shadow:0 3px 0 var(--red-d);}
   .lbtn.alt{background:#fff;color:var(--red-d);box-shadow:0 3px 0 rgba(208,109,34,.25);}
-  .music-row{display:flex;align-items:center;gap:16px;}
-  .music-row .ilist{flex:1;min-width:0;}
-  .music-row .lbtn{flex:0 0 auto;white-space:nowrap;}
+  .music-row{display:flex;flex-direction:column;align-items:flex-start;gap:13px;}
+  .music-row .ilist{width:100%;min-width:0;}
+  /* 2컬럼 배치 */
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
+  .info-grid .col{display:flex;flex-direction:column;gap:22px;min-width:0;}
+  .info-grid .panel{margin-bottom:0;}
+  /* 올해의 목표 */
+  .goal-list{list-style:none;display:grid;gap:10px;}
+  .goal-list li{font-size:1.07rem;color:#5b463a;line-height:1.5;display:flex;gap:9px;align-items:baseline;}
+  .goal-list li::before{content:'♥';color:var(--hot);font-size:.82rem;flex:0 0 auto;}
+  .goal-list .prog{margin-left:7px;font-weight:800;color:#fff;background:var(--hot);font-size:.85rem;padding:1px 10px;border-radius:20px;white-space:nowrap;}
+  @media (max-width:680px){ .info-grid{grid-template-columns:1fr;} .hname{font-size:3.4rem;} }
   @media (max-width:560px){ .hname{font-size:3.4rem;} }
 </style>
 </head>
@@ -76,6 +85,7 @@ function row(label,val,settable){
   return `<li><b>${label}</b><span>${v}</span></li>`;
 }
 function renderPublic(S){
+  // 2컬럼: 좌(기본정보+올해의 목표) / 우(방송+음악+좋아하는것)
   document.getElementById('pubview').innerHTML=`
   <div class="hero">
     <div class="hname">${esc(S.name)}</div>
@@ -83,22 +93,44 @@ function renderPublic(S){
     <div class="hbio">${esc(S.bio)}</div>
     ${S.channel?`<a class="hbtn" href="${esc(S.channel)}" target="_blank" rel="noopener">🎬 방송국 바로가기</a>`:''}
   </div>
-  <section class="panel"><h2>📇 기본 정보</h2><ul class="ilist">
-    ${row('생일',S.birthday)}${row('데뷔일',S.debut)}${row('MBTI',S.mbti)}${row('성별',S.gender)}
-    ${row('성격',S.personality)}${row('소속',S.agency)}${row('팬덤',S.fandom)}
-  </ul></section>
-  <section class="panel"><h2>📺 방송</h2><ul class="ilist">
-    ${row('방송 시간',S.schedule)}${row('콘텐츠',S.content)}${row('게임',S.games)}
-  </ul></section>
-  <section class="panel"><h2>🎵 음악</h2>
-    <div class="music-row">
-      <ul class="ilist">${row('장르',S.music)}</ul>
-      ${S.songclip?`<a class="lbtn" href="${esc(S.songclip)}" target="_blank" rel="noopener">🎧 노래 클립 보기</a>`:''}
+  <div class="info-grid">
+    <div class="col">
+      <section class="panel"><h2>📇 기본 정보</h2><ul class="ilist">
+        ${row('생일',S.birthday)}${row('데뷔일',S.debut)}${row('MBTI',S.mbti)}${row('성별',S.gender)}
+        ${row('성격',S.personality)}${row('소속',S.agency)}${row('팬덤',S.fandom)}
+      </ul></section>
+      <section class="panel"><h2>🎯 2026 히라 목표</h2><ul class="goal-list">
+        <li>애청자 4000 찍기</li>
+        <li>OGQ 등록</li>
+        <li>오리지널 헤어 · 의상 내기</li>
+        <li>대학 졸업</li>
+        <li>적금 70 넣기</li>
+        <li>개인 커버곡 2개</li>
+        <li>힙합 페스티벌 1개 보러가기</li>
+        <li>영어권 나라 여행하기</li>
+        <li>굿즈 만들기 (키캡 · 티셔츠 · 키링)</li>
+        <li>건강검진 하기</li>
+        <li>꾸이랑 오래오래 성장하기</li>
+        <li>2주년 컨텐츠 챙기기</li>
+        <li>두쫀쿠 20개 먹기 <span class="prog">14 / 20</span></li>
+        <li>자립 준비</li>
+      </ul></section>
     </div>
-  </section>
-  <section class="panel"><h2>💗 좋아하는 것 · 싫어하는 것</h2><ul class="ilist">
-    ${row('좋아하는 것',S.likes)}${row('싫어하는 것',S.dislikes)}
-  </ul></section>`;
+    <div class="col">
+      <section class="panel"><h2>📺 방송</h2><ul class="ilist">
+        ${row('방송 시간',S.schedule)}${row('콘텐츠',S.content)}${row('게임',S.games)}
+      </ul></section>
+      <section class="panel"><h2>🎵 음악</h2>
+        <div class="music-row">
+          <ul class="ilist">${row('장르',S.music)}</ul>
+          ${S.songclip?`<a class="lbtn" href="${esc(S.songclip)}" target="_blank" rel="noopener">🎧 노래 클립 보기</a>`:''}
+        </div>
+      </section>
+      <section class="panel"><h2>💗 좋아하는 것 · 싫어하는 것</h2><ul class="ilist">
+        ${row('좋아하는 것',S.likes)}${row('싫어하는 것',S.dislikes)}
+      </ul></section>
+    </div>
+  </div>`;
 }
 async function load(){
   let S=Object.assign({},DEFAULTS);
