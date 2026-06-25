@@ -12,6 +12,11 @@
   .search{width:100%;max-width:280px;padding:9px 14px;border:2.5px solid var(--pink);border-radius:14px;
     font-family:'A2z';font-size:.9rem;color:var(--ink);background:var(--cream);margin-bottom:14px;}
   .search:focus{outline:none;border-color:var(--red);}
+  .season-tabs{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px;}
+  .season-tabs button{padding:8px 20px;border-radius:13px;font-family:'A2z',sans-serif;font-size:.96rem;font-weight:800;
+    cursor:pointer;border:2px solid var(--pink);color:var(--red-d);background:#fff;box-shadow:0 3px 0 rgba(208,109,34,.15);transition:transform .1s;}
+  .season-tabs button.on{color:#fff;background:var(--red);border-color:var(--red);box-shadow:0 3px 0 var(--red-d);}
+  .season-tabs button:active{transform:translateY(2px);}
   .scroll{overflow-x:auto;border-radius:12px;}
   table{border-collapse:collapse;width:100%;font-size:.92rem;}
   th,td{padding:9px 11px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
@@ -43,6 +48,7 @@
 
 <div class="page">
   <div class="phead"><span class="kr">업보</span><span class="en">HOMEWORK</span></div>
+  <div class="season-tabs" id="seasonTabs"></div>
   <input class="search" id="q" type="text" placeholder="🔎 시청자 검색…" />
   <section class="panel">
     <div class="scroll"><table id="tbl"></table></div>
@@ -57,23 +63,25 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/supabase-config.js"></script>
 <script>
-let DATA={types:[],viewers:[]};
+let DATA={types:[],viewers:[],seasons:[]};
+let curSeason=null;
 let sortKey='__total', sortDir='desc';
+function curViewers(){ if(!DATA.seasons.length || !curSeason) return DATA.viewers; return DATA.viewers.filter(v=>String(v.season_id)===String(curSeason)); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function hexA(hex,a){ if(!hex) return 'transparent'; const m=hex.replace('#',''); const r=parseInt(m.slice(0,2),16),g=parseInt(m.slice(2,4),16),b=parseInt(m.slice(4,6),16); return `rgba(${r},${g},${b},${a})`; }
 function getCount(v,t){ const n=v.counts?v.counts[String(t.id)]:0; return n?Number(n):0; }
 function rowTotal(v){ return DATA.types.reduce((s,t)=>s+getCount(v,t),0); }
-function colTotal(t){ return DATA.viewers.reduce((s,v)=>s+getCount(v,t),0); }
-function grand(){ return DATA.viewers.reduce((s,v)=>s+rowTotal(v),0); }
+function colTotal(t){ return curViewers().reduce((s,v)=>s+getCount(v,t),0); }
+function grand(){ return curViewers().reduce((s,v)=>s+rowTotal(v),0); }
 
 function render(){
   const T=DATA.types;
-  if(!T.length || !DATA.viewers.length){
+  if(!T.length || !curViewers().length){
     document.getElementById('tbl').innerHTML=`<tbody><tr><td style="text-align:center;color:#b08b6e;padding:30px">아직 등록된 업보가 없어요 🍑</td></tr></tbody>`;
     return;
   }
   const q=(document.getElementById('q').value||'').trim().toLowerCase();
-  let V=DATA.viewers.filter(v=>!q || (v.name||'').toLowerCase().includes(q));
+  let V=curViewers().filter(v=>!q || (v.name||'').toLowerCase().includes(q));
   V=V.slice().sort((a,b)=>{
     if(sortKey==='__name'){ return sortDir==='asc'?(a.name||'').localeCompare(b.name||''):(b.name||'').localeCompare(a.name||''); }
     let av,bv;
@@ -105,15 +113,32 @@ document.getElementById('tbl').addEventListener('click',e=>{
 });
 document.getElementById('q').addEventListener('input',render);
 
+function renderSeasonTabs(){
+  const wrap=document.getElementById('seasonTabs'); if(!wrap) return;
+  if(DATA.seasons.length<=1){ wrap.style.display='none'; wrap.innerHTML=''; return; }
+  wrap.style.display='flex';
+  wrap.innerHTML=DATA.seasons.map(s=>`<button class="${String(s.id)===String(curSeason)?'on':''}" data-sid="${s.id}">${esc(s.name)}</button>`).join('');
+}
+document.getElementById('seasonTabs').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-sid]'); if(!b) return;
+  curSeason=b.dataset.sid;
+  document.querySelectorAll('#seasonTabs button').forEach(x=>x.classList.toggle('on', x.dataset.sid===curSeason));
+  render();
+});
+
 async function load(){
   try{
     const sb=initSupabase();
     if(sb){
-      const [t,v]=await Promise.all([
+      const [t,v,se]=await Promise.all([
         sb.from('upbo_types').select('*').order('sort_order'),
-        sb.from('upbo_viewers').select('*').order('sort_order')
+        sb.from('upbo_viewers').select('*').order('sort_order'),
+        sb.from('upbo_seasons').select('*').order('sort_order')
       ]);
-      if(!t.error && !v.error){ DATA={types:t.data||[], viewers:v.data||[]}; }
+      if(!t.error && !v.error){ DATA={types:t.data||[], viewers:v.data||[], seasons:(se&&!se.error?se.data:[])||[]}; }
+      const def=DATA.seasons.find(s=>s.is_active)||DATA.seasons[0]||null;
+      curSeason=def?def.id:null;
+      renderSeasonTabs();
     }
   }catch(e){ /* 빈 상태 안내 */ }
   render();

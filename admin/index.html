@@ -141,6 +141,7 @@
   <div class="pane" id="tab-upbo">
     <section class="panel">
       <div class="sec-title">🏆 업보 편집</div>
+      <div id="seasonBar" class="season-bar"></div>
       <div class="bar">
         <button class="btn" id="addTypeBtn">+ 업보 종류</button>
         <button class="btn" id="addViewerBtn">+ 시청자</button>
@@ -286,7 +287,8 @@ const DEF_TERMS=[
   {t:'다시보기', d:'지난 방송 VOD. 놓친 방송을 다시 시청.'},
   {t:'클립', d:'방송 중 짧게 잘라 공유하는 영상.'}
 ];
-let sb=null, U={types:[],viewers:[]};
+let sb=null, U={types:[],viewers:[],seasons:[]};
+let curUpboSeason=null;
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 // ---------------- 탭 ----------------
@@ -365,19 +367,25 @@ document.getElementById('saveGuideBtn').addEventListener('click', async ()=>{
 // ---------------- 업보 ----------------
 function getCount(v,tid){ const n=v.counts?v.counts[String(tid)]:0; return n?Number(n):0; }
 function rowTotal(v){ return U.types.reduce((s,t)=>s+getCount(v,t.id),0); }
-function colTotal(t){ return U.viewers.reduce((s,v)=>s+getCount(v,t.id),0); }
-function grand(){ return U.viewers.reduce((s,v)=>s+rowTotal(v),0); }
+function curUV(){ return curUpboSeason ? U.viewers.filter(v=>String(v.season_id)===String(curUpboSeason)) : U.viewers; }
+function colTotal(t){ return curUV().reduce((s,v)=>s+getCount(v,t.id),0); }
+function grand(){ return curUV().reduce((s,v)=>s+rowTotal(v),0); }
 
 async function loadUpbo(){
-  const [t,v]=await Promise.all([
+  const [t,v,se]=await Promise.all([
     sb.from('upbo_types').select('*').order('sort_order'),
-    sb.from('upbo_viewers').select('*').order('sort_order')
+    sb.from('upbo_viewers').select('*').order('sort_order'),
+    sb.from('upbo_seasons').select('*').order('sort_order')
   ]);
-  U={ types:t.data||[], viewers:v.data||[] };
+  U={ types:t.data||[], viewers:v.data||[], seasons:se.data||[] };
+  if(!curUpboSeason || !U.seasons.find(x=>String(x.id)===String(curUpboSeason))){
+    const def=U.seasons.find(x=>x.is_active)||U.seasons[0]||null; curUpboSeason=def?def.id:null;
+  }
+  renderSeasonBar();
   renderUpbo();
 }
 function renderUpbo(){
-  const T=U.types, V=U.viewers;
+  const T=U.types, V=curUV();
   let h='<thead><tr><th class="vn">시청자</th>';
   T.forEach(t=>{
     h+=`<th><div class="th-type"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span><span class="nm">${esc(t.name)}</span>`
@@ -435,14 +443,63 @@ document.getElementById('upboGrid').addEventListener('click', async e=>{
     }
   }catch(err){ alert('오류: '+err.message); }
 });
+const S_ON='padding:7px 17px;border-radius:11px;font-family:inherit;font-weight:800;font-size:.92rem;cursor:pointer;border:2px solid var(--red);color:#fff;background:var(--red);';
+const S_OFF='padding:7px 17px;border-radius:11px;font-family:inherit;font-weight:700;font-size:.92rem;cursor:pointer;border:2px solid var(--pink);color:var(--red-d);background:#fff;';
+function renderSeasonBar(){
+  const wrap=document.getElementById('seasonBar'); if(!wrap) return;
+  let h='<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px">';
+  U.seasons.forEach(x=>{ const on=String(x.id)===String(curUpboSeason); const star=x.is_active?' \u2605':'';
+    h+=`<button style="${on?S_ON:S_OFF}" data-sact="pick" data-id="${x.id}">${esc(x.name)}${star}</button>`; });
+  h+='<button class="btn" data-sact="add">+ \uC2DC\uC98C</button></div>';
+  if(curUpboSeason){
+    h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px">'
+      +'<button class="btn" data-sact="activate">\u2B50 \uACF5\uAC1C \uAE30\uBCF8\uC73C\uB85C</button>'
+      +'<button class="btn" data-sact="rename">\u270E \uC774\uB984\uBCC0\uACBD</button>'
+      +'<button class="btn" data-sact="delete">\uD83D\uDDD1 \uC2DC\uC98C \uC0AD\uC81C</button></div>';
+  } else {
+    h+='<p class="note">\uC2DC\uC98C\uC744 \uCD94\uAC00\uD558\uBA74 \uC6D4\uBCC4\uB85C \uC2DC\uCCAD\uC790/\uC5C5\uBCF4\uB97C \uB098\uB220 \uAD00\uB9AC\uD560 \uC218 \uC788\uC5B4\uC694.</p>';
+  }
+  wrap.innerHTML=h;
+}
+document.getElementById('seasonBar').addEventListener('click', async e=>{
+  const b=e.target.closest('[data-sact]'); if(!b) return; const act=b.dataset.sact;
+  try{
+    if(act==='pick'){ curUpboSeason=b.dataset.id; renderSeasonBar(); renderUpbo(); return; }
+    if(act==='add'){
+      const n=prompt('\uC2DC\uC98C \uC774\uB984 (\uC608: 2026\uB144 7\uC6D4)'); if(!n||!n.trim()) return;
+      const first=U.seasons.length===0;
+      const { data, error } = await sb.from('upbo_seasons').insert({ name:n.trim(), sort_order:U.seasons.length, is_active:first }).select().single();
+      if(error) return alert(error.message);
+      curUpboSeason=data?data.id:curUpboSeason; await loadUpbo(); return;
+    }
+    if(!curUpboSeason) return;
+    if(act==='activate'){
+      await sb.from('upbo_seasons').update({ is_active:false }).in('id', U.seasons.map(x=>x.id));
+      const { error } = await sb.from('upbo_seasons').update({ is_active:true }).eq('id', curUpboSeason);
+      if(error) return alert(error.message); await loadUpbo(); return;
+    }
+    if(act==='rename'){
+      const ss=U.seasons.find(x=>String(x.id)===String(curUpboSeason));
+      const nv=prompt('\uC2DC\uC98C \uC774\uB984', ss?ss.name:''); if(!nv||!nv.trim()) return;
+      const { error } = await sb.from('upbo_seasons').update({ name:nv.trim() }).eq('id', curUpboSeason);
+      if(error) return alert(error.message); await loadUpbo(); return;
+    }
+    if(act==='delete'){
+      if(!confirm('\uC774 \uC2DC\uC98C\uACFC \uD574\uB2F9 \uC6D4\uC758 \uC2DC\uCCAD\uC790/\uC5C5\uBCF4\uAC00 \uBAA8\uB450 \uC0AD\uC81C\uB429\uB2C8\uB2E4. \uC9C4\uD589\uD560\uAE4C\uC694?')) return;
+      const { error } = await sb.from('upbo_seasons').delete().eq('id', curUpboSeason);
+      if(error) return alert(error.message); curUpboSeason=null; await loadUpbo(); return;
+    }
+  }catch(err){ alert('\uC624\uB958: '+err.message); }
+});
 document.getElementById('addTypeBtn').addEventListener('click', async ()=>{
   const n=prompt('새 업보 종류 이름 (예: 단컷방셀)'); if(!n||!n.trim()) return;
   const { error } = await sb.from('upbo_types').insert({ name:n.trim(), color:PALETTE[U.types.length%PALETTE.length], sort_order:U.types.length });
   if(error) return alert(error.message); loadUpbo();
 });
 document.getElementById('addViewerBtn').addEventListener('click', async ()=>{
+  if(U.seasons.length && !curUpboSeason){ return alert('먼저 시즌을 선택하세요.'); }
   const n=prompt('시청자 닉네임'); if(!n||!n.trim()) return;
-  const { error } = await sb.from('upbo_viewers').insert({ name:n.trim(), counts:{}, sort_order:U.viewers.length });
+  const { error } = await sb.from('upbo_viewers').insert({ name:n.trim(), counts:{}, sort_order:U.viewers.length, season_id: curUpboSeason });
   if(error) return alert(error.message); loadUpbo();
 });
 

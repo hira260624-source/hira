@@ -43,6 +43,35 @@ drop policy if exists "auth write viewers"  on public.upbo_viewers;
 create policy "public read viewers" on public.upbo_viewers for select using (true);
 create policy "auth write viewers"  on public.upbo_viewers for all to authenticated using (true) with check (true);
 
+-- ───────── 업보: 시즌(월별) ─────────
+create table if not exists public.upbo_seasons (
+  id         uuid default gen_random_uuid() primary key,
+  name       text not null,
+  sort_order int default 0,
+  is_active  boolean default false,
+  created_at timestamptz default now()
+);
+alter table public.upbo_seasons enable row level security;
+drop policy if exists "public read seasons" on public.upbo_seasons;
+drop policy if exists "auth write seasons"  on public.upbo_seasons;
+create policy "public read seasons" on public.upbo_seasons for select using (true);
+create policy "auth write seasons"  on public.upbo_seasons for all to authenticated using (true) with check (true);
+
+-- 시청자를 시즌에 연결 (시즌 삭제 시 해당 월 시청자도 삭제)
+alter table public.upbo_viewers add column if not exists season_id uuid references public.upbo_seasons(id) on delete cascade;
+create index if not exists idx_upbo_viewers_season on public.upbo_viewers(season_id);
+
+-- 기본 시즌 1개 시드(없을 때만)
+insert into public.upbo_seasons (name, sort_order, is_active)
+select '2026년 6월', 0, true
+where not exists (select 1 from public.upbo_seasons);
+
+-- 시즌 없는 기존 시청자를 첫 시즌으로 귀속(최초 1회)
+update public.upbo_viewers
+set season_id = (select id from public.upbo_seasons order by sort_order limit 1)
+where season_id is null;
+
+
 -- ───────── 프로필 기본값 시드 (인테이크) — 없을 때만 ─────────
 insert into public.site_settings (key, value) values
   ('name','히라'),
