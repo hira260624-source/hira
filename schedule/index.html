@@ -6,7 +6,7 @@
 <title>히라 · 일정</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Jua&family=Gothic+A1:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/common.css" />
 <style>
   /* 높이 컴팩트 (이 페이지 한정) */
@@ -16,12 +16,12 @@
   .phead{margin-bottom:18px;}
   /* 달력 */
   .cal-head{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:14px;}
-  .cal-nav{font-family:'Jua',sans-serif;font-size:1.3rem;cursor:pointer;color:#fff;background:var(--red);
+  .cal-nav{font-family:'A2z',sans-serif;font-weight:800;font-size:1.3rem;cursor:pointer;color:#fff;background:var(--red);
     border:3px solid #fff;border-radius:12px;width:44px;height:44px;box-shadow:0 3px 0 var(--red-d);line-height:1;}
   .cal-nav:active{transform:translateY(1px);}
-  .cal-label{font-family:'Jua',sans-serif;font-size:1.6rem;color:var(--red-d);min-width:170px;text-align:center;}
+  .cal-label{font-family:'A2z',sans-serif;font-weight:800;font-size:1.6rem;color:var(--red-d);min-width:170px;text-align:center;}
   .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
-  .cal-wd{text-align:center;font-family:'Jua',sans-serif;font-size:.98rem;color:#b08b6e;padding:3px 0;}
+  .cal-wd{text-align:center;font-family:'A2z',sans-serif;font-weight:800;font-size:.98rem;color:#b08b6e;padding:3px 0;}
   .cal-wd.sun{color:var(--hot);} .cal-wd.sat{color:#5a9bd4;}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
   .cal-cell{min-height:80px;border:2px solid var(--pink-l);border-radius:12px;padding:5px 6px;background:var(--cream);
@@ -30,7 +30,7 @@
   .cal-cell.has-ev{cursor:pointer;border-color:var(--pink);background:#fff;}
   .cal-cell.has-ev:hover{border-color:var(--red);transform:translateY(-2px);}
   .cal-cell.today{background:var(--pink-l);border-color:var(--red);}
-  .cal-daynum{font-family:'Jua',sans-serif;font-size:1.08rem;line-height:1;color:#5b463a;}
+  .cal-daynum{font-family:'A2z',sans-serif;font-weight:800;font-size:1.08rem;line-height:1;color:#5b463a;}
   .cal-daynum.sun{color:var(--hot);} .cal-daynum.sat{color:#5a9bd4;}
   .cal-cell.today .cal-daynum{color:var(--red-d);}
   .cal-ev{font-size:.8rem;background:#ffb3d1;border-radius:7px;padding:2px 7px;overflow:hidden;
@@ -47,7 +47,7 @@
   .lg i{width:14px;height:14px;border-radius:5px;display:inline-block;}
 
   /* 다가오는 일정 */
-  .sec-cnt{font-family:'Jua',sans-serif;font-size:.95rem;color:var(--red-d);background:var(--pink-l);
+  .sec-cnt{font-family:'A2z',sans-serif;font-weight:800;font-size:.95rem;color:var(--red-d);background:var(--pink-l);
     border:2px solid var(--pink);border-radius:13px;padding:1px 12px;margin-left:6px;}
   .up-card{display:flex;background:#fff;border:3px solid var(--red);border-radius:16px;
     box-shadow:0 4px 0 var(--red-d),0 8px 16px rgba(208,109,34,.12);margin-bottom:12px;overflow:hidden;}
@@ -55,17 +55,17 @@
   .up-date{flex-shrink:0;width:84px;background:var(--pink-l);display:flex;flex-direction:column;
     align-items:center;justify-content:center;padding:9px 6px;border-right:2.5px dashed var(--pink);line-height:1.05;}
   .up-card.is-today .up-date{background:#ffd9c9;}
-  .up-daynum{font-family:'Jua',sans-serif;font-size:2.05rem;line-height:1;color:var(--red);}
+  .up-daynum{font-family:'A2z',sans-serif;font-weight:800;font-size:2.05rem;line-height:1;color:var(--red);}
   .up-wd{font-family:'Anton',sans-serif;font-size:.7rem;color:#b08b6e;margin-top:4px;letter-spacing:.04em;}
   .up-wd.today{color:var(--hot);}
   .up-info{flex:1;min-width:0;display:grid;
     grid-template-columns:minmax(94px,0.7fr) minmax(0,2fr) minmax(0,1.5fr) minmax(80px,0.85fr);align-items:stretch;}
   .up-cell{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 10px;min-width:0;overflow:hidden;}
   .up-cell + .up-cell{border-left:2px dotted #4a3a3030;}
-  .up-time{font-family:'Jua',sans-serif;font-size:1.12rem;color:var(--red-d);white-space:nowrap;}
+  .up-time{font-family:'A2z',sans-serif;font-weight:800;font-size:1.12rem;color:var(--red-d);white-space:nowrap;}
   .up-title{font-weight:700;font-size:1.12rem;color:#5b463a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
   .up-desc{color:#b08b6e;font-size:.94rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
-  .up-tag{font-family:'Jua',sans-serif;font-size:.84rem;border-radius:12px;padding:3px 13px;white-space:nowrap;color:#4a3a30;}
+  .up-tag{font-family:'A2z',sans-serif;font-weight:800;font-size:.84rem;border-radius:12px;padding:3px 13px;white-space:nowrap;color:#4a3a30;}
   .up-card.anniv{animation:anniv-glow-card 1.6s ease-in-out infinite;}
   @keyframes anniv-glow-card{0%,100%{box-shadow:0 4px 0 var(--red-d),0 0 0 0 rgba(var(--glow-rgb,255,92,158),0);}
     50%{box-shadow:0 4px 0 var(--red-d),0 0 18px 5px rgba(var(--glow-rgb,255,92,158),.6);}}
@@ -77,8 +77,8 @@
   .day-modal-bg.show{display:flex;}
   .day-modal{background:#fff;border:3px solid var(--red);border-radius:20px;box-shadow:0 10px 28px rgba(208,109,34,.25);
     width:100%;max-width:420px;max-height:80vh;overflow:auto;padding:22px;}
-  .day-modal h3{font-family:'Jua',sans-serif;font-size:1.4rem;color:var(--red-d);margin-bottom:14px;}
-  .day-modal-close{float:right;font-family:'Jua',sans-serif;font-size:1.2rem;cursor:pointer;background:var(--red);
+  .day-modal h3{font-family:'A2z',sans-serif;font-weight:800;font-size:1.4rem;color:var(--red-d);margin-bottom:14px;}
+  .day-modal-close{float:right;font-family:'A2z',sans-serif;font-weight:800;font-size:1.2rem;cursor:pointer;background:var(--red);
     color:#fff;border:3px solid #fff;border-radius:10px;width:36px;height:36px;line-height:1;box-shadow:0 2px 0 var(--red-d);}
 </style>
 </head>

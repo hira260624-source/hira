@@ -6,20 +6,23 @@
 <title>히라 · 방송안내</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Gothic+A1:wght@400;500;600;700;800;900&family=Jua&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/common.css" />
 <style>
   .when{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--pink-l);
     border:2.5px solid var(--pink);border-radius:16px;padding:18px 22px;margin-bottom:22px;}
-  .when .big{font-family:'Jua',sans-serif;color:var(--red-d);font-size:1.55rem;}
+  .when .big{font-family:'A2z',sans-serif;font-weight:800;color:var(--red-d);font-size:1.55rem;}
   .rules{list-style:none;counter-reset:r;display:grid;gap:14px;}
-  .rules li{counter-increment:r;display:flex;gap:14px;align-items:flex-start;font-size:1.12rem;line-height:1.65;color:#4a3a30;}
+  .rules li{counter-increment:r;display:flex;gap:14px;align-items:flex-start;color:#4a3a30;}
+  .r-main{display:flex;flex-direction:column;gap:3px;padding-top:1px;}
+  .r-title{font-weight:800;font-size:1.2rem;color:var(--red-d);}
+  .r-desc{font-size:1.06rem;line-height:1.6;color:#6b5547;}
   .rules li::before{content:counter(r);flex:0 0 auto;width:30px;height:30px;border-radius:10px;
-    background:var(--red);color:#fff;font-family:'Jua',sans-serif;font-size:1rem;
+    background:var(--red);color:#fff;font-family:'A2z',sans-serif;font-weight:800;font-size:1rem;
     display:flex;align-items:center;justify-content:center;margin-top:1px;}
   .glossary{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
   .term{background:var(--cream);border:2px solid var(--pink);border-radius:14px;padding:15px 17px;}
-  .term dt{font-family:'Jua',sans-serif;color:var(--red-d);font-size:1.25rem;margin-bottom:6px;}
+  .term dt{font-family:'A2z',sans-serif;font-weight:800;color:var(--red-d);font-size:1.25rem;margin-bottom:6px;}
   .term dd{font-size:1.02rem;color:#5b463a;line-height:1.6;}
 </style>
 </head>
@@ -59,11 +62,14 @@
 <script src="/js/supabase-config.js"></script>
 <script>
 const DEFAULT_RULES=[
-  '서로 존중해요. 비방 · 욕설 · 인신공격 금지.',
-  '정치 · 종교 · 민감한 주제는 자제해주세요.',
-  '도배 · 광고 · 스포일러 금지.',
-  '다른 스트리머 언급 · 비교는 삼가주세요.',
-  '방장 안내에 따라주시면 더 즐거운 방송이 돼요!'
+  {t:'뇌절 X', d:"도배, 유기·산책 드립, 무지성 남친 드립, 과한 억빠 (예: '방종 전에 좌표 찍고 가', 어디 갈 때마다 ㄴㅊㅇㄴ)"},
+  {t:'신상 관련 언급 X', d:'제가 먼저 언급하지 않는 이상 주의 바랍니다'},
+  {t:'방송 흐름 끊기 X', d:'일기장·TMI, 주제에서 벗어난 잦은 채팅, 방종 아닌데 히바, 히라가 모르는 내용 떠들기 — 할 거면 100풍부터 받습니다'},
+  {t:'논란이 될 만한 주제 X', d:'당연합니다'},
+  {t:'팬들 간의 친목 X', d:'팬들끼리의 대화는 금지합니다. 서로 아는 척 X'},
+  {t:'타 비제이 언급 및 비하·비방 X', d:'상황에 맞지 않는 타 비제이 언급 X, 과한 중계 X'},
+  {t:'타 비제이 방에서 히라 언급 X', d:'저에게도 타 비제이분께도 피해가 될 수 있고 친목의 우려가 있습니다'},
+  {t:'유입 배려 O', d:'음지 드립·물타기, 오팬무, 청자끼리 네임드 시키기 X'}
 ];
 const DEFAULT_TERMS=[
   {t:'종겜', d:'종합게임 — 여러 게임을 돌아가며 하는 방송.'},
@@ -76,7 +82,10 @@ const DEFAULT_WHEN='저녁 8시 고정 (수 · 토 휴방)';
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function render(rules,terms,when){
   document.getElementById('whenText').textContent=when;
-  document.getElementById('rules').innerHTML=rules.map(r=>`<li>${esc(r)}</li>`).join('');
+  document.getElementById('rules').innerHTML=rules.map(r=>{
+    const o=(r&&typeof r==='object'); const t=o?r.t:''; const d=o?r.d:r;
+    return `<li><div class="r-main">${t?`<b class="r-title">${esc(t)}</b>`:''}${d?`<span class="r-desc">${esc(d)}</span>`:''}</div></li>`;
+  }).join('');
   document.getElementById('terms').innerHTML=terms.map(x=>`<div class="term"><dt>${esc(x.t)}</dt><dd>${esc(x.d)}</dd></div>`).join('');
 }
 async function load(){

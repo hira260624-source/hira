@@ -1,11 +1,15 @@
-/* ===== 히라 사이트 공통 (서브페이지) — Jua 헤딩 / Gothic A1 본문 ===== */
+@font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-4Regular.woff2') format('woff2');font-weight:400;font-display:swap;}
+@font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-7Bold.woff2') format('woff2');font-weight:700;font-display:swap;}
+@font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-8ExtraBold.woff2') format('woff2');font-weight:800;font-display:swap;}
+@font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-9Black.woff2') format('woff2');font-weight:900;font-display:swap;}
+/* ===== 히라 공통 — A2z(에이투지체) 통일 ===== */
 :root{
   --red:#ef8a3c; --red-d:#d06d22; --pink:#ffd2ab; --pink-l:#ffe7d4; --hot:#ff5c9e;
   --ink:#46342a; --paper:#fff7ee; --cream:#fffaf3;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scrollbar-gutter:stable;}   /* 스크롤바 등장 시 콘텐츠 좌측 밀림 방지 */
-body{font-family:'Gothic A1',sans-serif;color:var(--ink);font-size:16.5px;line-height:1.7;
+body{font-family:'A2z',sans-serif;color:var(--ink);font-size:16.5px;line-height:1.7;
   background:var(--paper);
   background-image:radial-gradient(rgba(239,138,60,.08) 17%,transparent 18%);
   background-size:23px 23px;
@@ -15,9 +19,9 @@ body{font-family:'Gothic A1',sans-serif;color:var(--ink);font-size:16.5px;line-h
 .topnav{position:fixed;top:0;left:0;right:0;z-index:50;height:62px;
   display:flex;align-items:center;gap:6px;padding:0 20px;line-height:1;
   background:rgba(255,247,238,.94);backdrop-filter:blur(6px);border-bottom:2px solid var(--pink);}
-.topnav .home{font-family:'Jua',sans-serif;color:var(--red);font-size:1.4rem;
+.topnav .home{font-family:'A2z',sans-serif;font-weight:800;color:var(--red);font-size:1.4rem;
   text-decoration:none;margin-right:auto;}
-.topnav a.lk{font-family:'Jua',sans-serif;font-size:1.05rem;color:var(--red-d);
+.topnav a.lk{font-family:'A2z',sans-serif;font-weight:800;font-size:1.05rem;color:var(--red-d);
   text-decoration:none;padding:8px 15px;border-radius:16px;transition:background .12s ease;}
 .topnav a.lk:hover{background:var(--pink-l);}
 .topnav a.lk.on{background:var(--red);color:#fff;}
@@ -28,7 +32,7 @@ body{font-family:'Gothic A1',sans-serif;color:var(--ink);font-size:16.5px;line-h
 
 /* ---- 페이지 헤더 ---- */
 .phead{display:flex;align-items:flex-end;gap:12px;margin-bottom:24px;}
-.phead .kr{font-family:'Jua',sans-serif;color:var(--red);font-size:3rem;line-height:.9;
+.phead .kr{font-family:'A2z',sans-serif;font-weight:900;color:var(--red);font-size:3rem;line-height:.9;
   text-shadow:2px 0 0 #fff,-2px 0 0 #fff,0 2px 0 #fff,0 -2px 0 #fff,4px 5px 0 rgba(208,109,34,.3);}
 .phead .en{font-family:'Anton',sans-serif;color:var(--red-d);letter-spacing:.12em;
   font-size:1.05rem;opacity:.65;padding-bottom:7px;}
@@ -36,7 +40,7 @@ body{font-family:'Gothic A1',sans-serif;color:var(--ink);font-size:16.5px;line-h
 /* ---- 패널/카드 ---- */
 .panel{background:#fff;border:3px solid var(--red);border-radius:20px;padding:24px;
   box-shadow:0 6px 0 var(--red-d),0 11px 22px rgba(208,109,34,.16);margin-bottom:22px;}
-.panel h2{font-family:'Jua',sans-serif;color:var(--red-d);font-size:1.35rem;
+.panel h2{font-family:'A2z',sans-serif;font-weight:800;color:var(--red-d);font-size:1.35rem;
   margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 
 /* ---- 플레이스홀더 존 ---- */
@@ -51,7 +55,7 @@ body{font-family:'Gothic A1',sans-serif;color:var(--ink);font-size:16.5px;line-h
 
 /* ---- 푸터 ---- */
 .foot{text-align:center;padding:34px 0;}
-.foot .h{font-family:'Jua',sans-serif;color:var(--red);font-size:1.15rem;}
+.foot .h{font-family:'A2z',sans-serif;font-weight:800;color:var(--red);font-size:1.15rem;}
 .foot .s{display:block;margin-top:6px;font-size:.8rem;color:#b6967c;}
 
 @media (prefers-reduced-motion:reduce){

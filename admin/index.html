@@ -6,13 +6,13 @@
 <title>히라 · 어드민</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Gothic+A1:wght@400;500;600;700;800;900&family=Jua&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/common.css" />
 <style>
   .adminbar{position:fixed;top:0;left:0;right:0;z-index:50;height:62px;display:flex;align-items:center;
     gap:10px;padding:0 20px;background:rgba(255,247,238,.95);border-bottom:2px solid var(--pink);}
-  .adminbar .t{font-family:'Jua',sans-serif;color:var(--red);font-size:1.35rem;margin-right:auto;}
-  .btn{font-family:'Jua',sans-serif;font-size:1.02rem;color:#fff;background:var(--red);
+  .adminbar .t{font-family:'A2z',sans-serif;font-weight:800;color:var(--red);font-size:1.35rem;margin-right:auto;}
+  .btn{font-family:'A2z',sans-serif;font-weight:800;font-size:1.02rem;color:#fff;background:var(--red);
     border:3px solid #fff;border-radius:13px;padding:8px 16px;cursor:pointer;box-shadow:0 3px 0 var(--red-d);}
   .btn.ghost{background:#fff;color:var(--red-d);box-shadow:0 3px 0 rgba(208,109,34,.25);}
   .btn.hot{background:var(--hot);box-shadow:0 3px 0 #d63b7d;}
@@ -22,7 +22,7 @@
   #login{max-width:360px;margin:60px auto;}
   #login .panel{text-align:center;}
   #login input{width:100%;padding:12px 14px;border:2px solid var(--pink);border-radius:11px;
-    background:var(--cream);font-family:'Gothic A1';font-size:1.05rem;margin-bottom:10px;}
+    background:var(--cream);font-family:'A2z';font-size:1.05rem;margin-bottom:10px;}
   #login input:focus{outline:none;border-color:var(--red);}
   #login .err{color:#d63b7d;font-size:.95rem;min-height:20px;margin-top:4px;}
 
@@ -30,21 +30,21 @@
 
   /* 탭 */
   .tabs{display:flex;gap:9px;margin-bottom:22px;}
-  .tab{font-family:'Jua',sans-serif;font-size:1.18rem;color:var(--red-d);background:#fff;
+  .tab{font-family:'A2z',sans-serif;font-weight:800;font-size:1.18rem;color:var(--red-d);background:#fff;
     border:3px solid var(--pink);border-radius:16px;padding:10px 26px;cursor:pointer;
     box-shadow:0 3px 0 rgba(208,109,34,.2);transition:transform .1s ease;}
   .tab.on{background:var(--red);color:#fff;border-color:#fff;box-shadow:0 3px 0 var(--red-d);}
   .tab:active{transform:translateY(1px);}
   .pane[hidden]{display:none;}
-  .sec-title{font-family:'Jua',sans-serif;color:var(--red-d);font-size:1.3rem;margin:4px 0 16px;}
+  .sec-title{font-family:'A2z',sans-serif;font-weight:800;color:var(--red-d);font-size:1.3rem;margin:4px 0 16px;}
 
   /* 폼 (프로필/안내) */
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   .fld{display:flex;flex-direction:column;gap:5px;}
   .fld.full{grid-column:1/-1;}
-  .fld label{font-family:'Jua',sans-serif;font-size:.98rem;color:var(--red-d);}
+  .fld label{font-family:'A2z',sans-serif;font-weight:800;font-size:.98rem;color:var(--red-d);}
   .fld label .s{font-size:.74rem;background:var(--pink-l);border:1.5px solid var(--pink);border-radius:8px;padding:1px 6px;margin-left:5px;}
-  .fld input,.fld textarea{font-family:'Gothic A1';font-size:1.02rem;color:var(--ink);
+  .fld input,.fld textarea{font-family:'A2z';font-size:1.02rem;color:var(--ink);
     border:2px solid var(--pink);border-radius:10px;padding:10px 12px;background:var(--cream);width:100%;line-height:1.6;}
   .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--red);}
   .fld textarea{resize:vertical;min-height:60px;}
@@ -55,12 +55,12 @@
   .scroll{overflow-x:auto;border-radius:12px;}
   table{border-collapse:collapse;width:100%;font-size:1.05rem;}
   th,td{padding:13px 16px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
-  thead th{font-family:'Jua',sans-serif;font-weight:400;color:var(--red-d);
+  thead th{font-family:'A2z',sans-serif;font-weight:800;font-weight:400;color:var(--red-d);
     border-bottom:2px solid var(--pink);font-size:1.08rem;}
   .vn,th.vn{text-align:left;font-weight:700;color:#5b463a;font-size:1.08rem;}
   tfoot td{border-top:2px solid var(--pink);border-bottom:none;font-weight:700;color:var(--red-d);background:#fffdf9;font-size:1.08rem;}
   .th-type{display:flex;align-items:center;gap:7px;justify-content:center;}
-  .th-type .nm{font-family:'Jua',sans-serif;font-size:1.08rem;}
+  .th-type .nm{font-family:'A2z',sans-serif;font-weight:800;font-size:1.08rem;}
   .sw{width:15px;height:15px;border-radius:4px;flex:0 0 auto;}
   .mini{border:none;background:transparent;cursor:pointer;font-size:1.05rem;opacity:.55;padding:0 2px;}
   .mini:hover{opacity:1;}
@@ -77,23 +77,23 @@
   .sform{display:flex;flex-direction:column;gap:11px;}
   .sform .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
   .sform .fld{display:flex;flex-direction:column;gap:5px;}
-  .sform label{font-family:'Jua',sans-serif;font-size:.95rem;color:var(--red-d);}
-  .sform input,.sform select{font-family:'Gothic A1';font-size:1rem;color:var(--ink);
+  .sform label{font-family:'A2z',sans-serif;font-weight:800;font-size:.95rem;color:var(--red-d);}
+  .sform input,.sform select{font-family:'A2z';font-size:1rem;color:var(--ink);
     border:2px solid var(--pink);border-radius:10px;padding:9px 11px;background:var(--cream);width:100%;}
   .sform input:focus,.sform select:focus{outline:none;border-color:var(--red);}
   .sform input[type=color]{height:42px;padding:3px;cursor:pointer;}
   .anniv-toggle{display:flex;align-items:center;gap:8px;font-size:.95rem;color:#5b463a;cursor:pointer;}
   .adm-cal-head{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px;}
-  .adm-cal-nav{font-family:'Jua',sans-serif;font-size:1.1rem;cursor:pointer;color:#fff;background:var(--red);
+  .adm-cal-nav{font-family:'A2z',sans-serif;font-weight:800;font-size:1.1rem;cursor:pointer;color:#fff;background:var(--red);
     border:2px solid #fff;border-radius:9px;width:34px;height:34px;box-shadow:0 2px 0 var(--red-d);line-height:1;}
-  .adm-cal-label{font-family:'Jua',sans-serif;font-size:1.2rem;color:var(--red-d);min-width:120px;text-align:center;}
-  .adm-cal-wd{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-family:'Jua',sans-serif;font-size:.82rem;color:#b08b6e;margin-bottom:4px;}
+  .adm-cal-label{font-family:'A2z',sans-serif;font-weight:800;font-size:1.2rem;color:var(--red-d);min-width:120px;text-align:center;}
+  .adm-cal-wd{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-family:'A2z',sans-serif;font-weight:800;font-size:.82rem;color:#b08b6e;margin-bottom:4px;}
   .adm-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
   .adm-cal-cell{min-height:54px;border:1.5px solid var(--pink-l);border-radius:9px;padding:3px;background:var(--cream);
     cursor:pointer;display:flex;flex-direction:column;gap:2px;overflow:hidden;}
   .adm-cal-cell.empty{border:none;background:transparent;cursor:default;}
   .adm-cal-cell.today{background:var(--pink-l);border-color:var(--red);}
-  .adm-cal-daynum{font-family:'Jua',sans-serif;font-size:.85rem;color:#5b463a;line-height:1;}
+  .adm-cal-daynum{font-family:'A2z',sans-serif;font-weight:800;font-size:.85rem;color:#5b463a;line-height:1;}
   .adm-cal-ev{font-size:.62rem;border-radius:5px;padding:1px 4px;overflow:hidden;text-overflow:ellipsis;
     white-space:nowrap;color:#4a3a30;font-weight:700;line-height:1.3;cursor:pointer;}
   .adm-cal-cell.anniv{overflow:visible;z-index:2;}
@@ -102,7 +102,7 @@
   .adm-cal-more{font-size:.58rem;color:#b08b6e;font-weight:700;}
   #schTable{border-collapse:collapse;width:100%;font-size:1rem;}
   #schTable th,#schTable td{padding:10px 12px;border-bottom:1px solid var(--pink-l);text-align:left;white-space:nowrap;}
-  #schTable thead th{font-family:'Jua',sans-serif;color:var(--red-d);border-bottom:2px solid var(--pink);}
+  #schTable thead th{font-family:'A2z',sans-serif;font-weight:800;color:var(--red-d);border-bottom:2px solid var(--pink);}
   .sch-type-badge{display:inline-block;font-size:.82rem;border-radius:8px;padding:1px 10px;font-weight:700;color:#4a3a30;}
   .sch-act{border:none;background:transparent;cursor:pointer;font-size:1rem;opacity:.6;padding:0 3px;}
   .sch-act:hover{opacity:1;}
@@ -178,7 +178,7 @@
         </div>
       </section>
       <section class="panel">
-        <div class="sec-title">🗓️ 달력 <span style="font-family:'Gothic A1';font-size:.78rem;color:#b08b6e;font-weight:400">날짜=입력일 지정 · 일정=수정</span></div>
+        <div class="sec-title">🗓️ 달력 <span style="font-family:'A2z';font-size:.78rem;color:#b08b6e;font-weight:400">날짜=입력일 지정 · 일정=수정</span></div>
         <div class="adm-cal-head">
           <button class="adm-cal-nav" onclick="admCalNav(-1)">‹</button>
           <span class="adm-cal-label" id="admCalLabel">—</span>
@@ -198,10 +198,10 @@
   <div class="pane" id="tab-guide" hidden>
     <section class="panel">
       <div class="sec-title">📋 방송 규칙</div>
-      <textarea id="g_rules" rows="7" style="width:100%;font-family:'Gothic A1';font-size:1.02rem;line-height:1.7;border:2px solid var(--pink);border-radius:10px;padding:12px;background:var(--cream)"></textarea>
-      <p class="note">한 줄에 규칙 하나씩</p>
+      <textarea id="g_rules" rows="7" style="width:100%;font-family:'A2z';font-size:1.02rem;line-height:1.7;border:2px solid var(--pink);border-radius:10px;padding:12px;background:var(--cream)"></textarea>
+      <p class="note">한 줄에 「제목 ; 설명」 하나씩</p>
       <div class="sec-title" style="margin-top:20px">📖 방송 용어</div>
-      <textarea id="g_terms" rows="8" style="width:100%;font-family:'Gothic A1';font-size:1.02rem;line-height:1.7;border:2px solid var(--pink);border-radius:10px;padding:12px;background:var(--cream)"></textarea>
+      <textarea id="g_terms" rows="8" style="width:100%;font-family:'A2z';font-size:1.02rem;line-height:1.7;border:2px solid var(--pink);border-radius:10px;padding:12px;background:var(--cream)"></textarea>
       <p class="note">한 줄에 「용어 ; 설명」 하나씩 (예: 종겜 ; 종합게임 방송)</p>
       <p class="note">※ 방송 시간 배너는 「프로필」 탭의 '방송 시간' 값을 사용합니다.</p>
       <div class="save-row"><button class="btn" id="saveGuideBtn">안내 저장</button></div>
@@ -270,11 +270,14 @@ const PFIELDS=[
   {k:'songclip',label:'노래 클립 URL',full:true},
 ];
 const DEF_RULES=[
-  '서로 존중해요. 비방 · 욕설 · 인신공격 금지.',
-  '정치 · 종교 · 민감한 주제는 자제해주세요.',
-  '도배 · 광고 · 스포일러 금지.',
-  '다른 스트리머 언급 · 비교는 삼가주세요.',
-  '방장 안내에 따라주시면 더 즐거운 방송이 돼요!'
+  {t:'뇌절 X', d:"도배, 유기·산책 드립, 무지성 남친 드립, 과한 억빠 (예: '방종 전에 좌표 찍고 가', 어디 갈 때마다 ㄴㅊㅇㄴ)"},
+  {t:'신상 관련 언급 X', d:'제가 먼저 언급하지 않는 이상 주의 바랍니다'},
+  {t:'방송 흐름 끊기 X', d:'일기장·TMI, 주제에서 벗어난 잦은 채팅, 방종 아닌데 히바, 히라가 모르는 내용 떠들기 — 할 거면 100풍부터 받습니다'},
+  {t:'논란이 될 만한 주제 X', d:'당연합니다'},
+  {t:'팬들 간의 친목 X', d:'팬들끼리의 대화는 금지합니다. 서로 아는 척 X'},
+  {t:'타 비제이 언급 및 비하·비방 X', d:'상황에 맞지 않는 타 비제이 언급 X, 과한 중계 X'},
+  {t:'타 비제이 방에서 히라 언급 X', d:'저에게도 타 비제이분께도 피해가 될 수 있고 친목의 우려가 있습니다'},
+  {t:'유입 배려 O', d:'음지 드립·물타기, 오팬무, 청자끼리 네임드 시키기 X'}
 ];
 const DEF_TERMS=[
   {t:'종겜', d:'종합게임 — 여러 게임을 돌아가며 하는 방송.'},
@@ -342,11 +345,14 @@ async function loadGuide(){
   const m={}; (data||[]).forEach(r=>m[r.key]=r.value);
   if(m.guide_rules){ try{ const a=JSON.parse(m.guide_rules); if(Array.isArray(a)) rules=a; }catch(e){} }
   if(m.guide_terms){ try{ const a=JSON.parse(m.guide_terms); if(Array.isArray(a)) terms=a; }catch(e){} }
-  document.getElementById('g_rules').value = rules.join('\n');
+  document.getElementById('g_rules').value = rules.map(r=>(r&&typeof r==='object')?`${r.t} ; ${r.d}`:r).join('\n');
   document.getElementById('g_terms').value = terms.map(x=>`${x.t} ; ${x.d}`).join('\n');
 }
 document.getElementById('saveGuideBtn').addEventListener('click', async ()=>{
-  const rules=document.getElementById('g_rules').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const rules=document.getElementById('g_rules').value.split('\n').map(line=>{
+    const i=line.indexOf(';'); if(i<0) return { t:line.trim(), d:'' };
+    return { t:line.slice(0,i).trim(), d:line.slice(i+1).trim() };
+  }).filter(x=>x.t);
   const terms=document.getElementById('g_terms').value.split('\n').map(line=>{
     const i=line.indexOf(';'); if(i<0) return { t:line.trim(), d:'' };
     return { t:line.slice(0,i).trim(), d:line.slice(i+1).trim() };
