@@ -4,9 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1000" />
 <title>히라 · HIRA</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="히라 · HIRA">
+<meta property="og:title" content="히라 · HIRA 프로필">
+<meta property="og:description" content="기미라다. 8시에 온다. 쓰껄하러 와라 — 일정 · 노래 · 업보 · 안내">
+<!-- 배포 도메인 확정 시: <meta property="og:image" content="https://도메인/avatar.png"> -->
+<link rel="preload" href="/bg.jpg" as="image">
+<link rel="preload" href="/avatar.png" as="image">
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&display=swap" rel="stylesheet" />
 <style>
 @font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-4Regular.woff2') format('woff2');font-weight:400;font-display:swap;}
 @font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-7Bold.woff2') format('woff2');font-weight:700;font-display:swap;}
@@ -33,7 +40,7 @@
   /* ===== 아바타 (z2) — /avatar.png 올리면 교체 (세로형 PNG 권장), 없으면 키비주얼 ===== */
   .art{position:absolute;left:0;right:0;top:18px;bottom:0;z-index:2;
     display:flex;align-items:flex-end;justify-content:center;pointer-events:none;}
-  .art img{height:100%;width:auto;max-width:none;
+  .art img{height:var(--avatar-h,100%);width:auto;max-width:none;transform:translateX(var(--avatar-x,0px));
     filter:drop-shadow(0 0 4px rgba(255,255,255,.95)) drop-shadow(0 9px 15px rgba(30,35,60,.3));}
 
   /* ===== UI 레이어 (z3) ===== */
@@ -46,7 +53,7 @@
     border:2.5px solid var(--pink);}
   .chip .nm{font-weight:900;font-size:.98rem;line-height:1.15;}
   .chip .nm i{font-style:normal;color:var(--red);font-size:.8rem;}
-  .chip .sub{display:block;font-weight:700;font-size:.6rem;color:#a08573;letter-spacing:.01em;}
+  .chip .sub{display:block;font-weight:700;font-size:.6rem;color:#8a90a0;letter-spacing:.01em;}
 
   /* 우상단 앱 버튼 2x2 — 일정 / 노래 / 업보 / 안내 */
   .apps{position:absolute;right:18px;top:16px;z-index:4;
@@ -65,9 +72,9 @@
   /* 좌측 레일 */
   .onair{position:absolute;left:36px;top:206px;z-index:3;width:128px;
     background:#fff;border:2.5px solid #222;border-radius:15px;padding:10px 12px 11px;box-shadow:0 4px 0 #222;}
-  .onair .t{font-size:.6rem;letter-spacing:.14em;color:#b08a6e;font-weight:800;}
-  .onair .tm{font-size:1.06rem;font-weight:900;color:var(--red-d);margin-top:3px;}
-  .onair .off{display:inline-block;margin-top:6px;background:var(--pink-l);color:var(--red-d);
+  .onair .t{font-size:.6rem;letter-spacing:.14em;color:#8a94a8;font-weight:800;}
+  .onair .tm{font-size:1.06rem;font-weight:900;color:var(--ink);margin-top:3px;}
+  .onair .off{display:inline-block;margin-top:6px;background:#e8f3ff;color:#3d78b8;
     font-size:.62rem;font-weight:800;border-radius:11px;padding:2px 9px;}
 
   .tagset{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:5px;}
@@ -75,19 +82,19 @@
   .tagset.l2{left:36px;top:384px;}
   .tagset .k{background:var(--red);color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.05em;
     border:2.5px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;}
-  .tagset .v{background:#fff;color:var(--red-d);font-size:.78rem;font-weight:900;
+  .tagset .v{background:#fff;color:var(--ink);font-size:.78rem;font-weight:900;
     border:2.5px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;}
 
 
   /* 우측 레일 */
   .tagset.r1{left:auto;right:32px;top:210px;align-items:flex-end;}
   .live{position:absolute;left:36px;top:468px;z-index:3;text-decoration:none;
-    background:var(--hot);color:#fff;font-weight:800;font-size:.9rem;
+    background:linear-gradient(180deg,#ffa651,var(--red));color:#fff;font-weight:800;font-size:.9rem;
     border:2.5px solid #222;border-radius:20px;padding:8px 19px;
     box-shadow:0 4px 0 #222;transition:transform .15s ease;}
   .live:hover{transform:translateY(-3px);}
   .sns{position:absolute;right:32px;top:266px;z-index:3;display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
-  .sns a{background:#fff;color:var(--red-d);text-decoration:none;font-weight:800;font-size:.68rem;
+  .sns a{background:#fff;color:var(--ink);text-decoration:none;font-weight:800;font-size:.68rem;
     border:2px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;transition:transform .13s ease;}
   .sns a:hover{transform:translateY(-2px);color:var(--hot);}
 
