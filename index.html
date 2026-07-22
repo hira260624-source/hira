@@ -13,14 +13,14 @@
 @font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-8ExtraBold.woff2') format('woff2');font-weight:800;font-display:swap;}
 @font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-9Black.woff2') format('woff2');font-weight:900;font-display:swap;}
   :root{
-    --red:#ef8a3c;--red-d:#d06d22;--pink:#ffd2ab;--pink-l:#ffe7d4;--hot:#ff5c9e;
-    --ink:#46342a;--paper:#fff7ee;--frame:#ffcf9c;
+    --red:#ff8c2a;--red-d:#ea6e0e;--pink:#ffd7ad;--pink-l:#ffedd9;--hot:#ff5c9e;
+    --ink:#46342a;--paper:#fffaf1;--frame:#ffd190;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scrollbar-gutter:stable;}
   body{font-family:'A2z',sans-serif;font-weight:800;color:var(--ink);
     background:var(--paper);
-    background-image:radial-gradient(rgba(239,138,60,.08) 17%,transparent 18%);background-size:23px 23px;
+    background-image:radial-gradient(rgba(255,140,42,.10) 17%,transparent 18%);background-size:23px 23px;
     min-height:100vh;display:flex;align-items:center;justify-content:center;padding:26px 12px;}
 
   /* ===== 카드 스테이지 : 470x584 디자인 캔버스 → 통 스케일 ===== */
@@ -34,10 +34,10 @@
 
   /* ===== 배경 사진 카드 (z1) — 배경 = /bg.jpg 파일만 올리면 교체됨 ===== */
   .card{position:absolute;left:24px;right:24px;top:104px;bottom:28px;z-index:1;
-    border-radius:20px;border:5px solid #fff;overflow:hidden;
+    border-radius:24px;border:10px solid #fff;overflow:hidden;
     background-image:url('/bg.jpg'),linear-gradient(168deg,#ffe9d0 0%,#fff6ea 52%,#ffddba 100%);
     background-size:cover,cover;background-position:center,center;
-    box-shadow:0 10px 24px rgba(70,45,25,.2);}
+    box-shadow:0 6px 0 rgba(234,110,14,.12),0 14px 30px rgba(70,45,25,.24);}
   .card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.1),transparent 30%);}
 
   /* ===== 아바타 (z2) — /avatar.png 올리면 교체 (세로형 PNG 권장), 없으면 키비주얼 ===== */
@@ -50,7 +50,7 @@
   /* 좌상단 프로필 칩 → 프로필 페이지 */
   .chip{position:absolute;left:18px;top:16px;z-index:3;display:flex;align-items:center;gap:9px;
     background:#fff;border-radius:24px;padding:7px 15px 7px 8px;text-decoration:none;color:var(--ink);
-    box-shadow:0 4px 12px rgba(208,109,34,.22);transition:transform .15s ease;}
+    box-shadow:0 4px 12px rgba(234,110,14,.2);transition:transform .15s ease;}
   .chip:hover{transform:translateY(-2px);}
   .chip img{width:37px;height:37px;border-radius:50%;object-fit:cover;object-position:center 30%;
     border:2.5px solid var(--pink);}
@@ -61,9 +61,9 @@
   /* 우상단 앱 버튼 2x2 — 일정 / 노래 / 업보 / 안내 */
   .apps{position:absolute;right:18px;top:14px;z-index:4;
     display:grid;grid-template-columns:repeat(2,47px);gap:8px;}
-  .app{width:47px;height:47px;border-radius:15px;background:var(--red);text-decoration:none;
+  .app{width:47px;height:47px;border-radius:15px;background:linear-gradient(180deg,#ffa651,var(--red));text-decoration:none;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    box-shadow:0 3px 0 var(--red-d),0 6px 12px rgba(208,109,34,.3);
+    box-shadow:0 3px 0 var(--red-d),0 6px 12px rgba(234,110,14,.3);
     transition:transform .22s cubic-bezier(.34,1.56,.64,1),background .18s ease,box-shadow .22s ease;}
   .app svg{width:19px;height:19px;fill:none;stroke:#fff;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
   .app b{font-family:'A2z',sans-serif;font-weight:800;font-size:.55rem;color:#fff;letter-spacing:.02em;}
@@ -74,7 +74,7 @@
 
   /* 좌측 레일 */
   .onair{position:absolute;left:36px;top:206px;z-index:3;width:128px;
-    background:#fff;border-radius:15px;padding:10px 12px 11px;box-shadow:0 5px 14px rgba(208,109,34,.2);}
+    background:#fff;border-radius:15px;padding:10px 12px 11px;box-shadow:0 5px 14px rgba(234,110,14,.2);}
   .onair .t{font-size:.6rem;letter-spacing:.14em;color:#b08a6e;font-weight:800;}
   .onair .tm{font-size:1.06rem;font-weight:900;color:var(--red-d);margin-top:3px;}
   .onair .off{display:inline-block;margin-top:6px;background:var(--pink-l);color:var(--red-d);
@@ -84,31 +84,25 @@
   .tagset.l1{left:36px;top:316px;}
   .tagset.l2{left:36px;top:384px;}
   .tagset .k{background:var(--red);color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.05em;
-    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(208,109,34,.28);}
+    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(234,110,14,.28);}
   .tagset .v{background:#fff;color:var(--red-d);font-size:.78rem;font-weight:900;
-    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(208,109,34,.2);}
+    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(234,110,14,.2);}
 
-  .palette{position:absolute;left:36px;top:466px;z-index:3;background:#fff;border-radius:13px;
-    padding:8px 11px 10px;box-shadow:0 5px 14px rgba(208,109,34,.2);}
-  .palette .t{font-size:.55rem;letter-spacing:.13em;color:#b08a6e;font-weight:800;}
-  .palette .row{display:flex;gap:6px;margin-top:6px;}
-  .palette .c{width:23px;height:23px;border-radius:8px;border:2px solid #fff;
-    box-shadow:0 0 0 1.5px rgba(208,109,34,.25),0 2px 5px rgba(70,45,25,.18);}
 
   /* 우측 레일 */
   .tagset.r1{left:auto;right:32px;top:210px;align-items:flex-end;}
-  .live{position:absolute;right:32px;top:276px;z-index:3;text-decoration:none;
-    background:var(--hot);color:#fff;font-weight:800;font-size:.82rem;
-    border:3px solid #fff;border-radius:18px;padding:6px 16px;
+  .live{position:absolute;left:36px;top:468px;z-index:3;text-decoration:none;
+    background:var(--hot);color:#fff;font-weight:800;font-size:.9rem;
+    border:3px solid #fff;border-radius:20px;padding:8px 19px;
     box-shadow:0 4px 0 #d63b7d,0 8px 14px rgba(255,92,158,.32);transition:transform .15s ease;}
   .live:hover{transform:translateY(-3px);}
-  .sns{position:absolute;right:32px;top:330px;z-index:3;display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+  .sns{position:absolute;right:32px;top:266px;z-index:3;display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
   .sns a{background:#fff;color:var(--red-d);text-decoration:none;font-weight:800;font-size:.68rem;
-    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(208,109,34,.22);transition:transform .13s ease;}
+    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(234,110,14,.22);transition:transform .13s ease;}
   .sns a:hover{transform:translateY(-2px);color:var(--hot);}
 
   /* 캐치프레이즈 스탬프 */
-  .stamp{position:absolute;right:30px;top:404px;z-index:3;transform:rotate(-5deg);
+  .stamp{position:absolute;right:30px;top:352px;z-index:3;transform:rotate(-5deg);
     font-weight:900;font-size:.95rem;color:var(--hot);
     text-shadow:2px 0 0 #fff,-2px 0 0 #fff,0 2px 0 #fff,0 -2px 0 #fff,2px 2px 0 #fff,-2px 2px 0 #fff,2px -2px 0 #fff,-2px -2px 0 #fff,3px 4px 6px rgba(214,59,125,.3);}
 
@@ -117,11 +111,11 @@
   .bigname .en{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:4.6rem;line-height:.88;color:#fff;
     text-shadow:3.5px 0 0 var(--red),-3.5px 0 0 var(--red),0 3.5px 0 var(--red),0 -3.5px 0 var(--red),
       3.5px 3.5px 0 var(--red),-3.5px 3.5px 0 var(--red),3.5px -3.5px 0 var(--red),-3.5px -3.5px 0 var(--red),
-      7px 8px 0 rgba(208,109,34,.35);}
+      7px 8px 0 rgba(234,110,14,.35);}
   .bigname .kr{font-family:'A2z',sans-serif;font-weight:900;font-size:1.5rem;color:#fff;margin-top:7px;
     text-shadow:2.5px 0 0 var(--red),-2.5px 0 0 var(--red),0 2.5px 0 var(--red),0 -2.5px 0 var(--red),
       2.5px 2.5px 0 var(--red),-2.5px 2.5px 0 var(--red),2.5px -2.5px 0 var(--red),-2.5px -2.5px 0 var(--red),
-      5px 6px 0 rgba(208,109,34,.3);}
+      5px 6px 0 rgba(234,110,14,.3);}
 
   .credit{position:absolute;left:0;right:0;bottom:6px;z-index:3;text-align:center;
     font-weight:800;font-size:.6rem;color:var(--red-d);opacity:.9;}
@@ -134,7 +128,7 @@
     display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:400px;gap:20px;
     animation:loaderOut .45s ease .6s forwards;}
   .pl-img{width:148px;height:148px;border-radius:50%;border:5px solid #fff;object-fit:cover;object-position:center 32%;
-    box-shadow:0 8px 22px rgba(208,109,34,.22);animation:plPop 1s ease-in-out infinite;}
+    box-shadow:0 8px 22px rgba(234,110,14,.22);animation:plPop 1s ease-in-out infinite;}
   .pl-dots{display:flex;gap:10px;}
   .pl-dots span{width:12px;height:12px;border-radius:50%;background:var(--hot);display:block;animation:plDot .85s ease-in-out infinite;}
   .pl-dots span:nth-child(2){animation-delay:.14s;}
@@ -201,19 +195,10 @@
     <span class="k">Debut</span>
     <span class="v">2024. 03. 17</span>
   </div>
-  <div class="palette">
-    <div class="t">COLOR PALETTE</div>
-    <div class="row">
-      <span class="c" style="background:#ef8a3c"></span>
-      <span class="c" style="background:#ffd2ab"></span>
-      <span class="c" style="background:#ff5c9e"></span>
-    </div>
-  </div>
 
   <!-- 우측 레일 -->
   <div class="tagset r1">
-    <span class="k">Fandom</span>
-    <span class="v">꾸이 · 꾸이단</span>
+    <span class="v">꾸이 💗</span>
   </div>
   <a class="live" href="https://www.sooplive.com/station/sjsr4611" target="_blank" rel="noopener">▶ 방송국</a>
   <div class="sns">
