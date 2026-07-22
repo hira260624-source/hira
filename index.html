@@ -26,28 +26,21 @@
   /* ===== 카드 스테이지 : 470x584 디자인 캔버스 → 통 스케일 ===== */
   .stage{position:relative;width:min(940px,96vw);aspect-ratio:940/1168;margin:0 auto;}
   .poster{position:absolute;top:0;left:0;width:470px;height:584px;transform-origin:top left;
-    overflow:hidden;background:var(--frame);border-radius:14px;
-    box-shadow:0 12px 30px rgba(70,45,25,.28);isolation:isolate;}
+    overflow:hidden;background:#8fc0e8 url('/bg.jpg') center/cover no-repeat;border-radius:14px;
+    box-shadow:0 12px 30px rgba(40,45,70,.3);isolation:isolate;}
 
-  /* ===== 배경 사진 카드 (z1) — 배경 = /bg.jpg 파일만 올리면 교체됨 ===== */
-  .card{position:absolute;left:24px;right:24px;top:126px;bottom:28px;z-index:1;
-    border-radius:24px;border:10px solid #fff;overflow:hidden;
-    background-image:url('/bg.jpg'),linear-gradient(168deg,#ffe9d0 0%,#fff6ea 52%,#ffddba 100%);
-    background-size:cover,cover;background-position:center,center;
-    box-shadow:0 6px 0 rgba(234,110,14,.12),0 14px 30px rgba(70,45,25,.24);}
-  .card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.1),transparent 30%);}
 
   /* ===== 아바타 (z2) — /avatar.png 올리면 교체 (세로형 PNG 권장), 없으면 키비주얼 ===== */
   .art{position:absolute;left:0;right:0;top:18px;bottom:0;z-index:2;
     display:flex;align-items:flex-end;justify-content:center;pointer-events:none;}
   .art img{height:100%;width:auto;max-width:none;
-    filter:drop-shadow(0 0 3px rgba(255,255,255,.9)) drop-shadow(0 8px 14px rgba(70,45,25,.22));}
+    filter:drop-shadow(0 0 4px rgba(255,255,255,.95)) drop-shadow(0 9px 15px rgba(30,35,60,.3));}
 
   /* ===== UI 레이어 (z3) ===== */
   /* 좌상단 프로필 칩 → 프로필 페이지 */
-  .chip{position:absolute;left:18px;top:34px;z-index:3;display:flex;align-items:center;gap:9px;
+  .chip{position:absolute;left:18px;top:20px;z-index:3;display:flex;align-items:center;gap:9px;
     background:#fff;border-radius:24px;padding:7px 15px 7px 8px;text-decoration:none;color:var(--ink);
-    box-shadow:0 4px 12px rgba(234,110,14,.2);transition:transform .15s ease;}
+    border:2.5px solid #222;box-shadow:0 4px 0 #222;transition:transform .15s ease;}
   .chip:hover{transform:translateY(-2px);}
   .chip img{width:37px;height:37px;border-radius:50%;object-fit:cover;object-position:center 30%;
     border:2.5px solid var(--pink);}
@@ -60,18 +53,18 @@
     display:grid;grid-template-columns:repeat(2,47px);gap:8px;}
   .app{width:47px;height:47px;border-radius:15px;background:linear-gradient(180deg,#ffa651,var(--red));text-decoration:none;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    box-shadow:0 3px 0 var(--red-d),0 6px 12px rgba(234,110,14,.3);
+    border:2.5px solid #222;box-shadow:0 4px 0 #222;
     transition:transform .22s cubic-bezier(.34,1.56,.64,1),background .18s ease,box-shadow .22s ease;}
   .app svg{width:19px;height:19px;fill:none;stroke:#fff;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
   .app b{font-family:'A2z',sans-serif;font-weight:800;font-size:.55rem;color:#fff;letter-spacing:.02em;}
   .app:hover{transform:translateY(-4px) scale(1.09) rotate(4deg);background:var(--hot);
-    box-shadow:0 6px 0 #d63b7d,0 10px 16px rgba(255,92,158,.35);}
+    box-shadow:0 7px 0 #222;}
   .app:active{transform:translateY(-1px) scale(1.03);}
   .app:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
 
   /* 좌측 레일 */
   .onair{position:absolute;left:36px;top:206px;z-index:3;width:128px;
-    background:#fff;border-radius:15px;padding:10px 12px 11px;box-shadow:0 5px 14px rgba(234,110,14,.2);}
+    background:#fff;border:2.5px solid #222;border-radius:15px;padding:10px 12px 11px;box-shadow:0 4px 0 #222;}
   .onair .t{font-size:.6rem;letter-spacing:.14em;color:#b08a6e;font-weight:800;}
   .onair .tm{font-size:1.06rem;font-weight:900;color:var(--red-d);margin-top:3px;}
   .onair .off{display:inline-block;margin-top:6px;background:var(--pink-l);color:var(--red-d);
@@ -81,21 +74,21 @@
   .tagset.l1{left:36px;top:316px;}
   .tagset.l2{left:36px;top:384px;}
   .tagset .k{background:var(--red);color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.05em;
-    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(234,110,14,.28);}
+    border:2.5px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;}
   .tagset .v{background:#fff;color:var(--red-d);font-size:.78rem;font-weight:900;
-    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(234,110,14,.2);}
+    border:2.5px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;}
 
 
   /* 우측 레일 */
   .tagset.r1{left:auto;right:32px;top:210px;align-items:flex-end;}
   .live{position:absolute;left:36px;top:468px;z-index:3;text-decoration:none;
     background:var(--hot);color:#fff;font-weight:800;font-size:.9rem;
-    border:3px solid #fff;border-radius:20px;padding:8px 19px;
-    box-shadow:0 4px 0 #d63b7d,0 8px 14px rgba(255,92,158,.32);transition:transform .15s ease;}
+    border:2.5px solid #222;border-radius:20px;padding:8px 19px;
+    box-shadow:0 4px 0 #222;transition:transform .15s ease;}
   .live:hover{transform:translateY(-3px);}
   .sns{position:absolute;right:32px;top:266px;z-index:3;display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
   .sns a{background:#fff;color:var(--red-d);text-decoration:none;font-weight:800;font-size:.68rem;
-    border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(234,110,14,.22);transition:transform .13s ease;}
+    border:2px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;transition:transform .13s ease;}
   .sns a:hover{transform:translateY(-2px);color:var(--hot);}
 
 
@@ -104,14 +97,15 @@
   .bigname .en{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:4.6rem;line-height:.88;color:#fff;
     text-shadow:3.5px 0 0 var(--red),-3.5px 0 0 var(--red),0 3.5px 0 var(--red),0 -3.5px 0 var(--red),
       3.5px 3.5px 0 var(--red),-3.5px 3.5px 0 var(--red),3.5px -3.5px 0 var(--red),-3.5px -3.5px 0 var(--red),
-      7px 8px 0 rgba(234,110,14,.35);}
+      6px 7px 0 rgba(28,28,28,.55);}
   .bigname .kr{font-family:'A2z',sans-serif;font-weight:900;font-size:1.5rem;color:#fff;margin-top:7px;
     text-shadow:2.5px 0 0 var(--red),-2.5px 0 0 var(--red),0 2.5px 0 var(--red),0 -2.5px 0 var(--red),
       2.5px 2.5px 0 var(--red),-2.5px 2.5px 0 var(--red),2.5px -2.5px 0 var(--red),-2.5px -2.5px 0 var(--red),
-      5px 6px 0 rgba(234,110,14,.3);}
+      4px 5px 0 rgba(28,28,28,.5);}
 
-  .credit{position:absolute;left:0;right:0;bottom:6px;z-index:3;text-align:center;
-    font-weight:800;font-size:.6rem;color:var(--red-d);opacity:.9;}
+  .credit{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;white-space:nowrap;
+    font-weight:800;font-size:.6rem;color:var(--ink);background:#fff;border:2px solid #222;
+    border-radius:13px;padding:2px 13px;box-shadow:0 3px 0 #222;}
 
   @media (prefers-reduced-motion:reduce){.app,.chip,.live,.sns a{transition:none;}}
 
@@ -138,9 +132,6 @@
 <div id="page-loader"><img class="pl-img" src="/loader.png" alt="히라"><div class="pl-dots"><span></span><span></span><span></span></div></div>
 <div class="stage">
 <main class="poster">
-
-  <!-- 배경 사진 카드 : /bg.jpg 업로드 시 자동 교체 (없으면 그라데이션) -->
-  <div class="card"></div>
 
   <!-- 아바타 : /avatar.png 업로드 시 자동 교체 (없으면 키비주얼) -->
   <div class="art"><img src="/avatar.png" onerror="this.onerror=null;this.src='/keyvisual.png';" alt="히라"></div>
