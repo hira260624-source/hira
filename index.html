@@ -14,7 +14,7 @@
 @font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-9Black.woff2') format('woff2');font-weight:900;font-display:swap;}
   :root{
     --red:#ff8c2a;--red-d:#ea6e0e;--pink:#ffd7ad;--pink-l:#ffedd9;--hot:#ff5c9e;
-    --ink:#46342a;--paper:#fffaf1;--frame:#ffd190;
+    --ink:#46342a;--paper:#fffaf1;--frame:#fbe06a;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scrollbar-gutter:stable;}
@@ -28,12 +28,9 @@
   .poster{position:absolute;top:0;left:0;width:470px;height:584px;transform-origin:top left;
     overflow:hidden;background:var(--frame);border-radius:14px;
     box-shadow:0 12px 30px rgba(70,45,25,.28);isolation:isolate;}
-  /* 프레임 미세 질감 */
-  .poster::before{content:'';position:absolute;inset:0;z-index:0;opacity:.35;
-    background-image:radial-gradient(rgba(255,255,255,.55) 16%,transparent 17%);background-size:14px 14px;}
 
   /* ===== 배경 사진 카드 (z1) — 배경 = /bg.jpg 파일만 올리면 교체됨 ===== */
-  .card{position:absolute;left:24px;right:24px;top:104px;bottom:28px;z-index:1;
+  .card{position:absolute;left:24px;right:24px;top:126px;bottom:28px;z-index:1;
     border-radius:24px;border:10px solid #fff;overflow:hidden;
     background-image:url('/bg.jpg'),linear-gradient(168deg,#ffe9d0 0%,#fff6ea 52%,#ffddba 100%);
     background-size:cover,cover;background-position:center,center;
@@ -48,7 +45,7 @@
 
   /* ===== UI 레이어 (z3) ===== */
   /* 좌상단 프로필 칩 → 프로필 페이지 */
-  .chip{position:absolute;left:18px;top:16px;z-index:3;display:flex;align-items:center;gap:9px;
+  .chip{position:absolute;left:18px;top:34px;z-index:3;display:flex;align-items:center;gap:9px;
     background:#fff;border-radius:24px;padding:7px 15px 7px 8px;text-decoration:none;color:var(--ink);
     box-shadow:0 4px 12px rgba(234,110,14,.2);transition:transform .15s ease;}
   .chip:hover{transform:translateY(-2px);}
@@ -59,7 +56,7 @@
   .chip .sub{display:block;font-weight:700;font-size:.6rem;color:#a08573;letter-spacing:.01em;}
 
   /* 우상단 앱 버튼 2x2 — 일정 / 노래 / 업보 / 안내 */
-  .apps{position:absolute;right:18px;top:14px;z-index:4;
+  .apps{position:absolute;right:18px;top:16px;z-index:4;
     display:grid;grid-template-columns:repeat(2,47px);gap:8px;}
   .app{width:47px;height:47px;border-radius:15px;background:linear-gradient(180deg,#ffa651,var(--red));text-decoration:none;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -101,10 +98,6 @@
     border-radius:13px;padding:3px 12px;box-shadow:0 3px 8px rgba(234,110,14,.22);transition:transform .13s ease;}
   .sns a:hover{transform:translateY(-2px);color:var(--hot);}
 
-  /* 캐치프레이즈 스탬프 */
-  .stamp{position:absolute;right:30px;top:352px;z-index:3;transform:rotate(-5deg);
-    font-weight:900;font-size:.95rem;color:var(--hot);
-    text-shadow:2px 0 0 #fff,-2px 0 0 #fff,0 2px 0 #fff,0 -2px 0 #fff,2px 2px 0 #fff,-2px 2px 0 #fff,2px -2px 0 #fff,-2px -2px 0 #fff,3px 4px 6px rgba(214,59,125,.3);}
 
   /* 하단 대형 네임 */
   .bigname{position:absolute;right:26px;bottom:44px;z-index:3;text-align:right;transform:rotate(-2deg);}
@@ -205,12 +198,11 @@
     <a href="https://cafe.naver.com/hirarara" target="_blank" rel="noopener">팬카페</a>
     <a href="https://www.youtube.com/@%EC%9A%B0%EC%A3%BC%EC%B1%84%EA%B0%95%ED%9E%88%EB%9D%BC" target="_blank" rel="noopener">유튜브</a>
   </div>
-  <div class="stamp">쓰껄하러 와라 ♡</div>
 
   <!-- 대형 네임 -->
   <div class="bigname">
     <div class="en">HIRA</div>
-    <div class="kr">히라 · ヒラ</div>
+    <div class="kr">히라</div>
   </div>
 
   <div class="credit">© 2026 히라 · 꾸이단 💗</div>
