@@ -18,7 +18,7 @@ body{font-family:'A2z',sans-serif;color:var(--ink);font-size:16.5px;line-height:
 /* ---- 상단 네비 ---- */
 .topnav{position:fixed;top:0;left:0;right:0;z-index:50;height:62px;
   display:flex;align-items:center;justify-content:center;padding:0;line-height:1;
-  background:rgba(255,247,238,.94);backdrop-filter:blur(6px);border-bottom:2px solid var(--pink);}
+  background:rgba(255,247,238,.94);backdrop-filter:blur(6px);border-bottom:1.5px solid rgba(234,110,14,.16);}
 .nav-inner{width:min(940px,94vw);display:flex;align-items:center;gap:6px;}
 .topnav .home{font-family:'A2z',sans-serif;font-weight:800;color:var(--red);font-size:1.4rem;
   text-decoration:none;margin-right:auto;}
@@ -34,25 +34,25 @@ body{font-family:'A2z',sans-serif;color:var(--ink);font-size:16.5px;line-height:
 /* ---- 페이지 헤더 ---- */
 .phead{display:flex;align-items:flex-end;gap:12px;margin-bottom:24px;}
 .phead .kr{font-family:'A2z',sans-serif;font-weight:900;color:var(--red);font-size:3rem;line-height:.9;
-  text-shadow:2px 0 0 #fff,-2px 0 0 #fff,0 2px 0 #fff,0 -2px 0 #fff,4px 5px 0 rgba(234,110,14,.3);}
+  text-shadow:none;}
 .phead .en{font-family:'Anton',sans-serif;color:var(--red-d);letter-spacing:.12em;
   font-size:1.05rem;opacity:.65;padding-bottom:7px;}
 
 /* ---- 패널/카드 ---- */
-.panel{background:#fff;border:3px solid var(--red);border-radius:20px;padding:24px;
-  box-shadow:0 6px 0 var(--red-d),0 11px 22px rgba(234,110,14,.16);margin-bottom:22px;}
+.panel{background:#fff;border:1.5px solid rgba(70,52,42,.10);border-radius:20px;padding:24px;
+  box-shadow:0 11px 22px rgba(234,110,14,.16);margin-bottom:22px;}
 .panel h2{font-family:'A2z',sans-serif;font-weight:800;color:var(--red-d);font-size:1.35rem;
   margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 
 /* ---- 플레이스홀더 존 ---- */
-.ph{border:2.5px dashed var(--pink);border-radius:14px;background:var(--cream);
+.ph{border:1.5px dashed rgba(70,52,42,.18);border-radius:14px;background:var(--cream);
   display:flex;align-items:center;justify-content:center;text-align:center;
   color:#c79c78;font-weight:700;padding:24px 16px;min-height:88px;}
 .note{font-size:.9rem;color:#bfa088;margin-top:10px;}
 
 /* ---- 칩 ---- */
 .chip{display:inline-block;font-size:.95rem;font-weight:700;color:var(--red-d);
-  background:var(--pink-l);border:2px solid var(--pink);border-radius:20px;padding:5px 14px;margin:3px;}
+  background:var(--pink-l);border:1.5px solid rgba(70,52,42,.14);border-radius:20px;padding:5px 14px;margin:3px;}
 
 /* ---- 푸터 ---- */
 .foot{text-align:center;padding:34px 0;}
