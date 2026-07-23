@@ -11,112 +11,68 @@
 <!-- 배포 도메인 확정 시: <meta property="og:image" content="https://도메인/avatar.png"> -->
 <link rel="preload" href="/bg.jpg" as="image">
 <link rel="preload" href="/avatar.png" as="image">
+<link rel="stylesheet" href="/css/common.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&display=swap" rel="stylesheet" />
 <style>
-@font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-4Regular.woff2') format('woff2');font-weight:400;font-display:swap;}
-@font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-7Bold.woff2') format('woff2');font-weight:700;font-display:swap;}
-@font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-8ExtraBold.woff2') format('woff2');font-weight:800;font-display:swap;}
-@font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-9Black.woff2') format('woff2');font-weight:900;font-display:swap;}
-  :root{
-    --red:#ff8c2a;--red-d:#ea6e0e;--pink:#ffd7ad;--pink-l:#ffedd9;--hot:#ff5c9e;
-    --ink:#46342a;--paper:#fffaf1;--frame:#fbe06a;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scrollbar-gutter:stable;}
-  body{font-family:'A2z',sans-serif;font-weight:800;color:var(--ink);
-    background:var(--paper);
-    background-image:radial-gradient(rgba(255,140,42,.10) 17%,transparent 18%);background-size:23px 23px;
-    min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:26px 12px;}
+  /* ===== 히어로 스테이지 : 470x607 캔버스 → 940x1214 (네브62+카드+푸터 = 1350) ===== */
+  .stage{position:relative;width:min(940px,94vw);aspect-ratio:940/1214;margin:16px auto 0;}
+  .poster{position:absolute;top:0;left:0;width:470px;height:607px;transform-origin:top left;
+    overflow:hidden;border-radius:16px;background:#8fc0e8 url('/bg.jpg') center/cover no-repeat;
+    box-shadow:0 10px 26px rgba(30,40,70,.22);isolation:isolate;}
+  /* 하단 스크림 — 네임·패널 가독 */
+  .poster::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(12,22,44,0) 46%,rgba(12,22,44,.46) 100%);}
 
-  /* ===== 카드 스테이지 : 470x584 디자인 캔버스 → 통 스케일 ===== */
-  .stage{position:relative;width:min(940px,96vw);aspect-ratio:940/1350;margin:0 auto;}
-  .poster{position:absolute;top:0;left:0;width:470px;height:675px;transform-origin:top left;
-    overflow:hidden;background:#8fc0e8 url('/bg.jpg') center/cover no-repeat;border-radius:14px;
-    box-shadow:0 12px 30px rgba(40,45,70,.3);isolation:isolate;}
-
-
-  /* ===== 아바타 (z2) — /avatar.png 올리면 교체 (세로형 PNG 권장), 없으면 키비주얼 ===== */
-  .art{position:absolute;left:0;right:0;top:18px;bottom:0;z-index:2;
+  /* ===== 아바타 (z2) — /avatar.png 교체 슬롯 ===== */
+  .art{position:absolute;left:0;right:0;top:8px;bottom:0;z-index:2;
     display:flex;align-items:flex-end;justify-content:center;pointer-events:none;}
-  .art img{height:var(--avatar-h,100%);width:auto;max-width:none;transform:translateX(var(--avatar-x,0px));
-    filter:drop-shadow(0 0 4px rgba(255,255,255,.95)) drop-shadow(0 9px 15px rgba(30,35,60,.3));}
+  .art img{height:var(--avatar-h,96%);width:auto;max-width:none;
+    transform:translateX(var(--avatar-x,52px));
+    filter:drop-shadow(0 0 3px rgba(255,255,255,.75)) drop-shadow(0 10px 18px rgba(20,30,60,.32));}
 
-  /* ===== UI 레이어 (z3) ===== */
-  /* 좌상단 프로필 칩 → 프로필 페이지 */
-  .chip{position:absolute;left:18px;top:20px;z-index:3;display:flex;align-items:center;gap:9px;
-    background:#fff;border-radius:24px;padding:7px 15px 7px 8px;text-decoration:none;color:var(--ink);
-    border:2.5px solid #222;box-shadow:0 4px 0 #222;transition:transform .15s ease;}
-  .chip:hover{transform:translateY(-2px);}
-  .chip img{width:37px;height:37px;border-radius:50%;object-fit:cover;object-position:center 30%;
-    border:2.5px solid var(--pink);}
-  .chip .nm{font-weight:900;font-size:.98rem;line-height:1.15;}
-  .chip .nm i{font-style:normal;color:var(--red);font-size:.8rem;}
-  .chip .sub{display:block;font-weight:700;font-size:.6rem;color:#8a90a0;letter-spacing:.01em;}
-
-  /* 우상단 앱 버튼 2x2 — 일정 / 노래 / 업보 / 안내 */
-  .apps{position:absolute;right:18px;top:16px;z-index:4;
-    display:grid;grid-template-columns:repeat(2,47px);gap:8px;}
-  .app{width:47px;height:47px;border-radius:15px;background:linear-gradient(180deg,#ffa651,var(--red));text-decoration:none;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    border:2.5px solid #222;box-shadow:0 4px 0 #222;
-    transition:transform .22s cubic-bezier(.34,1.56,.64,1),background .18s ease,box-shadow .22s ease;}
-  .app svg{width:19px;height:19px;fill:none;stroke:#fff;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
-  .app b{font-family:'A2z',sans-serif;font-weight:800;font-size:.55rem;color:#fff;letter-spacing:.02em;}
-  .app:hover{transform:translateY(-4px) scale(1.09) rotate(4deg);background:var(--hot);
-    box-shadow:0 7px 0 #222;}
-  .app:active{transform:translateY(-1px) scale(1.03);}
-  .app:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
-
-  /* 좌측 레일 */
-  .onair{position:absolute;left:36px;top:238px;z-index:3;width:128px;
-    background:#fff;border:2.5px solid #222;border-radius:15px;padding:10px 12px 11px;box-shadow:0 4px 0 #222;}
-  .onair .t{font-size:.6rem;letter-spacing:.14em;color:#8a94a8;font-weight:800;}
-  .onair .tm{font-size:1.06rem;font-weight:900;color:var(--ink);margin-top:3px;}
-  .onair .off{display:inline-block;margin-top:6px;background:#e8f3ff;color:#3d78b8;
-    font-size:.62rem;font-weight:800;border-radius:11px;padding:2px 9px;}
-
-  .tagset{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:5px;}
-  .tagset.l1{left:36px;top:366px;}
-  .tagset.l2{left:36px;top:444px;}
-  .tagset .k{background:var(--red);color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.05em;
-    border:2.5px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;}
-  .tagset .v{background:#fff;color:var(--ink);font-size:.78rem;font-weight:900;
-    border:2.5px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;}
-
-
-  /* 우측 레일 */
-  .tagset.r1{left:auto;right:32px;top:245px;align-items:flex-end;}
-  .live{position:absolute;left:36px;top:540px;z-index:3;text-decoration:none;
+  /* ===== 글라스 정보 패널 (z3) ===== */
+  .glass{position:absolute;left:22px;bottom:22px;z-index:3;width:198px;
+    background:rgba(255,255,255,.88);backdrop-filter:blur(10px) saturate(1.15);
+    border:1.5px solid rgba(255,255,255,.95);border-radius:18px;padding:15px 16px 16px;
+    box-shadow:0 12px 28px rgba(25,35,65,.24);}
+  .g-onair{display:flex;align-items:center;gap:7px;font-weight:900;color:var(--ink);font-size:.98rem;}
+  .g-onair .dot{width:9px;height:9px;border-radius:50%;background:var(--red);
+    box-shadow:0 0 0 3px rgba(255,140,42,.25);animation:gPulse 1.6s ease-in-out infinite;}
+  @keyframes gPulse{0%,100%{box-shadow:0 0 0 3px rgba(255,140,42,.25);}50%{box-shadow:0 0 0 6px rgba(255,140,42,.12);}}
+  .g-off{display:inline-block;margin-top:7px;background:#e8f3ff;color:#3d78b8;
+    font-size:.66rem;font-weight:800;border-radius:10px;padding:2px 10px;}
+  .glass hr{border:none;border-top:1.5px solid rgba(70,52,42,.12);margin:11px 0 10px;}
+  .g-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:6px;}
+  .g-row .k{font-size:.62rem;font-weight:800;letter-spacing:.1em;color:#8a90a0;}
+  .g-row .v{font-size:.83rem;font-weight:900;color:var(--ink);white-space:nowrap;}
+  .g-live{display:block;margin-top:13px;text-align:center;text-decoration:none;
     background:linear-gradient(180deg,#ffa651,var(--red));color:#fff;font-weight:800;font-size:.9rem;
-    border:2.5px solid #222;border-radius:20px;padding:8px 19px;
-    box-shadow:0 4px 0 #222;transition:transform .15s ease;}
-  .live:hover{transform:translateY(-3px);}
-  .sns{position:absolute;right:32px;top:306px;z-index:3;display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
-  .sns a{background:#fff;color:var(--ink);text-decoration:none;font-weight:800;font-size:.68rem;
-    border:2px solid #222;border-radius:13px;padding:3px 12px;box-shadow:0 3px 0 #222;transition:transform .13s ease;}
-  .sns a:hover{transform:translateY(-2px);color:var(--hot);}
+    border-radius:13px;padding:8px 0;box-shadow:0 5px 12px rgba(234,110,14,.42);
+    transition:transform .14s ease,box-shadow .14s ease;}
+  .g-live:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(234,110,14,.5);}
+  .g-sns{display:flex;gap:7px;margin-top:8px;}
+  .g-sns a{flex:1;text-align:center;text-decoration:none;font-weight:800;font-size:.72rem;color:var(--ink);
+    background:rgba(255,255,255,.72);border:1.5px solid rgba(70,52,42,.16);border-radius:11px;padding:5px 0;
+    transition:background .12s ease;}
+  .g-sns a:hover{background:#fff;}
 
+  /* ===== 네임 (z3) ===== */
+  .bigname{position:absolute;right:24px;bottom:20px;z-index:3;text-align:right;}
+  .bigname .en{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:3.9rem;line-height:.9;color:#fff;
+    letter-spacing:.01em;text-shadow:0 4px 18px rgba(15,25,50,.55),0 1px 3px rgba(15,25,50,.4);}
+  .bigname .sub{margin-top:7px;font-weight:800;font-size:.78rem;color:rgba(255,255,255,.96);
+    text-shadow:0 2px 8px rgba(15,25,50,.55);}
+  .bigname .sub b{color:#ffc98f;}
 
-  /* 하단 대형 네임 */
-  .bigname{position:absolute;right:26px;bottom:44px;z-index:3;text-align:right;transform:rotate(-2deg);}
-  .bigname .en{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:4.6rem;line-height:.88;color:#fff;
-    text-shadow:3.5px 0 0 var(--red),-3.5px 0 0 var(--red),0 3.5px 0 var(--red),0 -3.5px 0 var(--red),
-      3.5px 3.5px 0 var(--red),-3.5px 3.5px 0 var(--red),3.5px -3.5px 0 var(--red),-3.5px -3.5px 0 var(--red),
-      6px 7px 0 rgba(28,28,28,.55);}
-  .bigname .kr{font-family:'A2z',sans-serif;font-weight:900;font-size:1.5rem;color:#fff;margin-top:7px;
-    text-shadow:2.5px 0 0 var(--red),-2.5px 0 0 var(--red),0 2.5px 0 var(--red),0 -2.5px 0 var(--red),
-      2.5px 2.5px 0 var(--red),-2.5px 2.5px 0 var(--red),2.5px -2.5px 0 var(--red),-2.5px -2.5px 0 var(--red),
-      4px 5px 0 rgba(28,28,28,.5);}
+  /* 슬림 푸터 */
+  .foot{padding:10px 0 14px;}
+  .foot .h{font-size:.95rem;}
 
-  .credit{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;white-space:nowrap;
-    font-weight:800;font-size:.6rem;color:var(--ink);background:#fff;border:2px solid #222;
-    border-radius:13px;padding:2px 13px;box-shadow:0 3px 0 #222;}
+  @media (prefers-reduced-motion:reduce){.g-onair .dot,.g-live,.g-sns a{animation:none;transition:none;}}
 
-  @media (prefers-reduced-motion:reduce){.app,.chip,.live,.sns a{transition:none;}}
-
-  /* 인트로 로더 + 등장 */
+  /* 인트로 로더 (common보다 뒤 선언 = 우선) */
   #page-loader{position:fixed;inset:0;z-index:9999;background:var(--paper);
     background-image:radial-gradient(rgba(255,92,158,.10) 17%,transparent 18%);background-size:23px 23px;
     display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:400px;gap:20px;
@@ -130,82 +86,53 @@
   @keyframes plPop{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-12px) scale(1.05);}}
   @keyframes plDot{0%,100%{opacity:.35;transform:translateY(0);}50%{opacity:1;transform:translateY(-7px);}}
   @keyframes loaderOut{to{opacity:0;visibility:hidden;}}
-  .stage{animation:stageReveal .6s cubic-bezier(.18,.72,.28,1) .55s both;}
+  .stage,.foot{animation:stageReveal .6s cubic-bezier(.18,.72,.28,1) .55s both;}
   @keyframes stageReveal{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-  @media (prefers-reduced-motion:reduce){#page-loader{display:none;}.stage{animation:none;}}
+  @media (prefers-reduced-motion:reduce){#page-loader{display:none;}.stage,.foot{animation:none;}}
 </style>
 </head>
 <body>
 <div id="page-loader"><img class="pl-img" src="/loader.png" alt="히라"><div class="pl-dots"><span></span><span></span><span></span></div></div>
+
+<nav class="topnav"><div class="nav-inner">
+  <a class="home" href="/">히라 ♡</a>
+  <a class="lk" href="/profile/">프로필</a>
+  <a class="lk" href="/schedule/">일정</a>
+  <a class="lk" href="https://meloming.com/channel/hira" target="_blank" rel="noopener">노래책</a>
+  <a class="lk" href="/upbo/">업보</a>
+  <a class="lk" href="/guide/">방송안내</a>
+</div></nav>
+
 <div class="stage">
 <main class="poster">
+  <!-- 아바타 : /avatar.png 교체 (없으면 키비주얼) · 위치·크기 = --avatar-x / --avatar-h -->
+  <div class="art"><img src="/avatar.png" onerror="this.onerror=null;this.src='/keyvisual.png';" alt="히라" fetchpriority="high"></div>
 
-  <!-- 아바타 : /avatar.png 업로드 시 자동 교체 (없으면 키비주얼) -->
-  <div class="art"><img src="/avatar.png" onerror="this.onerror=null;this.src='/keyvisual.png';" alt="히라"></div>
+  <!-- 정보 패널 -->
+  <aside class="glass">
+    <div class="g-onair"><span class="dot"></span>ON AIR · 저녁 8시</div>
+    <span class="g-off">수 · 토 휴방</span>
+    <hr>
+    <div class="g-row"><span class="k">BIRTHDAY</span><span class="v">8월 23일</span></div>
+    <div class="g-row"><span class="k">DEBUT</span><span class="v">2024. 03. 17</span></div>
+    <div class="g-row"><span class="k">FANDOM</span><span class="v">꾸이 💗</span></div>
+    <a class="g-live" href="https://www.sooplive.com/station/sjsr4611" target="_blank" rel="noopener">▶ 방송국 바로가기</a>
+    <div class="g-sns">
+      <a href="https://cafe.naver.com/hirarara" target="_blank" rel="noopener">팬카페</a>
+      <a href="https://www.youtube.com/@%EC%9A%B0%EC%A3%BC%EC%B1%84%EA%B0%95%ED%9E%88%EB%9D%BC" target="_blank" rel="noopener">유튜브</a>
+    </div>
+  </aside>
 
-  <!-- 좌상단 프로필 칩 -->
-  <a class="chip" href="profile/">
-    <img src="/loader.png" alt="">
-    <span>
-      <span class="nm">히라 <i>▸</i></span>
-      <span class="sub">기미라다 · 8시에 온다</span>
-    </span>
-  </a>
-
-  <!-- 우상단 버튼 : 일정 / 노래 / 업보 / 안내 -->
-  <nav class="apps">
-    <a class="app" href="schedule/" title="일정">
-      <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>
-      <b>일정</b>
-    </a>
-    <a class="app" href="https://meloming.com/channel/hira" target="_blank" rel="noopener" title="노래">
-      <svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
-      <b>노래</b>
-    </a>
-    <a class="app" href="upbo/" title="업보">
-      <svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5V3h6v1.5M8.5 12.5l2.5 2.5 4.5-4.5"/></svg>
-      <b>업보</b>
-    </a>
-    <a class="app" href="guide/" title="안내">
-      <svg viewBox="0 0 24 24"><path d="M3.5 11v3l4 1 8.5 4V6L7.5 10l-4 1z"/><path d="M18.5 9.5a4 4 0 0 1 0 5.5"/></svg>
-      <b>안내</b>
-    </a>
-  </nav>
-
-  <!-- 좌측 레일 -->
-  <div class="onair">
-    <div class="t">⏰ ON AIR</div>
-    <div class="tm">저녁 8시</div>
-    <span class="off">수 · 토 휴방</span>
-  </div>
-  <div class="tagset l1">
-    <span class="k">Birthday</span>
-    <span class="v">8월 23일</span>
-  </div>
-  <div class="tagset l2">
-    <span class="k">Debut</span>
-    <span class="v">2024. 03. 17</span>
-  </div>
-
-  <!-- 우측 레일 -->
-  <div class="tagset r1">
-    <span class="v">꾸이 💗</span>
-  </div>
-  <a class="live" href="https://www.sooplive.com/station/sjsr4611" target="_blank" rel="noopener">▶ 방송국</a>
-  <div class="sns">
-    <a href="https://cafe.naver.com/hirarara" target="_blank" rel="noopener">팬카페</a>
-    <a href="https://www.youtube.com/@%EC%9A%B0%EC%A3%BC%EC%B1%84%EA%B0%95%ED%9E%88%EB%9D%BC" target="_blank" rel="noopener">유튜브</a>
-  </div>
-
-  <!-- 대형 네임 -->
+  <!-- 네임 -->
   <div class="bigname">
     <div class="en">HIRA</div>
-    <div class="kr">히라</div>
+    <div class="sub">히라 · <b>기미라다, 8시에 온다</b></div>
   </div>
-
-  <div class="credit">© 2026 히라 · 꾸이단 💗</div>
 </main>
 </div>
+
+<footer class="foot"><div class="h">© 2026 히라 · 꾸이단 💗</div></footer>
+
 <script>
   (function(){
     var stage=document.querySelector('.stage'), poster=document.querySelector('.poster');
