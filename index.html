@@ -338,6 +338,14 @@ body.fx .avatar-layer::before{opacity:.85;}
 }
 
 /* ══ 임베드(셀프스케일) 모드: vw 단위 → 940 스테이지 기준 고정 ══ */
+/* 모바일 직접 방문 — width=1000 메타로 레이아웃 뷰포트가 세로로 길어질 때 아바타를 1350 캔버스 기준으로 캡 */
+@media (min-height:1360px){
+  .avatar-layer{height:1274px;bottom:auto;
+    -webkit-mask-image:linear-gradient(180deg,#000 84%,transparent 99%);
+    mask-image:linear-gradient(180deg,#000 84%,transparent 99%);}
+  body{min-height:0;}
+  .bottom-fade{display:none;}
+}
 html.emb .nav-pill{width:916px;}
 html.emb .wrap{width:908px;}
 html.emb .avatar-layer{height:1274px;}
