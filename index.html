@@ -99,9 +99,9 @@ a{color:inherit;}
 /* 하단 마감 그라데이션 — 화면 전체 폭 */
 .bottom-fade{position:fixed;left:0;right:0;bottom:0;height:150px;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(247,245,238,0),rgba(247,245,238,.85) 72%,var(--bg));}
-.hero-ghost{position:absolute;right:-8px;top:56px;font-family:'Archivo Black',sans-serif;
-  font-size:14.5rem;line-height:.8;color:rgba(35,37,43,.055);letter-spacing:-.03em;
-  pointer-events:none;user-select:none;white-space:nowrap;}
+.hero-ghost{position:fixed;right:calc(50% - 478px);top:calc(var(--nav-h) + 66px);z-index:0;
+  font-family:'Archivo Black',sans-serif;font-size:14.5rem;line-height:.8;color:rgba(35,37,43,.055);
+  letter-spacing:-.03em;pointer-events:none;user-select:none;white-space:nowrap;}
 /* 전역 아바타 레이어 — 모든 뷰 뒤에 상주 (쮸 방식) */
 .avatar-layer{position:fixed;left:50%;top:calc(var(--nav-h) + 14px);bottom:0;width:884px;
   margin-left:calc(470px - 884px + 176px);z-index:1;display:flex;align-items:flex-end;justify-content:center;
@@ -335,13 +335,22 @@ body.fx .avatar-layer::before{opacity:.85;}
   #page-loader{display:none;} .orb,.h-eyebrow .dot,.pl-dots span,#page-loader .pl-img{animation:none;}
   .view{animation:none;}
 }
+
+/* ══ 임베드(셀프스케일) 모드: vw 단위 → 940 스테이지 기준 고정 ══ */
+html.emb .nav-pill{width:916px;}
+html.emb .wrap{width:908px;}
+html.emb .avatar-layer{height:1274px;}
+html.emb .clip-modal{width:840px;}
+html.emb .day-modal{width:430px;}
 </style>
 </head>
 <body>
 <div id="page-loader"><img class="pl-img" src="/loader.png" alt="히라"><div class="pl-dots"><span></span><span></span><span></span></div></div>
 
+<div id="fitstage">
 <div class="avatar-layer" aria-hidden="true"><img src="/avatar.png" onerror="this.onerror=null;this.src='/keyvisual.png';" alt="" fetchpriority="high"></div>
 <div class="bottom-fade" aria-hidden="true"></div>
+<div class="hero-ghost" aria-hidden="true">HIRA</div>
 
 <div class="bgfx" aria-hidden="true">
   <div class="grid-lines"></div>
@@ -364,7 +373,6 @@ body.fx .avatar-layer::before{opacity:.85;}
   <!-- ========== HOME ========== -->
   <section class="view" id="v-home">
     <div class="hero">
-      <div class="hero-ghost">HIRA</div>
       <div class="hero-copy">
         <span class="h-eyebrow"><span class="dot"></span>SOOP STREAMER</span>
         <h1 class="h-name">HIRA</h1>
@@ -468,6 +476,7 @@ body.fx .avatar-layer::before{opacity:.85;}
 </div>
 
 <footer class="foot"><div class="h">© 2026 히라 · 꾸이단 💗</div></footer>
+</div><!-- /fitstage -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/supabase-config.js"></script>
@@ -869,6 +878,35 @@ async function G_load(){
   }catch(e){}
   G_render(rules,terms,when);
 }
+
+/* ══════════ 임베드 셀프-스케일 (iframe 폭<940 대응) ══════════ */
+const fitStage=document.getElementById('fitstage');
+let fitScale=1;
+function syncFitH(){
+  if(fitScale<1){ document.body.style.height=Math.ceil(fitStage.scrollHeight*fitScale)+'px'; }
+  else { document.body.style.height=''; }
+}
+function fitEmbed(){
+  const w=document.documentElement.clientWidth;
+  const ns=w<940 ? w/940 : 1;
+  if(ns<1){
+    fitScale=ns;
+    Object.assign(fitStage.style,{width:'940px',position:'absolute',left:'0',top:'0',
+      transform:'scale('+ns+')',transformOrigin:'top left',paddingTop:'76px'});
+    document.body.style.paddingTop='0';
+    document.documentElement.classList.add('emb');
+  } else if(fitScale<1){
+    fitScale=1;
+    Object.assign(fitStage.style,{width:'',position:'',left:'',top:'',transform:'',transformOrigin:'',paddingTop:''});
+    document.body.style.paddingTop='';
+    document.documentElement.classList.remove('emb');
+  }
+  syncFitH();
+}
+fitEmbed();
+window.addEventListener('resize',fitEmbed);
+if(window.ResizeObserver){ new ResizeObserver(syncFitH).observe(fitStage); }
+window.addEventListener('hashchange',()=>setTimeout(syncFitH,500));
 
 /* ══════════ 부트 ══════════ */
 routeFromHash();
