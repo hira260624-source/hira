@@ -128,12 +128,12 @@ body.fx .avatar-layer::before{opacity:.85;}
 .h-kr{font-weight:900;font-size:1.85rem;color:var(--acc-t);letter-spacing:.01em;}
 .h-bio{margin-top:18px;font-weight:700;font-size:1.06rem;line-height:1.85;color:var(--dim);max-width:400px;}
 .h-line{width:62px;height:3px;background:var(--acc);border-radius:2px;margin:22px 0 20px;}
-.h-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:454px;}
-.h-fact{display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,.72);border:1px solid var(--line);
-  border-radius:14px;padding:11px 15px;backdrop-filter:blur(14px);}
-.h-fact.wide{grid-column:1 / -1;}
-.h-fact .k{font-size:.64rem;font-weight:800;letter-spacing:.14em;color:var(--dim2);}
-.h-fact .v{font-weight:800;font-size:1rem;color:var(--txt);line-height:1.25;}
+.h-facts{display:flex;flex-direction:column;gap:10px;max-width:454px;}
+.h-fact{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.72);border:1px solid var(--line);
+  border-radius:14px;padding:13px 18px;backdrop-filter:blur(14px);}
+.h-fact .ic{font-size:1.12rem;line-height:1;}
+.h-fact .k{font-size:.66rem;font-weight:800;letter-spacing:.14em;color:var(--dim2);min-width:84px;}
+.h-fact .v{font-weight:800;font-size:1.02rem;color:var(--txt);line-height:1.25;margin-left:auto;text-align:right;}
 .h-cta{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;}
 .btn-main,.btn-ghost{text-decoration:none;font-weight:800;border-radius:13px;transition:transform .14s ease,box-shadow .14s ease,background .14s ease;}
 .btn-main{background:linear-gradient(180deg,var(--acc-l),var(--acc));color:var(--ink-on-acc);font-size:1rem;
@@ -380,10 +380,10 @@ html.emb .day-modal{width:430px;}
         <p class="h-bio" id="homeBio">기미라다. 8시에 온다. 쓰껄하러 와라.</p>
         <div class="h-line"></div>
         <div class="h-facts">
-          <div class="h-fact wide"><span class="k">ON AIR</span><span class="v" id="homeWhen">저녁 8시 고정 (수 · 토 휴방)</span></div>
-          <div class="h-fact"><span class="k">BIRTHDAY</span><span class="v" id="homeBday">2002. 08. 23</span></div>
-          <div class="h-fact"><span class="k">DEBUT</span><span class="v" id="homeDebut">2024. 03. 17</span></div>
-          <div class="h-fact wide"><span class="k">FANDOM</span><span class="v" id="homeFandom">꾸이 · 꾸이단</span></div>
+          <div class="h-fact"><span class="ic">⏰</span><span class="k">ON AIR</span><span class="v" id="homeWhen">저녁 8시 고정 (수 · 토 휴방)</span></div>
+          <div class="h-fact"><span class="ic">🎂</span><span class="k">BIRTHDAY</span><span class="v" id="homeBday">2002. 08. 23</span></div>
+          <div class="h-fact"><span class="ic">🌱</span><span class="k">DEBUT</span><span class="v" id="homeDebut">2024. 03. 17</span></div>
+          <div class="h-fact"><span class="ic">💗</span><span class="k">FANDOM</span><span class="v" id="homeFandom">꾸이 · 꾸이단</span></div>
         </div>
         <div class="h-cta">
           <a class="btn-main" id="homeChannel" href="https://www.sooplive.com/station/sjsr4611" target="_blank" rel="noopener">▶ 방송국 바로가기</a>
