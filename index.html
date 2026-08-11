@@ -103,15 +103,16 @@ a{color:inherit;}
 /* 전역 아바타 레이어 — 모든 뷰 뒤에 상주 (쮸 방식) */
 .avatar-layer{position:fixed;left:50%;top:calc(var(--nav-h) + 14px);bottom:0;width:884px;
   margin-left:calc(470px - 884px + 176px);z-index:1;display:flex;align-items:flex-end;justify-content:center;
-  pointer-events:none;transform:none!important;transition:opacity .5s ease;}
+  pointer-events:none;transform-origin:100% 100%;will-change:transform,opacity;
+  transition:opacity .5s ease, transform .55s cubic-bezier(.2,.7,.3,1);}
 .avatar-layer img{height:100%;width:100%;max-width:100%;object-fit:contain;object-position:bottom center;
   filter:drop-shadow(0 24px 44px rgba(0,0,0,.6));}
 .avatar-layer::before{content:'';position:absolute;right:212px;bottom:232px;width:576px;height:576px;border-radius:50%;
   background:radial-gradient(circle at 34% 28%, var(--acc) 0%, var(--acc-d) 52%, #a33f00 100%);
   box-shadow:0 0 130px rgba(255,140,42,.4);z-index:-1;transition:opacity .5s ease;}
-body.sub .avatar-layer{opacity:.24;}
+body.sub .avatar-layer{opacity:.24;transform:scale(.965);}
 body.sub .avatar-layer::before{opacity:.3;}
-body.fx .avatar-layer{opacity:.95;}
+body.fx .avatar-layer{opacity:.95;transform:scale(1.045);}
 body.fx .avatar-layer::before{opacity:.85;}
 .hero-copy{position:relative;z-index:3;padding-top:130px;max-width:474px;}
 .hero-copy::before{content:'';position:absolute;left:-70px;right:-120px;top:-30px;bottom:-40px;z-index:-1;
