@@ -922,5 +922,68 @@ routeFromHash();
 })();
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeClips(); closeDayModal(); } });
 </script>
+
+<style>
+/* ✨ deco layer: petals + cursor play + tilt (2026-08) */
+#petals{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+#petals i{position:absolute;top:-30px;border-radius:60% 40% 55% 45%;background:linear-gradient(140deg,var(--acc-l),var(--acc));opacity:.75;animation:petalFall linear infinite;box-shadow:0 2px 6px rgba(227,164,0,.25);}
+#petals i.p{background:linear-gradient(140deg,#ffd6e8,var(--hot));opacity:.5;}
+@keyframes petalFall{to{transform:translateY(1450px) rotate(540deg);}}
+.spark{position:fixed;z-index:200;pointer-events:none;font-size:15px;animation:sparkOut .8s ease-out forwards;will-change:transform,opacity;}
+@keyframes sparkOut{from{opacity:1;transform:translate(0,0) scale(1) rotate(0)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2) rotate(120deg)}}
+#ripple{position:fixed;z-index:190;pointer-events:none;border:2px solid var(--acc);border-radius:50%;opacity:0;}
+#ripple.go{animation:ripGo .55s ease-out;}
+@keyframes ripGo{from{opacity:.9;width:0;height:0;margin:0}to{opacity:0;width:120px;height:120px;margin:-60px 0 0 -60px}}
+.btn-main,.btn-ghost{will-change:transform;}
+.home-quick > *{transition:transform .18s ease, box-shadow .18s ease;transform-style:preserve-3d;}
+</style>
+<div id="petals" aria-hidden="true"></div>
+<div id="ripple" aria-hidden="true"></div>
+<script>
+(function(){
+  var pt=document.getElementById('petals');
+  for(var i=0;i<14;i++){var s=document.createElement('i');
+    var sz=6+Math.random()*9; s.style.width=sz+'px'; s.style.height=sz*0.8+'px';
+    s.style.left=Math.random()*100+'%';
+    s.style.animationDuration=(9+Math.random()*10)+'s';
+    s.style.animationDelay=(-Math.random()*14)+'s';
+    if(Math.random()<0.25)s.className='p';
+    pt.appendChild(s);}
+  var glyphs=['\u2726','\u2727','\u2728','\u00b7'];var last=0;
+  document.addEventListener('mousemove',function(e){
+    var now=Date.now(); if(now-last<50)return; last=now;
+    var s=document.createElement('span'); s.className='spark';
+    s.textContent=glyphs[Math.random()*glyphs.length|0];
+    s.style.left=e.clientX+'px'; s.style.top=e.clientY+'px';
+    s.style.color=Math.random()<.7?'var(--acc-d)':'var(--hot)';
+    s.style.setProperty('--dx',(Math.random()*40-20)+'px');
+    s.style.setProperty('--dy',(Math.random()*30+10)+'px');
+    document.body.appendChild(s); setTimeout(function(){s.remove()},850);
+  },{passive:true});
+  document.addEventListener('click',function(e){
+    var r=document.getElementById('ripple'); if(!r)return;
+    r.classList.remove('go');
+    r.style.left=e.clientX+'px'; r.style.top=e.clientY+'px';
+    void r.offsetWidth; r.classList.add('go');
+  });
+  document.querySelectorAll('.btn-main,.btn-ghost').forEach(function(b){
+    b.addEventListener('mousemove',function(e){
+      var r=b.getBoundingClientRect();
+      var x=(e.clientX-r.left-r.width/2)*.22, y=(e.clientY-r.top-r.height/2)*.32;
+      b.style.transform='translate('+x+'px,'+y+'px)';
+    });
+    b.addEventListener('mouseleave',function(){b.style.transform='';});
+  });
+  document.querySelectorAll('.home-quick > *').forEach(function(c){
+    c.addEventListener('mousemove',function(e){
+      var r=c.getBoundingClientRect();
+      var rx=((e.clientY-r.top)/r.height-.5)*-9, ry=((e.clientX-r.left)/r.width-.5)*9;
+      c.style.transform='perspective(500px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateY(-3px)';
+    });
+    c.addEventListener('mouseleave',function(){c.style.transform='';});
+  });
+})();
+</script>
+
 </body>
 </html>
