@@ -342,7 +342,7 @@ body.fx .avatar-layer::before{opacity:.85;}
 
 /* ══ 임베드(셀프스케일) 모드: vw 단위 → 940 스테이지 기준 고정 ══ */
 /* 모바일 직접 방문 — width=1000 메타로 레이아웃 뷰포트가 세로로 길어질 때 아바타를 1350 캔버스 기준으로 캡 */
-@media (min-height:1360px){
+@media (min-height:1360px) and (hover:none) and (pointer:coarse){
   .avatar-layer{height:1274px;bottom:auto;
     -webkit-mask-image:linear-gradient(180deg,#000 84%,transparent 99%);
     mask-image:linear-gradient(180deg,#000 84%,transparent 99%);}
@@ -351,12 +351,12 @@ body.fx .avatar-layer::before{opacity:.85;}
 }
 /* ═══════ 반응형 (직접 방문 전용 — iframe 임베드는 html.emb 스케일핏이 담당) ═══════ */
 /* 중간 티어: 태블릿·좁은 창 768~939 — 아바타 우측 앵커로 잘림 방지 */
-@media (max-width:939px){
+@media (max-width:939px) and (hover:none) and (pointer:coarse){
   html:not(.emb) .avatar-layer{width:min(884px,104vw);left:auto;right:-5vw;margin-left:0;}
   html:not(.emb) .hero-ghost{right:8px;font-size:11rem;}
 }
 /* 모바일: 767 이하 — 세로 스택 풀 반응형 */
-@media (max-width:767px){
+@media (max-width:767px) and (hover:none) and (pointer:coarse){
   html:not(.emb) body{font-size:15px;padding-top:calc(var(--nav-h) + 6px);}
   html:not(.emb) .topnav{top:8px;padding:0 8px;}
   html:not(.emb) .nav-pill{height:52px;gap:0;padding:0 12px;justify-content:space-between;overflow:visible;flex-wrap:nowrap;}
