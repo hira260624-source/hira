@@ -372,9 +372,10 @@ body.fx .avatar-layer::before{opacity:.85;}
   html.mob .nav-pill .lk .ext{display:none;}
   html.mob .wrap{width:calc(100vw - 22px);}
   /* 아바타 = 데스크탑처럼 우측 실체 배치 (홈), 서브뷰만 딤 */
-  html.mob .avatar-layer{width:106vw;left:auto;right:-24vw;margin-left:0;top:auto;bottom:0;
-    height:74vh;height:74svh;-webkit-mask-image:none;mask-image:none;}
-  html.mob .avatar-layer::before{width:330px;height:330px;right:8vw;bottom:16vh;bottom:16svh;}
+  html.mob .avatar-layer{width:152vw;left:auto;right:-42vw;margin-left:0;top:auto;bottom:0;
+    height:calc(100vh - var(--nav-h) - 22px);height:calc(100svh - var(--nav-h) - 22px);
+    -webkit-mask-image:none;mask-image:none;}
+  html.mob .avatar-layer::before{width:380px;height:380px;right:16vw;bottom:18svh;}
   html.mob body.sub .avatar-layer{opacity:.16;}
   html.mob .hero-ghost{display:none;}
   /* 홈 히어로 세로 스택 */
