@@ -359,15 +359,18 @@ body.fx .avatar-layer::before{opacity:.85;}
 @media (max-width:767px){
   html:not(.emb) body{font-size:15px;padding-top:calc(var(--nav-h) + 6px);}
   html:not(.emb) .topnav{top:8px;padding:0 8px;}
-  html:not(.emb) .nav-pill{height:54px;gap:2px;padding:0 10px;overflow-x:auto;flex-wrap:nowrap;
-    -webkit-overflow-scrolling:touch;scrollbar-width:none;}
-  html:not(.emb) .nav-pill::-webkit-scrollbar{display:none;}
+  html:not(.emb) .nav-pill{height:52px;gap:0;padding:0 12px;justify-content:space-between;overflow:visible;flex-wrap:nowrap;}
   html:not(.emb) .nav-pill a{flex:none;}
+  html:not(.emb) .nav-pill .home{font-size:1.02rem;}
+  html:not(.emb) .nav-pill .home i{display:none;}
+  html:not(.emb) .nav-pill .lk{font-size:.8rem;padding:7px 6px;letter-spacing:-.015em;}
+  html:not(.emb) .nav-pill .lk[data-v="home"]{display:none;}
+  html:not(.emb) .nav-pill .lk .ext{display:none;}
   html:not(.emb) .wrap{width:calc(100vw - 22px);}
-  /* 아바타 = 은은한 배경 레이어 */
-  html:not(.emb) .avatar-layer{width:150vw;left:50%;right:auto;margin-left:-60vw;top:auto;bottom:0;height:74vh;opacity:.5;
-    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%);mask-image:linear-gradient(180deg,transparent 0,#000 14%);}
-  html:not(.emb) .avatar-layer::before{width:300px;height:300px;right:14vw;bottom:16vh;}
+  /* 아바타 = 데스크탑처럼 우측 실체 배치 (홈), 서브뷰만 딤 */
+  html:not(.emb) .avatar-layer{width:118vw;left:auto;right:-38vw;margin-left:0;top:auto;bottom:0;height:76vh;
+    -webkit-mask-image:none;mask-image:none;}
+  html:not(.emb) .avatar-layer::before{width:330px;height:330px;right:8vw;bottom:16vh;}
   html:not(.emb) body.sub .avatar-layer{opacity:.16;}
   html:not(.emb) .hero-ghost{display:none;}
   /* 홈 히어로 세로 스택 */
@@ -377,8 +380,8 @@ body.fx .avatar-layer::before{opacity:.85;}
   html:not(.emb) .h-name{font-size:4.5rem;}
   html:not(.emb) .h-kr{font-size:1.4rem;}
   html:not(.emb) .h-bio{font-size:.98rem;max-width:100%;}
-  html:not(.emb) .h-facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
-  html:not(.emb) .h-fact{width:100%;box-sizing:border-box;}
+  html:not(.emb) .h-facts{display:flex;flex-direction:column;align-items:flex-start;gap:8px;width:auto;}
+  html:not(.emb) .h-fact{width:auto;max-width:66vw;box-sizing:border-box;}
   html:not(.emb) .h-cta{width:100%;}
   html:not(.emb) .btn-main{width:100%;box-sizing:border-box;text-align:center;justify-content:center;display:flex;}
   html:not(.emb) .cta-row{width:100%;}
