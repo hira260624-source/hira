@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+<!-- 프사 제작기 · 체키 에디터용 한글 폰트 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Dongle:wght@400;700&family=Gaegu:wght@400;700&family=Hi+Melody&family=Gamja+Flower&family=Cute+Font&family=Poor+Story&family=Single+Day&family=Nanum+Pen+Script&family=Bagel+Fat+One&family=Sunflower:wght@500;700&family=Stylish&family=Yeon+Sung&family=Kirang+Haerang&family=East+Sea+Dokdo&family=Gugi&family=Black+Han+Sans&family=Do+Hyeon&family=Song+Myung&family=Nanum+Gothic:wght@400;800&family=Nanum+Myeongjo:wght@400;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <link rel="stylesheet" href="/css/common.css" />
 <style>
   .adminbar{position:fixed;top:0;left:0;right:0;z-index:50;height:62px;display:flex;align-items:center;
@@ -812,10 +815,18 @@
           <input type="text" id="chekiTextVal" placeholder="입력 후 캔버스 클릭">
           <div class="ct-row">
             <select id="chekiFont">
-              <option value="A2z">A2z</option>
-              <option value="Pretendard">Pretendard</option>
-              <option value="Anton">Anton</option>
-              <option value="cursive">손글씨</option>
+              <option value="A2z">A2z (기본)</option>
+              <option value="Jua">주아 (동글)</option>
+              <option value="Gaegu">개구 (삐뚤)</option>
+              <option value="Hi Melody">하이멜로디</option>
+              <option value="Nanum Pen Script">나눔손글씨 펜</option>
+              <option value="Gamja Flower">감자꽃</option>
+              <option value="East Sea Dokdo">동해독도 (붓)</option>
+              <option value="Black Han Sans">검은고딕</option>
+              <option value="Do Hyeon">도현</option>
+              <option value="Nanum Myeongjo">나눔명조</option>
+              <option value="Pretendard">프리텐다드</option>
+              <option value="Anton">Anton (영문)</option>
             </select>
             <input type="number" id="chekiFontSize" value="34" min="10" max="200" style="width:74px">
           </div>
@@ -2042,6 +2053,20 @@ const CK = {
 const CK_PALETTE=['#ff5c9e','#ffc61a','#33e6ff','#6ee7b7','#b58cff','#ff7043','#ffffff','#33322c'];
 const CK_STICKERS=['💖','✨','🌸','⭐','🎀','🍒','☁️','🌈','💫','🐰','🎧','🎤','💌','🍰','🔥','👑','🫧','🥺','😽','🩷'];
 
+
+/* 캔버스용 웹폰트 선로드 — DOM 사용처가 없으면 브라우저가 파일을 안 받으므로 명시 로드 */
+const CK_FONTS=['A2z','Jua','Gaegu','Hi Melody','Nanum Pen Script','Gamja Flower','East Sea Dokdo',
+  'Black Han Sans','Do Hyeon','Nanum Myeongjo','Pretendard','Anton','Sunflower','Cute Font','Single Day',
+  'Bagel Fat One','Stylish','Yeon Sung','Kirang Haerang','Gugi','Poor Story','Dongle','Song Myung','Nanum Gothic'];
+async function preloadCanvasFonts(){
+  if(!document.fonts||!document.fonts.load) return;
+  await Promise.all(CK_FONTS.flatMap(f=>[
+    document.fonts.load(`400 30px "${f}"`,'히라 체키 ABC').catch(()=>{}),
+    document.fonts.load(`800 30px "${f}"`,'히라 체키 ABC').catch(()=>{})
+  ]));
+  try{ await document.fonts.ready; }catch(_){}
+}
+
 function chekiBoot(){
   CK.cv=document.getElementById('chekiCanvas'); CK.ctx=CK.cv.getContext('2d');
   CK.ink=document.createElement('canvas'); CK.ictx=CK.ink.getContext('2d');
@@ -2081,11 +2106,13 @@ function chekiBoot(){
     chekiRender();
   });
   document.getElementById('chekiCaption').addEventListener('input',e=>{ CK.caption=e.target.value; chekiRender(); });
+  document.getElementById('chekiFont').addEventListener('change',e=>{ document.fonts.load(`800 30px "${e.target.value}"`,'가').then(()=>chekiRender()).catch(()=>{}); });
   document.getElementById('chekiFile').addEventListener('change',e=>{
     const f=e.target.files?.[0]; if(!f) return;
     const r=new FileReader(); r.onload=()=>chekiLoadImage(r.result); r.readAsDataURL(f); e.target.value='';
   });
 
+  preloadCanvasFonts().then(()=>chekiRender());
   CK.cv.addEventListener('pointerdown',ckDown);
   CK.cv.addEventListener('pointermove',ckMove);
   addEventListener('pointerup',ckUp);
@@ -2203,7 +2230,7 @@ function chekiRender(){
     c.save(); c.translate(o.x,o.y); c.rotate((o.rot||0)*Math.PI/180); c.textAlign='center'; c.textBaseline='middle';
     if(o.type==='sticker'){ c.font=`${o.size}px serif`; c.fillText(o.text,0,0); }
     else {
-      c.font=`800 ${o.size}px ${o.font},sans-serif`;
+      c.font=`800 ${o.size}px "${o.font}",sans-serif`;
       if(o.stroke){ c.lineWidth=Math.max(3,o.size*0.16); c.strokeStyle='#fff'; c.lineJoin='round'; c.strokeText(o.text,0,0); }
       c.fillStyle=o.color; c.fillText(o.text,0,0);
     }
