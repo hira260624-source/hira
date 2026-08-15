@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=1000" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>히라 · 어드민</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -53,8 +53,13 @@
 
 
 
-  #tab-studio .wrap{display:grid;grid-template-columns:280px 1fr 1fr;gap:14px;padding:0;max-width:none;align-items:start;}
-  @media (max-width:1200px){ #tab-studio .wrap{grid-template-columns:1fr;} }
+  /* 위젯 탭은 1920까지 풀폭 사용 */
+  body.studio-wide #panel{width:min(1900px,97vw);}
+  #tab-studio .wrap{display:grid;grid-template-columns:300px minmax(360px,1fr) minmax(420px,1.25fr);
+    gap:16px;padding:0;max-width:none;align-items:start;}
+  @media (max-width:1400px){ #tab-studio .wrap{grid-template-columns:280px 1fr;} }
+  @media (max-width:1000px){ #tab-studio .wrap{grid-template-columns:1fr;} }
+  #tab-studio .fxlist{max-height:none;}
   /* 스튜디오 레이아웃 보정 (어드민 라이트 톤) */
   #tab-studio{background:#fffdf9;color:#5b463a;border:2px solid var(--pink-l);}
   #tab-studio .col{background:#fff;border:2px solid var(--pink-l);border-radius:16px;padding:16px;min-width:0;}
@@ -664,6 +669,7 @@ document.querySelector('.tabs').addEventListener('click',e=>{
   const b=e.target.closest('.tab'); if(!b) return;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t===b));
   document.querySelectorAll('.pane').forEach(p=>{ p.hidden = (p.id!=='tab-'+b.dataset.tab); });
+  document.body.classList.toggle('studio-wide', b.dataset.tab==='studio');
   if(b.dataset.tab==='studio' && !window.__studioReady){ window.__studioReady=1; try{ studioBoot(); }catch(e){ console.warn(e); } }
 });
 
