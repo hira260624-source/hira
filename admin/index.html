@@ -70,15 +70,29 @@
   .vrow .unm{font-weight:800;color:#5b463a;font-size:1.02rem;}
   .vrow .spacer{flex:1;}
 
-  #grantMember{font-family:'A2z';font-size:1rem;color:var(--ink);background:var(--cream);border:2px solid var(--pink);
-    border-radius:11px;padding:8px 12px;flex:1;min-width:180px;cursor:pointer;}
-  #grantMember:focus{outline:none;border-color:var(--red);}
-  .gtr{display:flex;align-items:center;gap:11px;padding:9px 13px;border:2px solid var(--pink-l);
-    border-radius:12px;margin-bottom:8px;background:#fff;}
-  .gtr .sw{width:12px;height:12px;border-radius:4px;flex:none;}
-  .gtr .tn{font-weight:800;color:#5b463a;flex:1;font-size:1rem;}
-  .gtr input[type=number]{width:74px;font-family:'A2z';font-size:1.02rem;font-weight:800;text-align:center;
-    color:var(--red-d);background:var(--cream);border:2px solid var(--pink);border-radius:10px;padding:6px 6px;}
+  #uq{font-family:'A2z';font-size:.98rem;color:var(--ink);background:var(--cream);border:2px solid var(--pink);
+    border-radius:11px;padding:7px 12px;flex:1;min-width:160px;}
+  #uq:focus{outline:none;border-color:var(--red);}
+  .grant-people{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:13px;max-height:150px;overflow-y:auto;}
+  .pchip{display:inline-flex;align-items:center;gap:7px;font-family:'A2z';font-weight:800;font-size:.9rem;color:var(--red-d);
+    background:#fff;border:2px solid var(--pink);border-radius:999px;padding:4px 13px 4px 5px;cursor:pointer;}
+  .pchip .pa{width:24px;height:24px;border-radius:50%;position:relative;overflow:hidden;display:flex;align-items:center;
+    justify-content:center;font-size:.72rem;color:#fff;flex:none;}
+  .pchip .pa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .pchip.on{background:var(--red);color:#fff;border-color:var(--red);}
+  .pchip small{font-weight:700;opacity:.7;font-size:.76rem;}
+  #grantTypeRows{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .gtr{display:flex;align-items:center;gap:7px;padding:8px 10px;border:2px solid var(--pink-l);
+    border-radius:12px;background:#fff;min-width:0;}
+  .gtr .sw{width:11px;height:11px;border-radius:4px;flex:none;}
+  .gtr .tn{font-weight:800;color:#5b463a;flex:1;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .gtr .st{display:flex;align-items:center;gap:3px;flex:none;}
+  .gtr .st button{border:none;background:var(--cream);width:26px;height:26px;border-radius:50%;cursor:pointer;
+    font-weight:900;font-size:1rem;line-height:1;color:var(--red-d);}
+  .gtr input[type=number]{width:44px;font-family:'A2z';font-size:.98rem;font-weight:800;text-align:center;
+    color:var(--red-d);background:var(--cream);border:2px solid var(--pink);border-radius:9px;padding:4px 2px;
+    -moz-appearance:textfield;}
+  .gtr input::-webkit-outer-spin-button,.gtr input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
   .gtr input[type=number]:focus{outline:none;border-color:var(--red);}
   /* ── 업보 행 리스트 (쮸 방식) ── */
   .type-strip{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
@@ -224,9 +238,10 @@
       <div class="usub" id="us-grant">
         <div class="grant-head">
           <div class="season-picker" id="grantSeasons"></div>
-          <select id="grantMember"><option value="">— 시청자를 선택하세요 —</option></select>
+          <input id="uq" type="text" placeholder="🔎 시청자 검색…">
         </div>
-        <p class="note" id="grantHint">시즌과 시청자를 선택하면 항목별 수량을 편집할 수 있어요.</p>
+        <div class="grant-people" id="grantPeople"></div>
+        <p class="note" id="grantHint">시청자를 선택하면 항목별 수량을 편집할 수 있어요.</p>
         <div id="grantArea" style="display:none">
           <div id="grantTypeRows"></div>
           <div class="save-row">
@@ -499,9 +514,20 @@ document.getElementById('saveGuideBtn').addEventListener('click', async ()=>{
 });
 
 // ---------------- 업보 ----------------
-function getCount(v,tid){ const n=v.counts?v.counts[String(tid)]:0; return n?Number(n):0; }
+function seasonKey(){ return String(curUpboSeason||'default'); }
+function isNested(c){ return c && Object.values(c).some(x=>x&&typeof x==='object'); }
+function activeSeasonId(){ const a=U.seasons.find(s=>s.is_active)||U.seasons[0]; return a?String(a.id):'default'; }
+function bucketOf(v){ const c=v.counts||{};
+  if(isNested(c)) return c[seasonKey()]||{};
+  /* 레거시 플랫 → 활성 시즌 소속으로 해석 */
+  if(Object.keys(c).length && seasonKey()===activeSeasonId()) return c;
+  return Object.keys(c).length?{}:{}; }
+function nestedCounts(v){ const c=v.counts||{};
+  if(isNested(c)) return JSON.parse(JSON.stringify(c));
+  const out={}; if(Object.keys(c).length) out[activeSeasonId()]=c; return out; }
+function getCount(v,tid){ const n=bucketOf(v)[String(tid)]; return n?Number(n):0; }
 function rowTotal(v){ return U.types.reduce((s,t)=>s+getCount(v,t.id),0); }
-function curUV(){ return curUpboSeason ? U.viewers.filter(v=>String(v.season_id)===String(curUpboSeason)) : U.viewers; }
+function curUV(){ return U.viewers; }  /* 시청자는 시즌 무관 글로벌 */
 function colTotal(t){ return curUV().reduce((s,v)=>s+getCount(v,t.id),0); }
 function grand(){ return curUV().reduce((s,v)=>s+rowTotal(v),0); }
 
@@ -558,24 +584,36 @@ function renderViewerRows(){
     <button class="mini" data-act="renviewer" data-id="${v.id}">✎</button>
     <button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></div>`;}).join('');
 }
+let curGrantMid='';
+function pAva(v){ const uid=(v.user_id||'').trim();
+  const img=uid?`<img src="https://profile.img.sooplive.com/LOGO/${uid.slice(0,2)}/${uid}/${uid}.jpg" onerror="this.remove()">`:'';
+  return `<span class="pa" style="background:${admAva(v.name)}">${esc((v.name||'?').slice(0,1))}${img}</span>`; }
 function renderGrantMembers(){
-  const sel=document.getElementById('grantMember'); const cur=sel.value;
-  sel.innerHTML='<option value="">— 시청자를 선택하세요 —</option>'+
-    curUV().map(v=>`<option value="${v.id}">${esc(v.name)}${v.user_id?' · '+esc(v.user_id):''} (🪙 ${rowTotal(v)})</option>`).join('');
-  if(cur && curUV().some(v=>String(v.id)===cur)) sel.value=cur; else sel.value='';
+  const q=(document.getElementById('uq').value||'').trim().toLowerCase();
+  const box=document.getElementById('grantPeople');
+  const V=curUV().filter(v=>!q||(v.name||'').toLowerCase().includes(q)||(v.user_id||'').toLowerCase().includes(q));
+  if(!curUV().length){ box.innerHTML='<p class="note">시청자 관리에서 먼저 추가해줘요.</p>'; }
+  else if(!V.length){ box.innerHTML='<p class="note">검색 결과 없음</p>'; }
+  else box.innerHTML=V.map(v=>`<span class="pchip${String(v.id)===String(curGrantMid)?' on':''}" data-pid="${v.id}">${pAva(v)}${esc(v.name)} <small>🪙${rowTotal(v)}</small></span>`).join('');
+  if(curGrantMid && !U.viewers.some(v=>String(v.id)===String(curGrantMid))) curGrantMid='';
   renderGrantArea();
 }
+document.getElementById('grantPeople').addEventListener('click',e=>{
+  const c=e.target.closest('.pchip[data-pid]'); if(!c) return;
+  curGrantMid=(String(curGrantMid)===String(c.dataset.pid))?'':c.dataset.pid;
+  renderGrantMembers();
+});
+document.getElementById('uq').addEventListener('input',renderGrantMembers);
 function renderGrantArea(){
-  const mid=document.getElementById('grantMember').value;
   const area=document.getElementById('grantArea'), hint=document.getElementById('grantHint');
-  if(!mid){ area.style.display='none'; hint.style.display='block'; return; }
-  const v=U.viewers.find(x=>String(x.id)===String(mid)); if(!v){ area.style.display='none'; return; }
+  const v=U.viewers.find(x=>String(x.id)===String(curGrantMid));
+  if(!v){ area.style.display='none'; hint.style.display='block'; return; }
   area.style.display='block'; hint.style.display='none';
   document.getElementById('grantTypeRows').innerHTML=U.types.map(t=>{
     const n=getCount(v,t.id);
     return `<div class="gtr"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span>
       <span class="tn">${esc(t.name)}</span>
-      <input type="number" min="0" step="1" value="${n}" data-gt="${t.id}"></div>`;
+      <span class="st"><button data-gs="dec" data-t="${t.id}" tabindex="-1">−</button><input type="number" min="0" step="1" value="${n}" data-gt="${t.id}"><button data-gs="inc" data-t="${t.id}" tabindex="-1">＋</button></span></div>`;
   }).join('') || '<p class="note">항목이 없어요 — 항목 관리에서 추가!</p>';
   updGrantTotal();
 }
@@ -583,15 +621,22 @@ function updGrantTotal(){
   let s=0; document.querySelectorAll('#grantTypeRows input[data-gt]').forEach(i=>{ s+=Math.max(0,parseInt(i.value)||0); });
   document.getElementById('grantTotal').textContent='🪙 '+s;
 }
-document.getElementById('grantMember').addEventListener('change',renderGrantArea);
+document.getElementById('grantTypeRows').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-gs]'); if(!b) return;
+  const inp=b.parentElement.querySelector('input[data-gt]');
+  let n=Math.max(0,parseInt(inp.value)||0);
+  n=b.dataset.gs==='inc'?n+1:Math.max(0,n-1);
+  inp.value=n; updGrantTotal();
+});
 document.getElementById('grantTypeRows').addEventListener('input',updGrantTotal);
 document.getElementById('grantSaveBtn').addEventListener('click', async ()=>{
-  const mid=document.getElementById('grantMember').value; if(!mid) return;
+  const mid=curGrantMid; if(!mid) return;
   const v=U.viewers.find(x=>String(x.id)===String(mid)); if(!v) return;
-  const c={};
+  const b={};
   document.querySelectorAll('#grantTypeRows input[data-gt]').forEach(i=>{
-    const n=Math.max(0,parseInt(i.value)||0); if(n>0) c[String(i.dataset.gt)]=n;
+    const n=Math.max(0,parseInt(i.value)||0); if(n>0) b[String(i.dataset.gt)]=n;
   });
+  const c=nestedCounts(v); if(Object.keys(b).length) c[seasonKey()]=b; else delete c[seasonKey()];
   const btn=document.getElementById('grantSaveBtn'); btn.disabled=true; btn.textContent='저장 중…';
   const { error } = await sb.from('upbo_viewers').update({ counts:c }).eq('id', v.id);
   btn.disabled=false; btn.textContent='💾 저장';
@@ -700,10 +745,9 @@ document.getElementById('addTypeBtn').addEventListener('click', async ()=>{
 });
 
 document.getElementById('addViewerBtn').addEventListener('click', async ()=>{
-  if(U.seasons.length && !curUpboSeason){ return alert('먼저 시즌을 선택하세요.'); }
   const n=prompt('시청자 닉네임'); if(!n||!n.trim()) return;
   const uid=prompt('SOOP 아이디 (프사 연동 · 없으면 빈칸)','')||'';
-  const { error } = await sb.from('upbo_viewers').insert({ name:n.trim(), user_id:uid.trim()||null, counts:{}, sort_order:U.viewers.length, season_id: curUpboSeason });
+  const { error } = await sb.from('upbo_viewers').insert({ name:n.trim(), user_id:uid.trim()||null, counts:{}, sort_order:U.viewers.length });
   if(error) return alert(error.message); loadUpbo();
 });
 

@@ -868,9 +868,15 @@ document.getElementById('dayModal').addEventListener('click', e=>{ if(e.target.i
 let DATA={types:[],viewers:[],seasons:[]};
 let curSeason=null, memPage=0; const MEM_PAGE=20; let memSort='__total';
 
-function curViewers(){ if(!DATA.seasons.length || !curSeason) return DATA.viewers; return DATA.viewers.filter(v=>String(v.season_id)===String(curSeason)); }
+function curViewers(){ return DATA.viewers; } /* 시청자 글로벌 — 시즌은 기록(버킷)만 분리 */
+function isNestedC(c){ return c && Object.values(c).some(x=>x&&typeof x==='object'); }
+function activeSid(){ const a=DATA.seasons.find(s=>s.is_active)||DATA.seasons[0]; return a?String(a.id):'default'; }
+function vBucket(v){ const c=v.counts||{}; const k=String(curSeason||'default');
+  if(isNestedC(c)) return c[k]||{};
+  if(Object.keys(c).length && k===activeSid()) return c;
+  return {}; }
 function hexA(hex,a){ if(!hex) return 'transparent'; const m=hex.replace('#',''); const r=parseInt(m.slice(0,2),16),g=parseInt(m.slice(2,4),16),b=parseInt(m.slice(4,6),16); return `rgba(${r},${g},${b},${a})`; }
-function getCount(v,t){ const n=v.counts?v.counts[String(t.id)]:0; return n?Number(n):0; }
+function getCount(v,t){ const n=vBucket(v)[String(t.id)]; return n?Number(n):0; }
 function rowTotal(v){ return DATA.types.reduce((s,t)=>s+getCount(v,t),0); }
 function colTotal(t){ return curViewers().reduce((s,v)=>s+getCount(v,t),0); }
 function grand(){ return curViewers().reduce((s,v)=>s+rowTotal(v),0); }
