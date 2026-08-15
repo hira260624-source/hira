@@ -33,10 +33,12 @@ create policy "auth write types"  on public.upbo_types for all to authenticated 
 create table if not exists public.upbo_viewers (
   id         uuid default gen_random_uuid() primary key,
   name       text not null,
+  user_id    text,
   counts     jsonb default '{}'::jsonb,
   sort_order int default 0,
   created_at timestamptz default now()
 );
+alter table public.upbo_viewers add column if not exists user_id text;
 alter table public.upbo_viewers enable row level security;
 drop policy if exists "public read viewers" on public.upbo_viewers;
 drop policy if exists "auth write viewers"  on public.upbo_viewers;
