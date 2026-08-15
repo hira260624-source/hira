@@ -31,7 +31,7 @@
   /* 탭 */
   .tabs{display:flex;gap:9px;margin-bottom:22px;}
   .tab{font-family:'A2z',sans-serif;font-weight:800;font-size:1.18rem;color:var(--red-d);background:#fff;
-    border:3px solid var(--pink);border-radius:16px;padding:10px 26px;cursor:pointer;
+    border:3px solid var(--pink);border-radius:16px;padding:10px 22px;cursor:pointer;white-space:nowrap;flex:none;
     box-shadow:0 3px 0 rgba(234,110,14,.2);transition:transform .1s ease;}
   .tab.on{background:var(--red);color:#fff;border-color:#fff;box-shadow:0 3px 0 var(--red-d);}
   .tab:active{transform:translateY(1px);}
@@ -447,7 +447,7 @@
     <button class="tab" data-tab="profile">프로필</button>
     <button class="tab" data-tab="goals">목표</button>
     <button class="tab" data-tab="clips">클립</button>
-  <button class="tab" data-tab="studio">🎬 위젯</button><button class="tab" data-tab="cheki">🖍️ 체키</button><button class="tab" data-tab="pfp">🖼️ 프사</button></div>
+  <button class="tab" data-tab="studio">위젯</button><button class="tab" data-tab="cheki">체키</button><button class="tab" data-tab="pfp">프사</button></div>
 
   <!-- 업보 -->
   <div class="pane" id="tab-upbo">
