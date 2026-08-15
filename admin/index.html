@@ -60,6 +60,34 @@
   @media (max-width:1400px){ #tab-studio .wrap{grid-template-columns:280px 1fr;} }
   @media (max-width:1000px){ #tab-studio .wrap{grid-template-columns:1fr;} }
   #tab-studio .fxlist{max-height:none;}
+
+  /* ── 체키 에디터 ── */
+  body.cheki-wide #panel{width:min(1900px,97vw);}
+  .cheki-wrap{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start;}
+  @media (max-width:1000px){ .cheki-wrap{grid-template-columns:1fr;} }
+  .cheki-tools{background:#fff;border:2px solid var(--pink-l);border-radius:16px;padding:14px;
+    position:sticky;top:74px;max-height:calc(100vh - 96px);overflow-y:auto;}
+  .ct-sec{margin-bottom:14px;padding-bottom:12px;border-bottom:1.5px solid var(--pink-l);}
+  .ct-sec:last-of-type{border-bottom:none;}
+  .ct-sec>b{display:block;font-size:.82rem;color:var(--red-d);margin-bottom:7px;font-weight:800;}
+  .ct-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px;}
+  #chekiToolBar .ct-btn{flex:1;min-width:0;text-align:center;padding:6px 4px;}
+  .ct-btn{font-family:'A2z';font-weight:800;font-size:.95rem;padding:6px 10px;border-radius:10px;
+    border:2px solid var(--pink);background:#fff;color:var(--red-d);cursor:pointer;}
+  .ct-btn.on{background:var(--red);color:#fff;border-color:var(--red);}
+  .ct-sw{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px var(--pink-l);cursor:pointer;padding:0;}
+  .ct-sw.on{box-shadow:0 0 0 3px var(--red);}
+  .ct-stickers{max-height:130px;overflow-y:auto;}
+  .ct-stickers .ct-btn{font-size:1.2rem;padding:3px 7px;}
+  .cheki-tools input[type=text],.cheki-tools input[type=number],.cheki-tools select{
+    width:100%;box-sizing:border-box;font-family:'A2z';font-size:.9rem;color:#5b463a;background:var(--cream);
+    border:2px solid var(--pink);border-radius:9px;padding:6px 10px;margin-bottom:6px;}
+  .cheki-tools input[type=range]{width:100%;accent-color:var(--red);}
+  .cheki-tools input[type=color]{width:100%;height:34px;border:2px solid var(--pink);border-radius:9px;background:#fff;cursor:pointer;}
+  .cheki-stage{background:repeating-conic-gradient(#f6f0ea 0 25%,#fff 0 50%) 0 0/22px 22px;
+    border:2px solid var(--pink-l);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;}
+  #chekiCanvas{max-width:100%;max-height:calc(100vh - 220px);border-radius:8px;
+    box-shadow:0 8px 26px rgba(90,70,40,.18);cursor:crosshair;touch-action:none;background:#fff;}
   /* 스튜디오 레이아웃 보정 (어드민 라이트 톤) */
   #tab-studio{background:#fffdf9;color:#5b463a;border:2px solid var(--pink-l);}
   #tab-studio .col{background:#fff;border:2px solid var(--pink-l);border-radius:16px;padding:16px;min-width:0;}
@@ -284,7 +312,7 @@
     <button class="tab" data-tab="profile">프로필</button>
     <button class="tab" data-tab="goals">목표</button>
     <button class="tab" data-tab="clips">클립</button>
-  <button class="tab" data-tab="studio">🎬 위젯</button></div>
+  <button class="tab" data-tab="studio">🎬 위젯</button><button class="tab" data-tab="cheki">🖍️ 체키</button></div>
 
   <!-- 업보 -->
   <div class="pane" id="tab-upbo">
@@ -433,6 +461,22 @@
     </section>
   </div>
 
+  
+<!-- R2 갤러리 -->
+<div id="r2Modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(60,40,20,.45);align-items:center;justify-content:center;padding:26px">
+  <div style="background:#fff;border-radius:20px;width:min(1000px,94vw);max-height:86vh;display:flex;flex-direction:column;padding:20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span class="sec-title" style="margin:0">🪣 버킷 이미지</span>
+      <span class="note" id="r2Count" style="margin:0"></span>
+      <span style="flex:1"></span>
+      <button class="btn ghost" type="button" onclick="loadR2Gallery()">새로고침</button>
+      <button class="btn ghost" type="button" onclick="closeR2()">닫기</button>
+    </div>
+    <div id="r2Grid" style="flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>
+    <p class="note" style="margin-top:10px">이미지를 누르면 주소가 채워져요 · 🗑 는 버킷에서 영구 삭제됩니다.</p>
+  </div>
+</div>
+
   <!-- 리빌 위젯 제작기 -->
   <div class="pane" id="tab-studio" hidden>
     <div class="studio-head">
@@ -474,6 +518,7 @@
     <input type="file" id="r2file" accept="image/*" hidden>
     <div class="row" style="margin:-4px 0 8px">
       <button class="btn" type="button" id="upBtn">📤 이미지 업로드</button>
+      <button class="btn ghost" type="button" id="galBtn">🪣 버킷 확인하기</button>
       <button class="btn" type="button" id="upBtn2" data-target="img2" style="display:none">📤 뒷면 업로드</button>
       <button class="btn" type="button" id="upBtnC" data-target="cover" style="display:none">📤 커버 업로드</button>
     </div>
@@ -588,6 +633,98 @@
 
 
   </div>
+
+  <!-- 체키 에디터 -->
+  <div class="pane" id="tab-cheki" hidden>
+    <div class="studio-head">
+      <span class="sec-title" style="margin:0">🖍️ 체키 · 꾸미기</span>
+      <span class="tag" id="chekiSize">—</span>
+      <span style="flex:1"></span>
+      <button class="btn ghost" type="button" onclick="chekiOpenGallery()">🪣 버킷에서 불러오기</button>
+      <button class="btn ghost" type="button" onclick="document.getElementById('chekiFile').click()">🖼️ 사진 열기</button>
+      <button class="btn" type="button" onclick="chekiSave()">💾 버킷에 저장</button>
+      <input type="file" id="chekiFile" accept="image/*" hidden>
+    </div>
+
+    <div class="cheki-wrap">
+      <!-- 도구 -->
+      <div class="cheki-tools">
+        <div class="ct-sec">
+          <b>도구</b>
+          <div class="ct-row" id="chekiToolBar">
+            <button class="ct-btn on" data-tool="pen" title="펜">✏️</button>
+            <button class="ct-btn" data-tool="marker" title="형광펜">🖍️</button>
+            <button class="ct-btn" data-tool="eraser" title="지우개">🧽</button>
+            <button class="ct-btn" data-tool="text" title="글쓰기">🔤</button>
+            <button class="ct-btn" data-tool="sticker" title="스티커">✨</button>
+            <button class="ct-btn" data-tool="move" title="옮기기">🤚</button>
+          </div>
+        </div>
+
+        <div class="ct-sec">
+          <b>색</b>
+          <div class="ct-row" id="chekiPalette"></div>
+          <input type="color" id="chekiColor" value="#ff5c9e">
+        </div>
+
+        <div class="ct-sec">
+          <b>굵기 <span id="chekiSizeVal">6</span>px</b>
+          <input type="range" id="chekiWidth" min="1" max="40" value="6">
+        </div>
+
+        <div class="ct-sec" id="ctText" style="display:none">
+          <b>글자</b>
+          <input type="text" id="chekiTextVal" placeholder="입력 후 캔버스 클릭">
+          <div class="ct-row">
+            <select id="chekiFont">
+              <option value="A2z">A2z</option>
+              <option value="Pretendard">Pretendard</option>
+              <option value="Anton">Anton</option>
+              <option value="cursive">손글씨</option>
+            </select>
+            <input type="number" id="chekiFontSize" value="34" min="10" max="200" style="width:74px">
+          </div>
+          <label style="font-size:.76rem"><input type="checkbox" id="chekiStroke" checked> 흰 테두리</label>
+        </div>
+
+        <div class="ct-sec" id="ctSticker" style="display:none">
+          <b>스티커</b>
+          <div class="ct-row ct-stickers" id="chekiStickers"></div>
+          <input type="number" id="chekiStickerSize" value="64" min="16" max="300">
+        </div>
+
+        <div class="ct-sec">
+          <b>프레임</b>
+          <div class="ct-row" id="chekiFrames">
+            <button class="ct-btn" data-frame="none">없음</button>
+            <button class="ct-btn on" data-frame="polaroid">폴라로이드</button>
+            <button class="ct-btn" data-frame="white">흰 테두리</button>
+            <button class="ct-btn" data-frame="film">필름</button>
+          </div>
+          <input type="text" id="chekiCaption" placeholder="하단 캡션 (폴라로이드)">
+        </div>
+
+        <div class="ct-sec">
+          <b>편집</b>
+          <div class="ct-row">
+            <button class="btn ghost" type="button" onclick="chekiUndo()">↩ 되돌리기</button>
+            <button class="btn ghost" type="button" onclick="chekiClearInk()">낙서 지우기</button>
+          </div>
+          <div class="ct-row">
+            <button class="btn ghost" type="button" onclick="chekiDownload()">⬇ PNG 저장</button>
+          </div>
+        </div>
+        <p class="note" id="chekiMsg"></p>
+      </div>
+
+      <!-- 캔버스 -->
+      <div class="cheki-stage">
+        <canvas id="chekiCanvas" width="900" height="1200"></canvas>
+        <p class="note" style="text-align:center;margin-top:8px">사진을 열면 캔버스가 사진 비율로 맞춰집니다 · 옮기기 도구로 글자·스티커 드래그</p>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- 일정 수정 모달 -->
@@ -670,6 +807,8 @@ document.querySelector('.tabs').addEventListener('click',e=>{
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t===b));
   document.querySelectorAll('.pane').forEach(p=>{ p.hidden = (p.id!=='tab-'+b.dataset.tab); });
   document.body.classList.toggle('studio-wide', b.dataset.tab==='studio');
+  document.body.classList.toggle('cheki-wide', b.dataset.tab==='cheki');
+  if(b.dataset.tab==='cheki' && !window.__chekiReady){ window.__chekiReady=1; try{ chekiBoot(); }catch(e){ console.warn(e); } }
   if(b.dataset.tab==='studio' && !window.__studioReady){ window.__studioReady=1; try{ studioBoot(); }catch(e){ console.warn(e); } }
 });
 
@@ -1232,6 +1371,7 @@ $('r2file').addEventListener('change',e=>{ const f=e.target.files?.[0]; if(f) r2
 [['upBtn','img'],['upBtn2','img2'],['upBtnC','cover']].forEach(([id,tg])=>{
   const b=$(id); if(b) b.onclick=()=>{ upTarget=tg; $('r2file').click(); };
 });
+$('galBtn').onclick=()=>openR2('img');
 const _syncFields=syncFields;
 syncFields=function(){ _syncFields();
   const s=k=>document.querySelector(`[data-for~="${k}"]`);
@@ -1239,8 +1379,268 @@ syncFields=function(){ _syncFields();
   $('upBtnC').style.display=(NEEDS[fx]||[]).includes('cover')?'':'none';
 };
 
+
+/* ══ R2 갤러리 ══ */
+let r2Target='img';
+function openR2(target){ r2Target=target||'img'; document.getElementById('r2Modal').style.display='flex'; loadR2Gallery(); }
+function closeR2(){ document.getElementById('r2Modal').style.display='none'; }
+async function loadR2Gallery(){
+  const grid=document.getElementById('r2Grid'), cnt=document.getElementById('r2Count');
+  grid.innerHTML='<p class="note">불러오는 중…</p>';
+  try{
+    const r=await fetch('/api/r2/list?dir=studio&limit=200');
+    const d=await r.json();
+    if(!r.ok||!d.ok) throw new Error(d.error||'목록 실패');
+    cnt.textContent=d.items.length+'개';
+    if(!d.items.length){ grid.innerHTML='<p class="note">아직 올린 이미지가 없어요.</p>'; return; }
+    grid.innerHTML=d.items.map(it=>{
+      const kb=Math.round(it.size/1024);
+      return `<div style="border:2px solid var(--pink-l);border-radius:12px;overflow:hidden;background:#fff;position:relative">
+        <img src="${it.url}" data-pick="${it.url}" loading="lazy" style="width:100%;height:110px;object-fit:cover;cursor:pointer;display:block">
+        <div style="padding:6px 8px;font-size:.7rem;color:#a89484;font-weight:700;display:flex;align-items:center;gap:6px">
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${kb}KB</span>
+          <button class="sch-act" type="button" data-del="${it.key}" title="삭제">🗑</button>
+        </div></div>`;
+    }).join('');
+  }catch(e){ grid.innerHTML='<p class="note">불러오기 실패: '+e.message+'</p>'; }
+}
+document.getElementById('r2Grid').addEventListener('click', async e=>{
+  const del=e.target.closest('[data-del]');
+  if(del){
+    if(!confirm('버킷에서 영구 삭제할까요?')) return;
+    try{ const r=await fetch('/api/r2/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:del.dataset.del})});
+      const d=await r.json(); if(!d.ok) throw new Error(d.error||'실패'); loadR2Gallery();
+    }catch(err){ alert('삭제 실패: '+err.message); }
+    return;
+  }
+  const pick=e.target.closest('[data-pick]');
+  if(pick){
+    if(r2Target==='cheki'){ chekiLoadImage(pick.dataset.pick); closeR2(); return; }
+    const el=document.getElementById(r2Target); if(el){ el.value=pick.dataset.pick; try{ build(true); save(); }catch(_){} }
+    closeR2();
+  }
+});
+document.getElementById('r2Modal').addEventListener('click',function(e){ if(e.target===this) closeR2(); });
+
 /* ── 부팅 ── */
 window.studioBoot=function(){ restore(); renderList(); syncFields(); $('fitBtn').classList.add('on'); build(true); };
+
+/* ═══════════ 체키 에디터 ═══════════
+   레이어: 배경사진 → 잉크(그리기) → 오브젝트(글자·스티커) → 프레임
+   저장: 합성 PNG → R2 (/api/r2/upload, dir=cheki) */
+const CK = {
+  cv:null, ctx:null, ink:null, ictx:null,
+  photo:null, tool:'pen', color:'#ff5c9e', width:6,
+  frame:'polaroid', caption:'', objs:[], undo:[],
+  drawing:false, drag:null, W:900, H:1200, srcKey:null
+};
+const CK_PALETTE=['#ff5c9e','#ffc61a','#33e6ff','#6ee7b7','#b58cff','#ff7043','#ffffff','#33322c'];
+const CK_STICKERS=['💖','✨','🌸','⭐','🎀','🍒','☁️','🌈','💫','🐰','🎧','🎤','💌','🍰','🔥','👑','🫧','🥺','😽','🩷'];
+
+function chekiBoot(){
+  CK.cv=document.getElementById('chekiCanvas'); CK.ctx=CK.cv.getContext('2d');
+  CK.ink=document.createElement('canvas'); CK.ictx=CK.ink.getContext('2d');
+  chekiResize(900,1200);
+
+  document.getElementById('chekiPalette').innerHTML=CK_PALETTE.map((c,i)=>
+    `<button class="ct-sw${i===0?' on':''}" data-c="${c}" style="background:${c}"></button>`).join('');
+  document.getElementById('chekiStickers').innerHTML=CK_STICKERS.map(s=>
+    `<button class="ct-btn" data-st="${s}">${s}</button>`).join('');
+
+  document.getElementById('chekiToolBar').addEventListener('click',e=>{
+    const b=e.target.closest('[data-tool]'); if(!b) return;
+    CK.tool=b.dataset.tool;
+    document.querySelectorAll('#chekiToolBar .ct-btn').forEach(x=>x.classList.toggle('on',x===b));
+    document.getElementById('ctText').style.display=CK.tool==='text'?'':'none';
+    document.getElementById('ctSticker').style.display=CK.tool==='sticker'?'':'none';
+    CK.cv.style.cursor=CK.tool==='move'?'grab':(CK.tool==='text'||CK.tool==='sticker')?'copy':'crosshair';
+  });
+  document.getElementById('chekiPalette').addEventListener('click',e=>{
+    const b=e.target.closest('[data-c]'); if(!b) return;
+    CK.color=b.dataset.c; document.getElementById('chekiColor').value=CK.color;
+    document.querySelectorAll('#chekiPalette .ct-sw').forEach(x=>x.classList.toggle('on',x===b));
+  });
+  document.getElementById('chekiColor').addEventListener('input',e=>{ CK.color=e.target.value;
+    document.querySelectorAll('#chekiPalette .ct-sw').forEach(x=>x.classList.remove('on')); });
+  document.getElementById('chekiWidth').addEventListener('input',e=>{
+    CK.width=+e.target.value; document.getElementById('chekiSizeVal').textContent=CK.width; });
+  document.getElementById('chekiStickers').addEventListener('click',e=>{
+    const b=e.target.closest('[data-st]'); if(!b) return;
+    document.querySelectorAll('#chekiStickers .ct-btn').forEach(x=>x.classList.toggle('on',x===b));
+    CK.sticker=b.dataset.st;
+  });
+  document.getElementById('chekiFrames').addEventListener('click',e=>{
+    const b=e.target.closest('[data-frame]'); if(!b) return;
+    CK.frame=b.dataset.frame;
+    document.querySelectorAll('#chekiFrames .ct-btn').forEach(x=>x.classList.toggle('on',x===b));
+    chekiRender();
+  });
+  document.getElementById('chekiCaption').addEventListener('input',e=>{ CK.caption=e.target.value; chekiRender(); });
+  document.getElementById('chekiFile').addEventListener('change',e=>{
+    const f=e.target.files?.[0]; if(!f) return;
+    const r=new FileReader(); r.onload=()=>chekiLoadImage(r.result); r.readAsDataURL(f); e.target.value='';
+  });
+
+  CK.cv.addEventListener('pointerdown',ckDown);
+  CK.cv.addEventListener('pointermove',ckMove);
+  addEventListener('pointerup',ckUp);
+  chekiRender();
+}
+
+function chekiResize(w,h){
+  CK.W=w; CK.H=h; CK.cv.width=w; CK.cv.height=h; CK.ink.width=w; CK.ink.height=h;
+  document.getElementById('chekiSize').textContent=w+'×'+h;
+}
+function chekiLoadImage(src){
+  const img=new Image(); img.crossOrigin='anonymous';
+  img.onload=()=>{
+    const maxW=1200, sc=Math.min(1,maxW/img.width);
+    chekiResize(Math.round(img.width*sc), Math.round(img.height*sc));
+    CK.photo=img; CK.objs=[]; CK.undo=[]; CK.ictx.clearRect(0,0,CK.W,CK.H);
+    CK.srcKey=(typeof src==='string'&&src.includes('/api/r2/file/'))?src.split('/api/r2/file/')[1]:null;
+    chekiMsg(CK.srcKey?'버킷 이미지를 불러왔어요 · 저장하면 새 파일로 올라갑니다':'사진을 불러왔어요');
+    chekiRender();
+  };
+  img.onerror=()=>chekiMsg('이미지를 불러오지 못했어요 (CORS일 수 있어요)');
+  img.src=src;
+}
+function chekiOpenGallery(){ openR2('cheki'); }
+function chekiMsg(m){ const el=document.getElementById('chekiMsg'); if(el) el.textContent=m||''; }
+
+/* ── 좌표 ── */
+function ckPos(e){
+  const r=CK.cv.getBoundingClientRect();
+  return { x:(e.clientX-r.left)*(CK.W/r.width), y:(e.clientY-r.top)*(CK.H/r.height) };
+}
+function ckHit(p){
+  for(let i=CK.objs.length-1;i>=0;i--){ const o=CK.objs[i];
+    const w=o.type==='text'?(o.text.length*o.size*0.62):o.size, hh=o.size;
+    if(p.x>=o.x-w/2&&p.x<=o.x+w/2&&p.y>=o.y-hh/2&&p.y<=o.y+hh/2) return o; }
+  return null;
+}
+function ckDown(e){
+  CK.cv.setPointerCapture(e.pointerId);
+  const p=ckPos(e);
+  if(CK.tool==='text'){
+    const t=document.getElementById('chekiTextVal').value.trim();
+    if(!t){ chekiMsg('먼저 글자를 입력해줘요'); return; }
+    ckPush();
+    CK.objs.push({type:'text',text:t,x:p.x,y:p.y,size:+document.getElementById('chekiFontSize').value,
+      color:CK.color,font:document.getElementById('chekiFont').value,stroke:document.getElementById('chekiStroke').checked,rot:0});
+    chekiRender(); return;
+  }
+  if(CK.tool==='sticker'){
+    if(!CK.sticker){ chekiMsg('스티커를 골라줘요'); return; }
+    ckPush();
+    CK.objs.push({type:'sticker',text:CK.sticker,x:p.x,y:p.y,size:+document.getElementById('chekiStickerSize').value,rot:0});
+    chekiRender(); return;
+  }
+  if(CK.tool==='move'){
+    const o=ckHit(p); if(o){ ckPush(); CK.drag={o,dx:p.x-o.x,dy:p.y-o.y}; CK.cv.style.cursor='grabbing'; }
+    return;
+  }
+  ckPush();
+  CK.drawing=true; CK.ictx.beginPath(); CK.ictx.moveTo(p.x,p.y); ckStroke(p);
+}
+function ckMove(e){
+  const p=ckPos(e);
+  if(CK.drag){ CK.drag.o.x=p.x-CK.drag.dx; CK.drag.o.y=p.y-CK.drag.dy; chekiRender(); return; }
+  if(!CK.drawing) return;
+  ckStroke(p);
+}
+function ckStroke(p){
+  const c=CK.ictx;
+  c.lineCap='round'; c.lineJoin='round'; c.lineWidth=CK.width;
+  if(CK.tool==='eraser'){ c.globalCompositeOperation='destination-out'; c.strokeStyle='rgba(0,0,0,1)'; }
+  else { c.globalCompositeOperation='source-over'; c.strokeStyle=CK.color;
+    c.globalAlpha=CK.tool==='marker'?0.38:1; if(CK.tool==='marker') c.lineWidth=CK.width*2.2; }
+  c.lineTo(p.x,p.y); c.stroke(); c.globalAlpha=1; c.globalCompositeOperation='source-over';
+  chekiRender();
+}
+function ckUp(){ CK.drawing=false; if(CK.drag){ CK.drag=null; CK.cv.style.cursor='grab'; } }
+
+/* ── 히스토리 ── */
+function ckPush(){
+  if(CK.undo.length>24) CK.undo.shift();
+  CK.undo.push({ ink:CK.ink.toDataURL(), objs:JSON.parse(JSON.stringify(CK.objs)) });
+}
+function chekiUndo(){
+  const s=CK.undo.pop(); if(!s){ chekiMsg('되돌릴 게 없어요'); return; }
+  CK.objs=s.objs;
+  const img=new Image(); img.onload=()=>{ CK.ictx.clearRect(0,0,CK.W,CK.H); CK.ictx.drawImage(img,0,0); chekiRender(); };
+  img.src=s.ink;
+}
+function chekiClearInk(){ ckPush(); CK.ictx.clearRect(0,0,CK.W,CK.H); chekiRender(); }
+
+/* ── 렌더 ── */
+function chekiRender(){
+  const c=CK.ctx, W=CK.W, H=CK.H;
+  c.clearRect(0,0,W,H);
+  const f=CK.frame;
+  const pad = f==='polaroid'?Math.round(W*0.055) : f==='white'?Math.round(W*0.04) : f==='film'?Math.round(W*0.07) : 0;
+  const bottom = f==='polaroid'?Math.round(W*0.19) : pad;
+
+  if(f!=='none'){ c.fillStyle = f==='film'?'#241d0c':'#fff'; c.fillRect(0,0,W,H); }
+  const ix=pad, iy=pad, iw=W-pad*2, ih=H-pad-bottom;
+
+  c.save(); c.beginPath(); c.rect(ix,iy,iw,ih); c.clip();
+  if(CK.photo){
+    const s=Math.max(iw/CK.photo.width, ih/CK.photo.height);
+    const dw=CK.photo.width*s, dh=CK.photo.height*s;
+    c.drawImage(CK.photo, ix+(iw-dw)/2, iy+(ih-dh)/2, dw, dh);
+  } else { c.fillStyle='#f2ede2'; c.fillRect(ix,iy,iw,ih);
+    c.fillStyle='#c9bda8'; c.font=`600 ${Math.round(W*0.035)}px Pretendard,sans-serif`;
+    c.textAlign='center'; c.fillText('사진을 열어주세요', ix+iw/2, iy+ih/2); }
+  c.drawImage(CK.ink,0,0);
+  c.restore();
+
+  CK.objs.forEach(o=>{
+    c.save(); c.translate(o.x,o.y); c.rotate((o.rot||0)*Math.PI/180); c.textAlign='center'; c.textBaseline='middle';
+    if(o.type==='sticker'){ c.font=`${o.size}px serif`; c.fillText(o.text,0,0); }
+    else {
+      c.font=`800 ${o.size}px ${o.font},sans-serif`;
+      if(o.stroke){ c.lineWidth=Math.max(3,o.size*0.16); c.strokeStyle='#fff'; c.lineJoin='round'; c.strokeText(o.text,0,0); }
+      c.fillStyle=o.color; c.fillText(o.text,0,0);
+    }
+    c.restore();
+  });
+
+  if(f==='film'){
+    const hs=Math.round(W*0.026), gap=Math.round(W*0.045);
+    c.fillStyle='#fff8e6';
+    for(let y=gap; y<H-gap; y+=gap*1.6){
+      c.fillRect(Math.round(pad*0.22),y,hs,hs*0.72);
+      c.fillRect(W-Math.round(pad*0.22)-hs,y,hs,hs*0.72);
+    }
+  }
+  if(f==='polaroid' && CK.caption){
+    c.fillStyle='#33322c'; c.textAlign='center'; c.textBaseline='middle';
+    c.font=`700 ${Math.round(W*0.045)}px A2z,sans-serif`;
+    c.fillText(CK.caption, W/2, H-bottom/2);
+  }
+}
+
+/* ── 저장 ── */
+function chekiDownload(){
+  CK.cv.toBlob(b=>{ const a=document.createElement('a');
+    a.href=URL.createObjectURL(b); a.download='cheki-'+Date.now().toString(36)+'.png';
+    a.click(); URL.revokeObjectURL(a.href); chekiMsg('PNG로 저장했어요'); },'image/png');
+}
+async function chekiSave(){
+  chekiMsg('업로드 중…');
+  CK.cv.toBlob(async b=>{
+    try{
+      const fd=new FormData();
+      fd.append('file', new File([b],'cheki.png',{type:'image/png'}));
+      fd.append('dir','cheki');
+      const r=await fetch('/api/r2/upload',{method:'POST',body:fd});
+      const d=await r.json();
+      if(!r.ok||!d.ok) throw new Error(d.error||'업로드 실패');
+      chekiMsg('저장 완료 · '+d.url);
+      try{ await navigator.clipboard.writeText(d.url); chekiMsg('저장 완료 · 주소를 복사했어요'); }catch(_){}
+    }catch(e){ chekiMsg('저장 실패: '+e.message); }
+  },'image/png');
+}
 
 refresh();
 
