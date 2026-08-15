@@ -50,6 +50,29 @@
   .fld textarea{resize:vertical;min-height:60px;}
   .save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
 
+
+  /* ── 업보 행 리스트 (쮸 방식) ── */
+  .type-strip{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+  .type-strip .tchip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--pink-l);
+    border-radius:999px;padding:5px 8px 5px 11px;font-weight:800;font-size:.9rem;color:#5b463a;}
+  .type-strip .tchip .sw{width:11px;height:11px;border-radius:4px;}
+  .type-strip .tchip .cmini{border:none;background:var(--cream);border-radius:7px;padding:2px 6px;cursor:pointer;font-size:.78rem;}
+  .urow{display:flex;align-items:flex-start;gap:12px;padding:11px 13px;border:2px solid var(--pink-l);
+    border-radius:14px;margin-bottom:9px;background:#fff;}
+  .urow .uava{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-weight:900;color:#fff;font-size:1rem;}
+  .urow .uhead{display:flex;align-items:center;gap:7px;min-width:170px;flex:none;padding-top:4px;}
+  .urow .unm{font-weight:800;color:#5b463a;font-size:1.02rem;word-break:break-all;}
+  .urow .usum{margin-left:auto;flex:none;background:#fff4d6;border:1.5px solid #e6c34a;color:#8a6d00;
+    font-weight:900;font-size:.85rem;border-radius:999px;padding:3px 10px;align-self:flex-start;margin-top:5px;}
+  .urow .usteps{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0;}
+  .urow .step{display:inline-flex;align-items:center;gap:4px;border:1.5px solid var(--pink-l);border-radius:999px;
+    padding:2px 5px;font-size:.82rem;font-weight:800;color:#5b463a;background:#fffdf9;}
+  .urow .step .sw{width:9px;height:9px;border-radius:3px;margin-left:3px;}
+  .urow .step button{border:none;background:var(--cream);width:22px;height:22px;border-radius:50%;cursor:pointer;font-weight:900;line-height:1;}
+  .urow .step .n{min-width:16px;text-align:center;}
+  .urow .step .n.zero{color:#c8bcb0;}
+  .urow .mini{border:none;background:var(--cream);border-radius:7px;padding:3px 7px;cursor:pointer;font-size:.8rem;}
   /* 업보 그리드 — 크게 */
   .bar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px;}
   .bar input{font-family:'A2z';font-size:1rem;color:var(--ink);background:var(--cream);border:2px solid var(--pink);border-radius:11px;padding:8px 12px;flex:1;min-width:140px;}
@@ -69,8 +92,6 @@
     border-radius:9px;padding:5px 15px;cursor:pointer;box-shadow:0 2px 0 var(--red-d);}
   .ipbar button:disabled{opacity:.38;cursor:default;box-shadow:none;}
   .ipbar .ipinfo{font-family:'A2z';font-weight:800;color:var(--red-d);font-size:.95rem;min-width:120px;text-align:center;}
-  #upboGrid thead th{position:sticky;top:104px;background:#fff;z-index:20;box-shadow:inset 0 -2px 0 var(--pink);}
-  #upboGrid th,#upboGrid td{padding:8px 7px;}
   table{border-collapse:collapse;width:100%;font-size:1.05rem;}
   th,td{padding:13px 16px;border-bottom:1px solid var(--pink-l);white-space:nowrap;}
   thead th{font-family:'A2z',sans-serif;font-weight:800;font-weight:400;color:var(--red-d);
@@ -169,9 +190,9 @@
         <button class="btn" id="addTypeBtn">+ 업보 종류</button>
         <button class="btn" id="addViewerBtn">+ 시청자</button>
       </div>
-      <div class="ipbar" id="upboItemBar"></div>
-      <div class="scroll" style="overflow:visible"><table id="upboGrid"></table></div>
-      <p class="note">◀▶ 컬럼 순서 · ✎ 이름변경 · 🗑 삭제 · 셀 +/− 즉시 저장 · 항목 많으면 위 «이전/다음»</p>
+      <div class="type-strip" id="typeStrip"></div>
+      <div id="upboRows"></div>
+      <p class="note">항목칩: ◀▶ 순서 · ✎ 이름 · 🗑 삭제 &nbsp;/&nbsp; 시청자 행: 항목 −/＋ 즉시 저장</p>
     </section>
   </div>
 
@@ -343,7 +364,7 @@ const DEF_TERMS=[
 ];
 let sb=null, U={types:[],viewers:[],seasons:[]};
 let curUpboSeason=null;
-let upboItemPage=0; const UPBO_PAGE=6;
+
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 // ---------------- 탭 ----------------
@@ -439,46 +460,36 @@ async function loadUpbo(){
   renderSeasonBar();
   renderUpbo();
 }
-function upboPageTypes(){ const st=upboItemPage*UPBO_PAGE; return U.types.slice(st, st+UPBO_PAGE); }
-function upboNPages(){ return Math.max(1, Math.ceil(U.types.length/UPBO_PAGE)); }
-function renderUpboItemBar(){
-  const bar=document.getElementById('upboItemBar'); if(!bar) return;
-  if(U.types.length<=UPBO_PAGE){ bar.style.display='none'; return; }
-  bar.style.display='flex';
-  const s=upboItemPage*UPBO_PAGE+1, e=Math.min((upboItemPage+1)*UPBO_PAGE, U.types.length);
-  bar.innerHTML=`<button ${upboItemPage===0?'disabled':''} data-uip="prev">‹ 이전</button>`
-    +`<span class="ipinfo">항목 ${s}\u2013${e} / ${U.types.length}</span>`
-    +`<button ${upboItemPage>=upboNPages()-1?'disabled':''} data-uip="next">다음 ›</button>`;
+const ADM_AVA=['#e8c95a','#9cc7d8','#d8a8c8','#a8cba0','#c9b3e0','#e0a98f'];
+function admAva(name){ let s=0; for(const ch of (name||'')) s+=ch.charCodeAt(0); return ADM_AVA[s%ADM_AVA.length]; }
+function renderTypeStrip(){
+  const el=document.getElementById('typeStrip');
+  el.innerHTML=U.types.map((t,i)=>`<span class="tchip"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span>${esc(t.name)}
+    <button class="cmini" data-act="left" data-i="${i}">◀</button><button class="cmini" data-act="right" data-i="${i}">▶</button>
+    <button class="cmini" data-act="rentype" data-id="${t.id}">✎</button><button class="cmini" data-act="deltype" data-id="${t.id}">🗑</button></span>`).join('')
+    || '<p class="note">+ 업보 종류로 항목을 먼저 만들어줘요.</p>';
 }
 function renderUpbo(){
-  if(upboItemPage>=upboNPages()) upboItemPage=upboNPages()-1; if(upboItemPage<0) upboItemPage=0;
-  renderUpboItemBar();
-  const T=upboPageTypes(), V=curUV();
-  let h='<thead><tr><th class="vn">시청자</th>';
-  T.forEach((t,i)=>{ const gi=upboItemPage*UPBO_PAGE+i;
-    h+=`<th><div class="th-type"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span><span class="nm">${esc(t.name)}</span>`
-      +`<div class="ctl"><button class="cmini" data-act="left" data-i="${gi}" title="왼쪽으로">◀</button><button class="cmini" data-act="right" data-i="${gi}" title="오른쪽으로">▶</button></div>`
-      +`<div class="ctl"><button class="cmini" data-act="rentype" data-id="${t.id}">✎</button><button class="cmini" data-act="deltype" data-id="${t.id}">🗑</button></div></div></th>`;
-  });
-  h+='<th>합계</th></tr></thead><tbody>';
-  V.forEach(v=>{
-    h+=`<tr><td class="vn">${esc(v.name)} `
-      +`<button class="mini" data-act="renviewer" data-id="${v.id}">✎</button>`
-      +`<button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></td>`;
-    T.forEach(t=>{ const n=getCount(v,t.id);
-      h+=`<td style="text-align:center"><span class="cc">`
-        +`<button data-act="dec" data-v="${v.id}" data-t="${t.id}">−</button>`
-        +`<span class="n${n?'':' zero'}">${n}</span>`
-        +`<button data-act="inc" data-v="${v.id}" data-t="${t.id}">+</button></span></td>`;
-    });
-    h+=`<td class="rowsum">${rowTotal(v)}</td></tr>`;
-  });
-  h+='</tbody><tfoot><tr><td class="vn">종류 합계</td>';
-  T.forEach(t=>{ h+=`<td style="text-align:center">${colTotal(t)}</td>`; });
-  h+=`<td style="text-align:center">${grand()}</td></tr></tfoot>`;
-  document.getElementById('upboGrid').innerHTML=h;
+  renderTypeStrip();
+  const V=curUV();
+  const box=document.getElementById('upboRows');
+  if(!V.length){ box.innerHTML='<p class="note">이 시즌에 시청자가 없어요. + 시청자로 추가!</p>'; return; }
+  box.innerHTML=V.map(v=>{
+    const steps=U.types.map(t=>{ const n=getCount(v,t.id);
+      return `<span class="step"><span class="sw" style="background:${t.color||'#ffb3d1'}"></span>${esc(t.name)}
+        <button data-act="dec" data-v="${v.id}" data-t="${t.id}">−</button><span class="n${n?'':' zero'}">${n}</span><button data-act="inc" data-v="${v.id}" data-t="${t.id}">＋</button></span>`;
+    }).join('');
+    return `<div class="urow"><span class="uava" style="background:${admAva(v.name)}">${esc((v.name||'?').slice(0,1))}</span>
+      <div style="flex:1;min-width:0">
+        <div class="uhead"><span class="unm">${esc(v.name)}</span>
+          <button class="mini" data-act="renviewer" data-id="${v.id}">✎</button>
+          <button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></div>
+        <div class="usteps" style="margin-top:7px">${steps}</div>
+      </div>
+      <span class="usum">🪙 ${rowTotal(v)}</span></div>`;
+  }).join('');
 }
-document.getElementById('upboGrid').addEventListener('click', async e=>{
+document.getElementById('tab-upbo').addEventListener('click', async e=>{
   const b=e.target.closest('[data-act]'); if(!b) return;
   const act=b.dataset.act;
   try{
@@ -569,12 +580,7 @@ document.getElementById('addTypeBtn').addEventListener('click', async ()=>{
   const { error } = await sb.from('upbo_types').insert({ name:n.trim(), color:PALETTE[U.types.length%PALETTE.length], sort_order:U.types.length });
   if(error) return alert(error.message); loadUpbo();
 });
-document.getElementById('upboItemBar').addEventListener('click',e=>{
-  const b=e.target.closest('button[data-uip]'); if(!b) return;
-  if(b.dataset.uip==='prev' && upboItemPage>0) upboItemPage--;
-  else if(b.dataset.uip==='next' && upboItemPage<upboNPages()-1) upboItemPage++;
-  renderUpbo();
-});
+
 document.getElementById('addViewerBtn').addEventListener('click', async ()=>{
   if(U.seasons.length && !curUpboSeason){ return alert('먼저 시즌을 선택하세요.'); }
   const n=prompt('시청자 닉네임'); if(!n||!n.trim()) return;
