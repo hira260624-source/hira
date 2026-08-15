@@ -25,12 +25,13 @@ if(/Android|iPhone|iPod|Mobile/i.test(ua)||(/Macintosh|iPad/.test(ua)&&navigator
 @font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-8ExtraBold.woff2') format('woff2');font-weight:800;font-display:swap;}
 @font-face{font-family:'A2z';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/%EC%97%90%EC%9D%B4%ED%88%AC%EC%A7%80%EC%B2%B4-9Black.woff2') format('woff2');font-weight:900;font-display:swap;}
 :root{
-  --acc:#ffc61a; --acc-d:#e3a400; --acc-l:#ffe07a; --acc-t:#9a7800; --hot:#ff5c9e;
-  --ink-on-acc:#241d0c;
-  --bg:#f7f5ee; --bg2:#ffffff;
+  --acc:#fff099; --acc-d:#e0c445; --acc-l:#fff7cc; --acc-t:#857414; --hot:#9cc7d8;
+  --sky:#b6d4de;
+  --ink-on-acc:#33322c;
+  --bg:#faf8ef; --bg2:#ffffff;
   --panel:rgba(255,255,255,.74); --panel2:rgba(255,255,255,.92);
   --line:rgba(36,32,18,.10); --line2:rgba(36,32,18,.18);
-  --txt:#23252b; --dim:#6b7280; --dim2:#9aa0ab;
+  --txt:#33322c; --dim:#6b7280; --dim2:#9aa0ab;
   --nav-h:64px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -117,8 +118,8 @@ a{color:inherit;}
 .avatar-layer img{height:100%;width:100%;max-width:100%;object-fit:contain;object-position:bottom center;
   filter:drop-shadow(0 22px 40px rgba(70,58,20,.3));}
 .avatar-layer::before{content:'';position:absolute;right:212px;bottom:232px;width:576px;height:576px;border-radius:50%;
-  background:radial-gradient(circle at 34% 28%, #ffd94e 0%, #f5b800 54%, #dc9d00 100%);
-  box-shadow:0 0 130px rgba(245,184,0,.45);z-index:-1;transition:opacity .5s ease;}
+  background:radial-gradient(circle at 34% 28%, #fff7cc 0%, #ffe98a 54%, #e0c445 100%);
+  box-shadow:0 0 130px rgba(224,196,69,.4);z-index:-1;transition:opacity .5s ease;}
 body.sub .avatar-layer{opacity:.24;transform:scale(.965);}
 body.sub .avatar-layer::before{opacity:.3;}
 body.fx .avatar-layer{opacity:.95;transform:scale(1.045);}
@@ -1015,7 +1016,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeClips(); clo
 /* ✨ deco layer: petals + cursor play + tilt (2026-08) */
 #petals{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
 #petals i{position:absolute;top:-30px;border-radius:60% 40% 55% 45%;background:linear-gradient(140deg,var(--acc-l),var(--acc));opacity:.75;animation:petalFall linear infinite;box-shadow:0 2px 6px rgba(227,164,0,.25);}
-#petals i.p{background:linear-gradient(140deg,#ffd6e8,var(--hot));opacity:.5;}
+#petals i.p{background:linear-gradient(140deg,#e3f1f6,var(--sky));opacity:.5;}
 @keyframes petalFall{to{transform:translateY(1450px) rotate(540deg);}}
 .spark{position:fixed;z-index:200;pointer-events:none;font-size:15px;animation:sparkOut .8s ease-out forwards;will-change:transform,opacity;}
 @keyframes sparkOut{from{opacity:1;transform:translate(0,0) scale(1) rotate(0)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2) rotate(120deg)}}
