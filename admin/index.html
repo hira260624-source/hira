@@ -51,6 +51,24 @@
   .save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
 
 
+
+  /* ── 업보 서브탭 ── */
+  .usub-tabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
+  .usub-tabs button{font-family:'A2z';font-weight:800;font-size:.98rem;color:var(--red-d);background:#fff;
+    border:2px solid var(--pink);border-radius:999px;padding:7px 18px;cursor:pointer;}
+  .usub-tabs button.on{background:var(--red);color:#fff;border-color:var(--red);}
+  .grant-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:13px;}
+  .season-picker{display:flex;gap:6px;flex-wrap:wrap;}
+  .season-picker button{font-family:'A2z';font-weight:800;font-size:.9rem;color:var(--red-d);background:#fff;
+    border:2px solid var(--pink);border-radius:999px;padding:5px 14px;cursor:pointer;}
+  .season-picker button.on{background:var(--red);color:#fff;border-color:var(--red);}
+  #uq{font-family:'A2z';font-size:.98rem;color:var(--ink);background:var(--cream);border:2px solid var(--pink);
+    border-radius:11px;padding:7px 12px;flex:1;min-width:150px;}
+  #uq:focus{outline:none;border-color:var(--red);}
+  .vrow{display:flex;align-items:center;gap:11px;padding:10px 13px;border:2px solid var(--pink-l);
+    border-radius:13px;margin-bottom:8px;background:#fff;}
+  .vrow .unm{font-weight:800;color:#5b463a;font-size:1.02rem;}
+  .vrow .spacer{flex:1;}
   /* ── 업보 행 리스트 (쮸 방식) ── */
   .type-strip{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
   .type-strip .tchip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--pink-l);
@@ -59,7 +77,7 @@
   .type-strip .tchip .cmini{border:none;background:var(--cream);border-radius:7px;padding:2px 6px;cursor:pointer;font-size:.78rem;}
   .urow{display:flex;align-items:flex-start;gap:12px;padding:11px 13px;border:2px solid var(--pink-l);
     border-radius:14px;margin-bottom:9px;background:#fff;}
-  .urow .uava{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  .uava{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
     font-weight:900;color:#fff;font-size:1rem;}
   .urow .uhead{display:flex;align-items:center;gap:7px;min-width:170px;flex:none;padding-top:4px;}
   .urow .unm{font-weight:800;color:#5b463a;font-size:1.02rem;word-break:break-all;}
@@ -185,14 +203,37 @@
   <div class="pane" id="tab-upbo">
     <section class="panel">
       <div class="sec-title">🏆 업보 편집</div>
-      <div id="seasonBar" class="season-bar"></div>
-      <div class="bar">
-        <button class="btn" id="addTypeBtn">+ 업보 종류</button>
-        <button class="btn" id="addViewerBtn">+ 시청자</button>
+      <div class="usub-tabs" id="usubTabs">
+        <button class="on" data-us="grant">업보부여</button>
+        <button data-us="viewers">시청자 관리</button>
+        <button data-us="types">항목 관리</button>
+        <button data-us="seasons">시즌 관리</button>
       </div>
-      <div class="type-strip" id="typeStrip"></div>
-      <div id="upboRows"></div>
-      <p class="note">항목칩: ◀▶ 순서 · ✎ 이름 · 🗑 삭제 &nbsp;/&nbsp; 시청자 행: 항목 −/＋ 즉시 저장</p>
+      <!-- 업보부여 -->
+      <div class="usub" id="us-grant">
+        <div class="grant-head">
+          <div class="season-picker" id="grantSeasons"></div>
+          <input id="uq" type="text" placeholder="🔎 시청자 검색…">
+        </div>
+        <div id="upboRows"></div>
+        <p class="note">항목 −/＋ 는 즉시 저장돼요.</p>
+      </div>
+      <!-- 시청자 관리 -->
+      <div class="usub" id="us-viewers" hidden>
+        <div class="bar"><button class="btn" id="addViewerBtn">+ 시청자</button></div>
+        <div id="viewerRows"></div>
+        <p class="note">시청자는 현재 선택된 시즌(업보부여 탭)에 추가돼요.</p>
+      </div>
+      <!-- 항목 관리 -->
+      <div class="usub" id="us-types" hidden>
+        <div class="bar"><button class="btn" id="addTypeBtn">+ 업보 종류</button></div>
+        <div class="type-strip" id="typeStrip"></div>
+        <p class="note">◀▶ 순서 · ✎ 이름 · 🗑 삭제 — 항목은 전 시즌 공용이에요.</p>
+      </div>
+      <!-- 시즌 관리 -->
+      <div class="usub" id="us-seasons" hidden>
+        <div id="seasonBar" class="season-bar"></div>
+      </div>
     </section>
   </div>
 
@@ -469,9 +510,42 @@ function renderTypeStrip(){
     <button class="cmini" data-act="rentype" data-id="${t.id}">✎</button><button class="cmini" data-act="deltype" data-id="${t.id}">🗑</button></span>`).join('')
     || '<p class="note">+ 업보 종류로 항목을 먼저 만들어줘요.</p>';
 }
-function renderUpbo(){
-  renderTypeStrip();
+let usub='grant';
+document.getElementById('usubTabs').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-us]'); if(!b) return;
+  usub=b.dataset.us;
+  document.querySelectorAll('#usubTabs button').forEach(x=>x.classList.toggle('on',x.dataset.us===usub));
+  document.querySelectorAll('.usub').forEach(p=>{ p.hidden=(p.id!=='us-'+usub); });
+  renderUpbo();
+});
+function renderGrantSeasons(){
+  const el=document.getElementById('grantSeasons'); if(!el) return;
+  if(!U.seasons.length){ el.innerHTML='<span class="note">시즌 없음 — 시즌 관리에서 추가</span>'; return; }
+  el.innerHTML=U.seasons.map(s=>`<button class="${String(s.id)===String(curUpboSeason)?'on':''}" data-gsid="${s.id}">${esc(s.name)}${s.is_active?' ★':''}</button>`).join('');
+}
+document.getElementById('grantSeasons').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-gsid]'); if(!b) return;
+  curUpboSeason=b.dataset.gsid; renderUpbo(); renderSeasonBar();
+});
+document.getElementById('uq').addEventListener('input',()=>renderUpbo());
+function renderViewerRows(){
+  const box=document.getElementById('viewerRows'); if(!box) return;
   const V=curUV();
+  if(!V.length){ box.innerHTML='<p class="note">이 시즌에 시청자가 없어요.</p>'; return; }
+  box.innerHTML=V.map(v=>`<div class="vrow"><span class="uava" style="background:${admAva(v.name)}">${esc((v.name||'?').slice(0,1))}</span>
+    <span class="unm">${esc(v.name)}</span><span class="spacer"></span>
+    <span class="usum">🪙 ${rowTotal(v)}</span>
+    <button class="mini" data-act="renviewer" data-id="${v.id}">✎</button>
+    <button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></div>`).join('');
+}
+function renderUpbo(){
+  renderGrantSeasons();
+  if(usub==='types'){ renderTypeStrip(); return; }
+  if(usub==='viewers'){ renderViewerRows(); return; }
+  if(usub==='seasons'){ return; }
+  renderTypeStrip();
+  const q=(document.getElementById('uq').value||'').trim().toLowerCase();
+  const V=curUV().filter(v=>!q||(v.name||'').toLowerCase().includes(q));
   const box=document.getElementById('upboRows');
   if(!V.length){ box.innerHTML='<p class="note">이 시즌에 시청자가 없어요. + 시청자로 추가!</p>'; return; }
   box.innerHTML=V.map(v=>{
@@ -481,9 +555,7 @@ function renderUpbo(){
     }).join('');
     return `<div class="urow"><span class="uava" style="background:${admAva(v.name)}">${esc((v.name||'?').slice(0,1))}</span>
       <div style="flex:1;min-width:0">
-        <div class="uhead"><span class="unm">${esc(v.name)}</span>
-          <button class="mini" data-act="renviewer" data-id="${v.id}">✎</button>
-          <button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></div>
+        <div class="uhead"><span class="unm">${esc(v.name)}</span></div>
         <div class="usteps" style="margin-top:7px">${steps}</div>
       </div>
       <span class="usum">🪙 ${rowTotal(v)}</span></div>`;
