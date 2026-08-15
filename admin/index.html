@@ -477,8 +477,7 @@
     <input type="text" id="fxSearch" placeholder="효과 이름 검색">
     <select id="fxCat" style="width:auto">
       <option value="">전체</option>
-      <option>긁기</option><option>촬영</option><option>포장</option>
-      <option>커튼</option><option>변형</option>
+      <option>긁기</option><option>촬영</option><option>변형</option>
     </select>
   </div>
   <div class="fxlist" id="fxlist"></div>
@@ -500,14 +499,12 @@
     <div class="row" style="margin:-4px 0 8px">
       <button class="btn" type="button" id="upBtn">📤 이미지 업로드</button>
       <button class="btn ghost" type="button" id="galBtn">🪣 버킷 확인하기</button>
-      <button class="btn" type="button" id="upBtn2" data-target="img2" style="display:none">📤 뒷면 업로드</button>
       <button class="btn" type="button" id="upBtnC" data-target="cover" style="display:none">📤 커버 업로드</button>
     </div>
     <p class="note" id="saveNote" style="margin:-4px 0 6px"></p>
     <label><b>이미지 URL <em>— 로그인 없이 열리는 https 주소</em></b>
       <input type="text" id="img" placeholder="https://.../photo.webp"></label>
-    <label data-for="holo" id="lblImg2"><b>뒷면 이미지 URL <em>— 기울였을 때 나올 두 번째 컷</em></b>
-      <input type="text" id="img2" placeholder="https://.../photo2.webp"></label>
+    
     <label data-for="scratch frost dust" id="lblCover"><b>커버 이미지 URL <em>— 선택. 비우면 기본 질감</em></b>
       <input type="text" id="cover" placeholder=""></label>
   </fieldset>
@@ -1035,7 +1032,7 @@ const RUNTIME_BASE = "https://straker.pages.dev/runtime";
 const STORE_KEY = "revealStudio.v2";
 
 const $ = id => document.getElementById(id);
-const F = ['img','img2','cover','label','title','sub','ratio','fit','accent','radius','blur','pct','bw','bh'];
+const F = ['img','cover','label','title','sub','ratio','fit','accent','radius','blur','pct','bw','bh'];
 
 /* 효과 목록 — 런타임의 FX 키와 반드시 일치해야 함 */
 const FX = [
@@ -1043,23 +1040,12 @@ const FX = [
  ['frost',  '긁기','❄️','성에 낀 창','문지르면 뿌옇던 화면이 맑아짐'],
  ['dust',   '긁기','🧽','먼지 낀 액자','닦아내면 빛바랜 사진이 살아남'],
  ['camera', '촬영','📷','카메라 찰칵','초점을 더듬다 셔터를 누르면 선명해짐'],
- ['polaroid','촬영','🖼️','폴라로이드','흔들면 서서히 현상됨'],
  ['film',   '촬영','🎞️','필름 스트립','레버를 감으면 여러 컷이 지나감'],
- ['gift',   '포장','🎁','선물상자','리본을 당기면 뚜껑이 날아감'],
- ['gacha',  '포장','🥚','캡슐토이','손잡이를 돌리면 캡슐이 떨어져 갈라짐'],
- ['parcel', '포장','📦','택배 개봉','테이프를 그으면 양쪽 플랩이 열림'],
- ['envelope','포장','💌','편지 봉투','씰을 열면 편지가 봉투에서 나옴'],
- ['curtain','커튼','🎭','무대 커튼','양옆으로 밀어서 열기'],
- ['blind',  '커튼','🪟','블라인드','위로 올리면 슬랫이 걷힘'],
- ['blackout','커튼','🌑','암막 스와이프','쓸어내면 어둠이 걷힘'],
- ['unlock', '커튼','🔓','밀어서 열기','슬라이드 잠금 해제'],
- ['origami','변형','📄','종이접기','누를 때마다 한 겹씩 펼쳐짐'],
+ ['unlock', '변형','🔓','밀어서 열기','슬라이드 잠금 해제'],
  ['snowglobe','변형','🔮','스노우볼','흔들면 맑아지고 눈이 계속 내림'],
- ['slot',   '변형','🎰','슬롯머신','레버를 당기면 777 잭팟'],
- ['holo',   '변형','🌈','홀로그램 카드','기울이면 두 장의 컷이 번갈아 드러남'],
  ['scan',   '변형','📡','스캔','스캔선이 훑고 지나가며 드러남'],
 ];
-const NEEDS = { holo:['img2'], camera:['blur'],
+const NEEDS = { camera:['blur'],
   scratch:['cover','pct'], frost:['cover','pct'], dust:['cover','pct'] };
 
 let fx = 'scratch';
@@ -1257,14 +1243,13 @@ async function r2Upload(file,target){
   }catch(err){ note.textContent='업로드 실패: '+err.message; toast('업로드 실패'); }
 }
 $('r2file').addEventListener('change',e=>{ const f=e.target.files?.[0]; if(f) r2Upload(f,upTarget); e.target.value=''; });
-[['upBtn','img'],['upBtn2','img2'],['upBtnC','cover']].forEach(([id,tg])=>{
+[['upBtn','img'],['upBtnC','cover']].forEach(([id,tg])=>{
   const b=$(id); if(b) b.onclick=()=>{ upTarget=tg; $('r2file').click(); };
 });
 $('galBtn').onclick=()=>openR2('img');
 const _syncFields=syncFields;
 syncFields=function(){ _syncFields();
   const s=k=>document.querySelector(`[data-for~="${k}"]`);
-  $('upBtn2').style.display=(NEEDS[fx]||[]).includes('img2')?'':'none';
   $('upBtnC').style.display=(NEEDS[fx]||[]).includes('cover')?'':'none';
 };
 
