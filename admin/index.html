@@ -65,6 +65,17 @@
   #uq{font-family:'A2z';font-size:.98rem;color:var(--ink);background:var(--cream);border:2px solid var(--pink);
     border-radius:11px;padding:7px 12px;flex:1;min-width:150px;}
   #uq:focus{outline:none;border-color:var(--red);}
+  .vadd{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:11px;}
+  .vadd input{font-family:'A2z';font-size:.98rem;color:var(--ink);background:var(--cream);border:2px solid var(--pink);
+    border-radius:11px;padding:8px 12px;flex:1;min-width:150px;}
+  .vadd input:focus{outline:none;border-color:var(--red);}
+  #vq{font-family:'A2z';font-size:.95rem;color:var(--ink);background:#fff;border:2px solid var(--pink-l);
+    border-radius:11px;padding:7px 12px;width:100%;margin-bottom:12px;box-sizing:border-box;}
+  #vq:focus{outline:none;border-color:var(--pink);}
+  .vrow input{font-family:'A2z';font-size:.95rem;color:var(--ink);background:var(--cream);border:2px solid var(--pink);
+    border-radius:9px;padding:5px 10px;min-width:0;}
+  .vrow input:focus{outline:none;border-color:var(--red);}
+  .vrow .ve-name{flex:1;} .vrow .ve-id{flex:1;}
   .vrow{display:flex;align-items:center;gap:11px;padding:10px 13px;border:2px solid var(--pink-l);
     border-radius:13px;margin-bottom:8px;background:#fff;}
   .vrow .unm{font-weight:800;color:#5b463a;font-size:1.02rem;}
@@ -252,9 +263,14 @@
       </div>
       <!-- 시청자 관리 -->
       <div class="usub" id="us-viewers" hidden>
-        <div class="bar"><button class="btn" id="addViewerBtn">+ 시청자</button></div>
+        <div class="vadd">
+          <input id="nvName" maxlength="30" placeholder="닉네임">
+          <input id="nvId" maxlength="30" placeholder="SOOP 아이디 (선택 · 프사 연동)">
+          <button class="btn" id="addViewerBtn">+ 추가</button>
+        </div>
+        <input id="vq" type="text" placeholder="🔎 시청자 검색…">
         <div id="viewerRows"></div>
-        <p class="note">시청자는 현재 선택된 시즌(업보부여 탭)에 추가돼요.</p>
+        <p class="note">✎ 를 누르면 행에서 바로 수정할 수 있어요 · 시청자는 전 시즌 공용.</p>
       </div>
       <!-- 항목 관리 -->
       <div class="usub" id="us-types" hidden>
@@ -571,19 +587,6 @@ document.getElementById('grantSeasons').addEventListener('click',e=>{
   curUpboSeason=b.dataset.gsid; renderUpbo(); renderSeasonBar();
 });
 
-function renderViewerRows(){
-  const box=document.getElementById('viewerRows'); if(!box) return;
-  const V=curUV();
-  if(!V.length){ box.innerHTML='<p class="note">이 시즌에 시청자가 없어요.</p>'; return; }
-  box.innerHTML=V.map(v=>{
-    const uid=(v.user_id||'').trim();
-    const img=uid?`<img src="https://profile.img.sooplive.com/LOGO/${uid.slice(0,2)}/${uid}/${uid}.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.remove()">`:'';
-    return `<div class="vrow"><span class="uava" style="position:relative;overflow:hidden;background:${admAva(v.name)}">${esc((v.name||'?').slice(0,1))}${img}</span>
-    <span class="unm">${esc(v.name)}${uid?` <small style="color:#b6a496;font-size:.76rem">(${esc(uid)})</small>`:''}</span><span class="spacer"></span>
-    <span class="usum">🪙 ${rowTotal(v)}</span>
-    <button class="mini" data-act="renviewer" data-id="${v.id}">✎</button>
-    <button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></div>`;}).join('');
-}
 let curGrantMid='';
 function pAva(v){ const uid=(v.user_id||'').trim();
   const img=uid?`<img src="https://profile.img.sooplive.com/LOGO/${uid.slice(0,2)}/${uid}/${uid}.jpg" onerror="this.remove()">`:'';
@@ -644,6 +647,31 @@ document.getElementById('grantSaveBtn').addEventListener('click', async ()=>{
   v.counts=c; renderGrantMembers();
   btn.textContent='✅ 저장됨'; setTimeout(()=>{btn.textContent='💾 저장';},1200);
 });
+let editVid='';
+function renderViewerRows(){
+  const box=document.getElementById('viewerRows'); if(!box) return;
+  const q=(document.getElementById('vq')?.value||'').trim().toLowerCase();
+  const V=curUV().filter(v=>!q||(v.name||'').toLowerCase().includes(q)||(v.user_id||'').toLowerCase().includes(q));
+  if(!curUV().length){ box.innerHTML='<p class="note">위 폼으로 시청자를 추가해줘요.</p>'; return; }
+  if(!V.length){ box.innerHTML='<p class="note">검색 결과 없음</p>'; return; }
+  box.innerHTML=V.map(v=>{
+    const uid=(v.user_id||'').trim();
+    const img=uid?`<img src="https://profile.img.sooplive.com/LOGO/${uid.slice(0,2)}/${uid}/${uid}.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.remove()">`:'';
+    const ava=`<span class="uava" style="position:relative;overflow:hidden;background:${admAva(v.name)}">${esc((v.name||'?').slice(0,1))}${img}</span>`;
+    if(String(editVid)===String(v.id)){
+      return `<div class="vrow" data-vid="${v.id}">${ava}
+        <input class="ve-name" value="${esc(v.name)}" maxlength="30" placeholder="닉네임">
+        <input class="ve-id" value="${esc(uid)}" maxlength="30" placeholder="SOOP 아이디">
+        <button class="btn" data-act="saveviewer" data-id="${v.id}">저장</button>
+        <button class="mini" data-act="canceledit">✖</button></div>`;
+    }
+    return `<div class="vrow" data-vid="${v.id}">${ava}
+      <span class="unm">${esc(v.name)}${uid?` <small style="color:#b6a496;font-size:.76rem">(${esc(uid)})</small>`:''}</span><span class="spacer"></span>
+      <span class="usum">🪙 ${rowTotal(v)}</span>
+      <button class="mini" data-act="editviewer" data-id="${v.id}">✎</button>
+      <button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></div>`;
+  }).join('');
+}
 function renderUpbo(){
   renderGrantSeasons();
   if(usub==='types'){ renderTypeStrip(); return; }
@@ -677,12 +705,17 @@ document.getElementById('tab-upbo').addEventListener('click', async e=>{
       if(j<0||j>=U.types.length) return;
       const arr=[...U.types]; [arr[i],arr[j]]=[arr[j],arr[i]]; U.types=arr; renderUpbo();
       await Promise.all(U.types.map((t,k)=>sb.from('upbo_types').update({ sort_order:k }).eq('id', t.id)));
-    } else if(act==='renviewer'){
-      const v=U.viewers.find(x=>String(x.id)===String(b.dataset.id));
-      const nv=prompt('시청자 닉네임', v.name); if(!nv||!nv.trim()) return;
-      const uid=prompt('SOOP 아이디 (프사 연동 · 없으면 빈칸)', v.user_id||''); if(uid===null) return;
-      const { error } = await sb.from('upbo_viewers').update({ name:nv.trim(), user_id:uid.trim()||null }).eq('id', v.id);
-      if(error) return alert(error.message); loadUpbo();
+    } else if(act==='editviewer'){
+      editVid=b.dataset.id; renderViewerRows();
+    } else if(act==='canceledit'){
+      editVid=''; renderViewerRows();
+    } else if(act==='saveviewer'){
+      const row=b.closest('.vrow');
+      const nv=(row.querySelector('.ve-name').value||'').trim(); if(!nv) return;
+      const uid=(row.querySelector('.ve-id').value||'').trim();
+      const { error } = await sb.from('upbo_viewers').update({ name:nv, user_id:uid||null }).eq('id', b.dataset.id);
+      if(error) return alert(error.message);
+      editVid=''; loadUpbo();
     } else if(act==='delviewer'){
       if(!confirm('이 시청자를 삭제할까요?')) return;
       const { error } = await sb.from('upbo_viewers').delete().eq('id', b.dataset.id);
@@ -745,11 +778,16 @@ document.getElementById('addTypeBtn').addEventListener('click', async ()=>{
 });
 
 document.getElementById('addViewerBtn').addEventListener('click', async ()=>{
-  const n=prompt('시청자 닉네임'); if(!n||!n.trim()) return;
-  const uid=prompt('SOOP 아이디 (프사 연동 · 없으면 빈칸)','')||'';
-  const { error } = await sb.from('upbo_viewers').insert({ name:n.trim(), user_id:uid.trim()||null, counts:{}, sort_order:U.viewers.length });
-  if(error) return alert(error.message); loadUpbo();
+  const nEl=document.getElementById('nvName'), iEl=document.getElementById('nvId');
+  const n=(nEl.value||'').trim(); if(!n){ nEl.focus(); return; }
+  const uid=(iEl.value||'').trim();
+  const { error } = await sb.from('upbo_viewers').insert({ name:n, user_id:uid||null, counts:{}, sort_order:U.viewers.length });
+  if(error) return alert(error.message);
+  nEl.value=''; iEl.value=''; nEl.focus(); loadUpbo();
 });
+document.getElementById('nvId').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('addViewerBtn').click(); });
+document.getElementById('nvName').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('nvId').focus(); });
+document.getElementById('vq').addEventListener('input',()=>renderViewerRows());
 
 refresh();
 
