@@ -464,7 +464,7 @@ html.emb .day-modal{width:430px;}
 <div id="page-loader"><img class="pl-img" src="/loader.png" alt="히라"><div class="pl-dots"><span></span><span></span><span></span></div></div>
 
 <div id="fitstage">
-<div class="avatar-layer" aria-hidden="true"><img src="/avatar.png" onerror="this.onerror=null;this.src='/keyvisual.png';" alt="" fetchpriority="high"></div>
+<div class="avatar-layer" aria-hidden="true"><img id="mainAvatar" src="/avatar.png" onerror="this.onerror=null;this.src='/keyvisual.png';" alt="" fetchpriority="high"></div>
 <div class="bottom-fade" aria-hidden="true"></div>
 <div class="hero-ghost" aria-hidden="true">HIRA</div>
 
@@ -608,6 +608,17 @@ html.emb .day-modal{width:430px;}
 <script src="/js/supabase-config.js"></script>
 <script>
 /* ══════════ 공통 ══════════ */
+
+/* 메인 아바타: site_settings.avatar_url 있으면 교체 */
+(async function(){
+  try{
+    const sb=initSupabase(); if(!sb) return;
+    const { data } = await sb.from('site_settings').select('value').eq('key','avatar_url').maybeSingle();
+    const u=data&&data.value&&data.value.trim();
+    if(u){ const el=document.getElementById('mainAvatar'); if(el) el.src=u; }
+  }catch(e){}
+})();
+
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function pad(n){ return String(n).padStart(2,'0'); }
 
