@@ -615,7 +615,7 @@
 
   <fieldset>
     <legend>이미지</legend>
-    <div class="drop" id="drop">
+    <div class="drop" id="wgDrop">
       파일을 <b>끌어다 놓거나</b> 눌러서 업로드 · URL 붙여넣기도 됩니다<br>
       <span style="font-size:11px">R2에 올라가고 주소가 자동으로 채워집니다 · 20MB 이하</span>
     </div>
@@ -1411,7 +1411,7 @@ function extractUrl(text){
   const bare = text.match(/https?:\/\/[^\s"'<>]+/i);
   return bare ? bare[0] : '';
 }
-const drop=$('drop');
+const drop=$('wgDrop');
 ['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{
   e.preventDefault(); drop.classList.add('over'); }));
 ['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{
