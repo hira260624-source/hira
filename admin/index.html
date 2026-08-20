@@ -741,8 +741,6 @@
       <span class="sec-title" style="margin:0">🖼️ SOOP 배너 자르기</span>
       <span class="tag">플로팅 80×209 · 하단 720×150 ×6</span>
       <span style="flex:1"></span>
-      <button class="btn ghost" type="button" onclick="openR2('bannerSrc')">🪣 버킷에서 불러오기</button>
-      <button class="btn" type="button" id="bnSaveR2">💾 버킷에 저장</button>
     </div>
 
 <div class="wrap">
@@ -1980,38 +1978,6 @@ window.addEventListener('resize', () => {
 });
 })();
 
-/* ══ 배너 크롭 R2 연동 ══ */
-function bannerLoadFromUrl(url){
-  fetch(url).then(r=>r.blob()).then(b=>{
-    const f=new File([b],(url.split('/').pop()||'banner.png'),{type:b.type||'image/png'});
-    const dt=new DataTransfer(); dt.items.add(f);
-    const inp=document.getElementById('file');
-    inp.files=dt.files; inp.dispatchEvent(new Event('change',{bubbles:true}));
-  }).catch(e=>alert('불러오기 실패: '+e.message));
-}
-document.getElementById('bnSaveR2').addEventListener('click', async ()=>{
-  const btn=document.getElementById('bnSaveR2'); const old=btn.textContent;
-  try{
-    if(typeof state==='undefined' || !state.img){ alert('먼저 이미지를 올려줘요.'); return; }
-    btn.disabled=true; btn.textContent='업로드 중…';
-    const res=await renderPieces();
-    if(!res||!res.length) throw new Error('생성된 조각이 없어요');
-    const urls=[];
-    for(let i=0;i<res.length;i++){
-      const fd=new FormData();
-      const ext=res[i].ext||'png';
-      fd.append('file', new File([res[i].blob], `banner_${state.active}_${i+1}.${ext}`, {type: ext==='jpg'?'image/jpeg':'image/png'}));
-      fd.append('dir','banner');
-      const r=await fetch('/api/r2/upload',{method:'POST',body:fd});
-      const d=await r.json();
-      if(!r.ok||!d.ok) throw new Error(d.error||'업로드 실패');
-      urls.push(d.url);
-    }
-    btn.textContent=`✅ ${urls.length}장 저장됨`;
-    try{ await navigator.clipboard.writeText(urls.join('\n')); }catch(_){}
-    setTimeout(()=>{btn.textContent=old;btn.disabled=false;},1800);
-  }catch(e){ alert('저장 실패: '+e.message); btn.textContent=old; btn.disabled=false; }
-});
 
 refresh();
 
