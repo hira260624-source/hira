@@ -1339,6 +1339,8 @@ function syncFields(){
 }
 
 /* ── URL 조립 ── */
+let shortUrl='', shortQs='';
+const SITE_ORIGIN='https://hiraprofile.pages.dev';
 function widgetUrl(){
   const p=new URLSearchParams(); p.set('fx',fx);
   const add=(k,v,def)=>{ v=String(v??'').trim(); if(v && v!==def) p.set(k,v); };
@@ -1353,23 +1355,20 @@ function widgetUrl(){
   return RUNTIME_BASE + '?' + p.toString();
 }
 function embedCode(u){
-  return `<div style="width:${$('bw').value}px;max-width:100%;margin:0 auto 1rem;position:relative;aspect-ratio:${$('bw').value}/${$('bh').value};">
-  <iframe src="${u}" width="100%" height="100%" scrolling="no" frameborder="0"
-    style="width:100%;height:100%;border:0;display:block"
-    allow="encrypted-media; accelerometer; gyroscope"></iframe>
-</div>`;
+  const w=+$('bw').value||1000, hh=+$('bh').value||563;
+  return `<iframe src="${u}" width="${w}" height="${hh}" scrolling="no" frameborder="0" style="width:100%;max-width:${w}px;aspect-ratio:${w}/${hh};height:auto;border:0;display:block;margin:0 auto 1rem" allow="encrypted-media; accelerometer; gyroscope"></iframe>`;
 }
-function previewUrl(u){
-  const q=u.split('?')[1]||'';
-  return u;
-}
+function previewUrl(u){ return u; }  /* 미리보기는 항상 런타임 직결 (발행 URL 아님) */
 
 let fitMode='fit';
 function build(reload){
   const u=widgetUrl();
-  $('url').value=u;
-  $('urlLen').textContent=u.length+'자';
-  $('embed').value=embedCode(u);
+  const qs=u.split('?')[1]||'';
+  if(qs!==shortQs) shortUrl='';            // 설정이 바뀌면 발행 무효화
+  const pub=shortUrl||u;
+  $('url').value=pub;
+  $('urlLen').textContent=pub.length+'자'+(shortUrl?' · 발행됨':'');
+  $('embed').value=embedCode(pub);
   const w=+$('bw').value, h=+$('bh').value;
   const f=$('pv');
   if(fitMode==='real'){ f.style.width=w+'px'; f.style.height=h+'px'; f.style.aspectRatio='auto'; }
@@ -1460,8 +1459,27 @@ async function copy(text,msg){
     document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
   toast(msg);
 }
-$('copyEmbed').onclick=()=>copy($('embed').value,'임베드 코드 복사됨');
-$('copyUrl').onclick=()=>copy($('url').value,'위젯 URL 복사됨');
+async function ensurePublish(){
+  const qs=widgetUrl().split('?')[1]||'';
+  if(!qs) throw new Error('발행할 설정이 없습니다');
+  if(shortUrl && qs===shortQs) return shortUrl;     // 같은 설정이면 재발행 안 함
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+  const r=await fetch('/api/r2/upload',{ method:'PUT',
+    headers:{ 'X-Key':`widgets/${id}.txt`, 'Content-Type':'text/plain' }, body:qs });
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.ok) throw new Error(d.error||'발행 실패');
+  shortQs=qs; shortUrl=`${SITE_ORIGIN}/w/${id}`;
+  build(false);
+  return shortUrl;
+}
+$('copyEmbed').onclick=async()=>{
+  try{ await ensurePublish(); copy($('embed').value,'SOOP URL 발행 · 임베드 코드 복사됨'); }
+  catch(e){ toast(e.message); }
+};
+$('copyUrl').onclick=async()=>{
+  try{ const u=await ensurePublish(); copy(u,'SOOP URL 발행 · 복사됨'); }
+  catch(e){ toast(e.message); }
+};
 $('saveHtml').onclick=()=>{
   const u=widgetUrl();
   const html=`<!DOCTYPE html>

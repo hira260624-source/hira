@@ -10,7 +10,30 @@ const MAX = 20 * 1024 * 1024; // 20MB
 const OK_TYPES = ["image/png","image/jpeg","image/webp","image/gif","image/avif"];
 
 export function onRequestOptions() {
-  return new Response(null, { headers: CORS });
+  return new Response(null, { headers: { ...CORS, "Access-Control-Allow-Methods": "POST, PUT, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, X-Key" } });
+}
+
+/* 위젯 발행 — PUT + X-Key: widgets/{id}.txt, body = 쿼리스트링 원문 */
+export async function onRequestPut({ request, env }) {
+  const j = (o, s = 200) =>
+    new Response(JSON.stringify(o), { status: s, headers: { ...CORS, "Content-Type": "application/json" } });
+
+  if (!env.DRESS) return j({ error: "R2 바인딩(DRESS) 없음" }, 500);
+
+  try {
+    const key = String(request.headers.get("X-Key") || "");
+    if (!/^widgets\/[a-z0-9]{4,24}\.txt$/i.test(key)) return j({ error: "잘못된 key" }, 400);
+
+    const text = await request.text();
+    if (!text || text.length > 4000) return j({ error: "본문 길이 오류" }, 400);
+
+    await env.DRESS.put(key, text, {
+      httpMetadata: { contentType: "text/plain; charset=utf-8", cacheControl: "public, max-age=31536000, immutable" }
+    });
+    return j({ ok: true, key });
+  } catch (e) {
+    return j({ error: String(e && e.message || e) }, 500);
+  }
 }
 
 export async function onRequestPost({ request, env }) {
