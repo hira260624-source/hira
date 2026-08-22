@@ -608,9 +608,10 @@
     </div>
     <input type="file" id="r2file" accept="image/*" hidden>
     <div class="row" style="margin:-4px 0 8px">
-      <button class="btn" type="button" id="upBtn">📤 이미지 업로드</button>
-      <button class="btn ghost" type="button" id="galBtn">🪣 버킷 확인하기</button>
-      <button class="btn" type="button" id="upBtnC" data-target="cover" style="display:none">📤 커버 업로드</button>
+      <button class="btn" type="button" id="upBtn">📤 이미지</button>
+      <button class="btn ghost" type="button" id="galBtn">🪣 버킷</button>
+      <button class="btn" type="button" id="upBtnC" data-target="cover" style="display:none">📤 커버</button>
+      <button class="btn ghost" type="button" id="galBtnC" style="display:none">🪣 커버버킷</button>
     </div>
     <p class="note" id="saveNote" style="margin:-4px 0 6px"></p>
     <label><b>이미지 URL <em>— 로그인 없이 열리는 https 주소</em></b>
@@ -1520,10 +1521,13 @@ $('r2file').addEventListener('change',e=>{ const f=e.target.files?.[0]; if(f) r2
   const b=$(id); if(b) b.onclick=()=>{ upTarget=tg; $('r2file').click(); };
 });
 $('galBtn').onclick=()=>openR2('img');
+$('galBtnC').onclick=()=>openR2('cover');
 const _syncFields=syncFields;
 syncFields=function(){ _syncFields();
   const s=k=>document.querySelector(`[data-for~="${k}"]`);
-  $('upBtnC').style.display=(NEEDS[fx]||[]).includes('cover')?'':'none';
+  const needCover=(NEEDS[fx]||[]).includes('cover');
+  $('upBtnC').style.display=needCover?'':'none';
+  $('galBtnC').style.display=needCover?'':'none';
 };
 
 
