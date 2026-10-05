@@ -206,6 +206,33 @@
   #tab-studio h3{font-family:'A2z';font-size:.86rem;color:var(--red-d);margin:10px 0 5px;}
   #tab-studio .note{font-size:.74rem;color:#a89484;line-height:1.6;font-weight:600;}
   #tab-studio .empty{font-size:.8rem;color:#a89484;padding:16px;text-align:center;}
+  /* ── 업보 통계 ── */
+  .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-bottom:14px;}
+  .stat-card{background:#fff;border:2px solid var(--pink-l);border-radius:14px;padding:12px 14px;}
+  .stat-card .lb{font-size:.76rem;color:#b6a496;font-weight:800;letter-spacing:.04em;}
+  .stat-card .vl{font-family:'A2z';font-size:1.7rem;font-weight:800;color:var(--red-d);line-height:1.2;margin-top:2px;}
+  .stat-card .sub{font-size:.72rem;color:#b6a496;font-weight:700;}
+  .stat-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:900px){ .stat-cols{grid-template-columns:1fr;} }
+  .stat-box{background:#fff;border:2px solid var(--pink-l);border-radius:16px;padding:14px;}
+  .stat-box h4{font-family:'A2z';font-size:1rem;color:var(--red-d);margin-bottom:11px;display:flex;align-items:center;gap:7px;}
+  .sbar{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+  .sbar .nm{font-weight:800;font-size:.88rem;color:#5b463a;width:116px;flex:none;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;}
+  .sbar .nm .sw{width:10px;height:10px;border-radius:3px;flex:none;}
+  .sbar .tr{display:block;flex:1;height:18px;background:var(--cream);border-radius:9px;overflow:hidden;min-width:0;}
+  .sbar .fl{display:block;height:100%;border-radius:9px;transition:width .4s ease;}
+  .sbar .vl{font-weight:800;font-size:.82rem;color:var(--red-d);width:84px;text-align:right;flex:none;white-space:nowrap;}
+  .rank-row{display:flex;align-items:center;gap:9px;padding:7px 2px;border-bottom:1px solid var(--pink-l);}
+  .rank-row:last-child{border-bottom:none;}
+  .rank-row .no{width:24px;flex:none;font-weight:900;font-size:.9rem;color:#c8bcb0;text-align:center;}
+  .rank-row.top .no{color:var(--red);}
+  .rank-row .pa{width:28px;height:28px;border-radius:50%;flex:none;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:.78rem;font-weight:900;}
+  .rank-row .pa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .rank-row .nm{flex:1;min-width:0;font-weight:800;font-size:.9rem;color:#5b463a;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .stat-empty{text-align:center;color:#b6a496;padding:22px 0;font-weight:700;font-size:.88rem;}
   /* ── 업보 서브탭 ── */
   .usub-tabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
   .usub-tabs button{font-family:'A2z';font-weight:800;font-size:.98rem;color:var(--red-d);background:#fff;
@@ -407,6 +434,7 @@
         <button data-us="viewers">시청자 관리</button>
         <button data-us="types">항목 관리</button>
         <button data-us="seasons">시즌 관리</button>
+        <button data-us="stats">통계</button>
       </div>
       <!-- 업보부여 -->
       <div class="usub" id="us-grant">
@@ -444,6 +472,28 @@
       <!-- 시즌 관리 -->
       <div class="usub" id="us-seasons" hidden>
         <div id="seasonBar" class="season-bar"></div>
+      </div>
+      <!-- 통계 -->
+      <div class="usub" id="us-stats" hidden>
+        <div class="grant-head">
+          <div class="season-picker" id="statSeasons"></div>
+          <button class="btn ghost" type="button" id="statCopyBtn">📋 요약 복사</button>
+        </div>
+        <div class="stat-cards" id="statCards"></div>
+        <div class="stat-cols">
+          <section class="stat-box">
+            <h4>📊 항목별 집계</h4>
+            <div id="statTypes"></div>
+          </section>
+          <section class="stat-box">
+            <h4>🏅 시청자 랭킹 <span class="note" style="font-weight:600">상위 10명</span></h4>
+            <div id="statRank"></div>
+          </section>
+        </div>
+        <section class="stat-box" style="margin-top:12px">
+          <h4>📈 시즌별 추이</h4>
+          <div id="statSeasonCmp"></div>
+        </section>
       </div>
     </section>
   </div>
@@ -1163,11 +1213,109 @@ function renderViewerRows(){
       <button class="mini" data-act="delviewer" data-id="${v.id}">🗑</button></div>`;
   }).join('');
 }
+
+/* ══ 업보 통계 ══ */
+let statSeason='';   // '' = 전체 시즌 합산
+function statBucketOf(v, sid){
+  const c=v.counts||{};
+  if(isNested(c)) return sid?(c[String(sid)]||{}):null;
+  return (!sid || String(sid)===activeSeasonId()) ? c : {};
+}
+function statCount(v, tid, sid){
+  if(sid){ const b=statBucketOf(v,sid)||{}; const n=b[String(tid)]; return n?Number(n):0; }
+  // 전체 합산
+  const c=v.counts||{};
+  if(!isNested(c)){ const n=c[String(tid)]; return n?Number(n):0; }
+  let s=0; for(const k of Object.keys(c)){ const n=c[k]&&c[k][String(tid)]; if(n) s+=Number(n); }
+  return s;
+}
+function statTotal(v, sid){ return U.types.reduce((s,t)=>s+statCount(v,t.id,sid),0); }
+function renderStatSeasons(){
+  const el=document.getElementById('statSeasons'); if(!el) return;
+  const btns=[`<button class="${statSeason===''?'on':''}" data-ssid="">전체</button>`]
+    .concat(U.seasons.map(s=>`<button class="${String(s.id)===String(statSeason)?'on':''}" data-ssid="${s.id}">${esc(s.name)}${s.is_active?' ★':''}</button>`));
+  el.innerHTML=btns.join('');
+}
+function renderStats(){
+  renderStatSeasons();
+  const V=U.viewers;
+  const rows=V.map(v=>({v, t:statTotal(v,statSeason)}));
+  const active=rows.filter(r=>r.t>0);
+  const grand=active.reduce((s,r)=>s+r.t,0);
+  const typeAgg=U.types.map(t=>({t, n:V.reduce((s,v)=>s+statCount(v,t.id,statSeason),0)})).sort((a,b)=>b.n-a.n);
+  const top=typeAgg[0];
+  const avg=active.length?(grand/active.length):0;
+
+  // 요약 카드
+  document.getElementById('statCards').innerHTML=[
+    ['총 업보', grand+'개', `항목 ${U.types.length}종`],
+    ['대상 시청자', active.length+'명', `전체 ${V.length}명 중`],
+    ['1인 평균', (Math.round(avg*10)/10)+'개', active.length?'보유자 기준':'—'],
+    ['최다 항목', top&&top.n?esc(top.t.name):'—', top&&top.n?top.n+'개':'기록 없음']
+  ].map(([lb,vl,sub])=>`<div class="stat-card"><div class="lb">${lb}</div><div class="vl">${vl}</div><div class="sub">${sub}</div></div>`).join('');
+
+  // 항목별 집계
+  const tbox=document.getElementById('statTypes');
+  if(!grand){ tbox.innerHTML='<div class="stat-empty">기록이 없어요</div>'; }
+  else {
+    const max=typeAgg[0].n||1;
+    tbox.innerHTML=typeAgg.map(x=>{
+      const pct=grand?Math.round(x.n/grand*100):0;
+      return `<div class="sbar"><span class="nm"><span class="sw" style="background:${x.t.color||'#ffb3d1'}"></span>${esc(x.t.name)}</span>
+        <span class="tr"><span class="fl" style="width:${x.n/max*100}%;background:${x.t.color||'#ffb3d1'}"></span></span>
+        <span class="vl">${x.n}개 ${pct}%</span></div>`;
+    }).join('');
+  }
+
+  // 랭킹
+  const rbox=document.getElementById('statRank');
+  const top10=active.sort((a,b)=>b.t-a.t||(a.v.name||'').localeCompare(b.v.name||'')).slice(0,10);
+  if(!top10.length){ rbox.innerHTML='<div class="stat-empty">기록이 없어요</div>'; }
+  else rbox.innerHTML=top10.map((r,i)=>{
+    const uid=(r.v.user_id||'').trim();
+    const img=uid?`<img src="https://profile.img.sooplive.com/LOGO/${uid.slice(0,2)}/${uid}/${uid}.jpg" onerror="this.remove()">`:'';
+    const medal=['🥇','🥈','🥉'][i]||(i+1);
+    return `<div class="rank-row${i<3?' top':''}"><span class="no">${medal}</span>
+      <span class="pa" style="background:${admAva(r.v.name)}">${esc((r.v.name||'?').slice(0,1))}${img}</span>
+      <span class="nm">${esc(r.v.name)}</span><span class="usum">🪙 ${r.t}</span></div>`;
+  }).join('');
+
+  // 시즌별 추이
+  const cbox=document.getElementById('statSeasonCmp');
+  if(!U.seasons.length){ cbox.innerHTML='<div class="stat-empty">시즌이 없어요</div>'; }
+  else {
+    const per=U.seasons.map(s=>({s, n:V.reduce((a,v)=>a+statTotal(v,s.id),0),
+      ppl:V.filter(v=>statTotal(v,s.id)>0).length}));
+    const mx=Math.max(1,...per.map(p=>p.n));
+    cbox.innerHTML=per.map(p=>`<div class="sbar"><span class="nm">${esc(p.s.name)}${p.s.is_active?' ★':''}</span>
+      <span class="tr"><span class="fl" style="width:${p.n/mx*100}%;background:var(--red)"></span></span>
+      <span class="vl">${p.n}개</span><span class="note" style="width:52px;text-align:right">${p.ppl}명</span></div>`).join('');
+  }
+}
+document.getElementById('statSeasons').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-ssid]'); if(!b) return;
+  statSeason=b.dataset.ssid; renderStats();
+});
+document.getElementById('statCopyBtn').addEventListener('click',()=>{
+  const V=U.viewers, grand=V.reduce((s,v)=>s+statTotal(v,statSeason),0);
+  const label=statSeason?(U.seasons.find(s=>String(s.id)===String(statSeason))||{}).name:'전체 시즌';
+  const typeAgg=U.types.map(t=>({t,n:V.reduce((s,v)=>s+statCount(v,t.id,statSeason),0)})).filter(x=>x.n).sort((a,b)=>b.n-a.n);
+  const top=V.map(v=>({v,t:statTotal(v,statSeason)})).filter(r=>r.t>0).sort((a,b)=>b.t-a.t).slice(0,5);
+  const txt=[`[업보 통계 · ${label}]`,
+    `총 ${grand}개 · 대상 ${V.filter(v=>statTotal(v,statSeason)>0).length}명`,'',
+    '항목별', ...typeAgg.map(x=>`  ${x.t.name} ${x.n}개`), '',
+    'TOP5', ...top.map((r,i)=>`  ${i+1}. ${r.v.name} ${r.t}개`)].join('\n');
+  try{ navigator.clipboard.writeText(txt); alert('요약을 복사했어요'); }
+  catch(_){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); alert('요약을 복사했어요'); }
+});
+
 function renderUpbo(){
   renderGrantSeasons();
   if(usub==='types'){ renderTypeStrip(); return; }
   if(usub==='viewers'){ renderViewerRows(); return; }
   if(usub==='seasons'){ return; }
+  if(usub==='stats'){ renderStats(); return; }
   renderGrantMembers();
 }
 document.getElementById('tab-upbo').addEventListener('click', async e=>{
